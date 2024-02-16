@@ -1,13 +1,14 @@
-﻿using Xunit;
+﻿using FC.Pixelflix.Catalogo.Domain.Exceptions;
+using Xunit;
 using DomainEntity = FC.Pixelflix.Catalogo.Domain.Entities;
 
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Domain.Entities.Category;
 public class CategoryTest
 {
-    [Fact(DisplayName = nameof(Instantiate))]
+    [Fact(DisplayName = nameof(GivenACategoryNewInstance_WhenIsValidDoesNotExist_ShouldBeOK))]
     [Trait("Domain", "Category - Aggregates")]
-    public void Instantiate()
+    public void GivenACategoryNewInstance_WhenIsValidDoesNotExist_ShouldBeOK()
     {
         var validData = new
         {
@@ -29,11 +30,11 @@ public class CategoryTest
         Assert.True(category.IsActive);
     }
 
-    [Theory(DisplayName = nameof(InstantiateWithIsActive))]
+    [Theory(DisplayName = nameof(GivenACategoryNewInstance_WhenIsValidExist_ShouldBeOK))]
     [Trait("Domain", "Category - Aggregates")]
     [InlineData(true)]
     [InlineData(false)]
-    public void InstantiateWithIsActive(bool isActive)
+    public void GivenACategoryNewInstance_WhenIsValidExist_ShouldBeOK(bool isActive)
     {
         var validData = new
         {
@@ -53,5 +54,17 @@ public class CategoryTest
         Assert.True(category.CreatedAt > dateTimeBefore);
         Assert.True(category.CreatedAt < dateTimeAfter);
         Assert.Equal(isActive, category.IsActive);
+    }
+
+    [Theory(DisplayName = nameof(GivenACategoryNewInstance_WhenNamePropertyIsEmptyOrNull_ShouldThrowAnError))]
+    [Trait("Domain", "Category - Aggregates")]
+    [InlineData("")]
+    [InlineData(null)]
+    [InlineData("   ")]
+    public void GivenACategoryNewInstance_WhenNamePropertyIsEmptyOrNull_ShouldThrowAnError(string? name)
+    {
+        Action action = () => new DomainEntity.Category(name!, "Category Description");
+        var exception = Assert.Throws<EntityValidationException>(action);
+        Assert.Equal("Name should not be empty or null", exception.Message);
     }
 }

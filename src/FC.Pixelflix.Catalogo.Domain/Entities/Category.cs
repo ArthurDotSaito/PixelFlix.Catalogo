@@ -1,4 +1,6 @@
 ﻿
+using FC.Pixelflix.Catalogo.Domain.Exceptions;
+
 namespace FC.Pixelflix.Catalogo.Domain.Entities;
 public class Category
 {
@@ -14,6 +16,14 @@ public class Category
         Name = name;
         Description = description;
         IsActive = isActive;
-        CreatedAt = DateTime.Now;  
+        CreatedAt = DateTime.Now;
+
+        Validate();
+    }
+
+    public void Validate()
+    {
+        if(String.IsNullOrWhiteSpace(Name))
+            throw new EntityValidationException($"{nameof(Name)} should not be empty or null"); 
     }
 }
