@@ -65,6 +65,8 @@ public class CategoryTest
     public void GivenACategoryNewInstance_WhenNamePropertyIsEmptyOrNull_ShouldThrowAnError(string? name)
     {
         Action action = () => new DomainEntity.Category(name!, "Category Description");
+        action.Should().Throw<EntityValidationException>();
+
         var exception = Assert.Throws<EntityValidationException>(action);
 
         exception.Message.Should().Be("Name should not be empty or null");
@@ -75,6 +77,8 @@ public class CategoryTest
     public void GivenACategoryNewInstance_WhenDescriptionPropertyIsNull_ShouldThrowAnError()
     {
         Action action = () => new DomainEntity.Category("Category name", null!);
+        action.Should().Throw<EntityValidationException>();
+
         var exception = Assert.Throws<EntityValidationException>(action);
 
         exception.Message.Should().Be("Description should not be empty or null");
@@ -88,6 +92,8 @@ public class CategoryTest
     public void GivenACategoryNewInstance_WhenNameHasLessThan3Characters_ShouldThrowAnError(string invalidName)
     {
         Action action = () => new DomainEntity.Category(invalidName, "Category Description");
+        action.Should().Throw<EntityValidationException>();
+
         var exception = Assert.Throws<EntityValidationException>(action);
 
         exception.Message.Should().Be("Name should be at least three characters long");
@@ -99,6 +105,8 @@ public class CategoryTest
     {
         var invalidName = String.Join(null, Enumerable.Range(1, 256).Select(_ => "A").ToArray());
         Action action = () => new DomainEntity.Category(invalidName, "Category Description");
+        action.Should().Throw<EntityValidationException>();
+
         var exception = Assert.Throws<EntityValidationException>(action);
 
         exception.Message.Should().Be("Name should be less than 255 characters long");
@@ -110,6 +118,8 @@ public class CategoryTest
     {
         var invalidDescription = String.Join(null, Enumerable.Range(1, 10001).Select(_ => "A").ToArray());
         Action action = () => new DomainEntity.Category("Category Name", invalidDescription);
+        action.Should().Throw<EntityValidationException>();
+
         var exception = Assert.Throws<EntityValidationException>(action);
 
         exception.Message.Should().Be("Description should be less than 10000 characters long");
@@ -212,6 +222,8 @@ public class CategoryTest
         var category = new DomainEntity.Category(validData.Name, validData.Description, true);
 
         Action action = () => category.Update(name!, "Category Description");
+        action.Should().Throw<EntityValidationException>();
+
         var exception = Assert.Throws<EntityValidationException>(action);
 
         exception.Message.Should().Be("Name should not be empty or null");
@@ -232,6 +244,8 @@ public class CategoryTest
         var category = new DomainEntity.Category(validData.Name, validData.Description, true);
 
         Action action = () => category.Update(invalidName);
+        action.Should().Throw<EntityValidationException>();
+
         var exception = Assert.Throws<EntityValidationException>(action);
 
         exception.Message.Should().Be("Name should be at least three characters long");
@@ -251,6 +265,8 @@ public class CategoryTest
 
         var invalidName = String.Join(null, Enumerable.Range(1, 256).Select(_ => "A").ToArray());
         Action action = () => category.Update(invalidName);
+        action.Should().Throw<EntityValidationException>();
+
         var exception = Assert.Throws<EntityValidationException>(action);
 
         exception.Message.Should().Be("Name should be less than 255 characters long");
@@ -269,6 +285,8 @@ public class CategoryTest
 
         var invalidDescription = String.Join(null, Enumerable.Range(1, 10001).Select(_ => "A").ToArray());
         Action action = () => category.Update("Category New Name", invalidDescription);
+        action.Should().Throw<EntityValidationException>();
+
         var exception = Assert.Throws<EntityValidationException>(action);
 
         exception.Message.Should().Be("Description should be less than 10000 characters long");
