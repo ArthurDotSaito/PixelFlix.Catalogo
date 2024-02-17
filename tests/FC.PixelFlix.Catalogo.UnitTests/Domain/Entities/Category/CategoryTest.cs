@@ -1,5 +1,5 @@
 ﻿using FC.Pixelflix.Catalogo.Domain.Exceptions;
-using System.Xml.Linq;
+using FluentAssertions;
 using Xunit;
 using DomainEntity = FC.Pixelflix.Catalogo.Domain.Entities;
 
@@ -21,14 +21,14 @@ public class CategoryTest
         var category = new DomainEntity.Category(validData.Name, validData.Description);
         var dateTimeAfter = DateTime.Now;
 
-        Assert.NotNull(category);
-        Assert.Equal(validData.Name, category.Name);
-        Assert.Equal(validData.Description, category.Description);
-        Assert.NotEqual(default(Guid), category.Id);
-        Assert.NotEqual(default(DateTime), category.CreatedAt);
-        Assert.True(category.CreatedAt > dateTimeBefore);
-        Assert.True(category.CreatedAt < dateTimeAfter);
-        Assert.True(category.IsActive);
+        category.Should().NotBeNull();
+        category.Name.Should().Be(validData.Name);
+        category.Description.Should().Be(validData.Description);
+        category.Id.Should().NotBe(default(Guid));
+        category.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
+        category.CreatedAt.Should().BeAfter(dateTimeBefore);
+        category.CreatedAt.Should().BeBefore(dateTimeAfter);
+        category.IsActive.Should().BeTrue();
     }
 
     [Theory(DisplayName = nameof(GivenACategoryNewInstance_WhenIsValidExist_ShouldBeOK))]
