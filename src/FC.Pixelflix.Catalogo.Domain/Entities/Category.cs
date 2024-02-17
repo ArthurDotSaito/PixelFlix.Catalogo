@@ -1,18 +1,17 @@
 ﻿
 using FC.Pixelflix.Catalogo.Domain.Exceptions;
+using FC.Pixelflix.Catalogo.Domain.SeedWork;
 
 namespace FC.Pixelflix.Catalogo.Domain.Entities;
-public class Category
+public class Category : AggretateRoot
 {
-    public Guid Id { get; private set; }
     public string Name { get; private set; }
     public string Description { get; private set; }
     public bool IsActive { get; private set; }
     public DateTime CreatedAt { get; private set; }
 
-    public Category(string name, string description, bool isActive = true)
+    public Category(string name, string description, bool isActive = true) : base()
     {
-        Id = Guid.NewGuid();
         Name = name;
         Description = description;
         IsActive = isActive;
