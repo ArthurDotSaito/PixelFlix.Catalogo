@@ -74,7 +74,7 @@ public class DomainValidationTest
         }
     }
 
-    [Theory(DisplayName = nameof(GivenAMinLengthDomainValidation_whenFieldWithLessThanCharacters_shouldThrowsAnException))]
+    [Theory(DisplayName = nameof(GivenAMinLengthDomainValidation_whenFieldWithMoreThanCharacters_shouldBeOK))]
     [Trait("Domain", "Domain Validation - Validation")]
     [MemberData(nameof(GetAValueGreaterThanMinLength), parameters: 10)]
     public void GivenAMinLengthDomainValidation_whenFieldWithMoreThanCharacters_shouldBeOK(string target, int minLength)
@@ -95,4 +95,24 @@ public class DomainValidationTest
         }
     }
 
+    [Theory(DisplayName = nameof(GivenAMaxLengthDomainValidation_whenFieldWithMoreThanCharacters_shouldThrowsAnException))]
+    [Trait("Domain", "Domain Validation - Validation")]
+    [MemberData(nameof(GetAValueGreaterThanMaxLength), parameters: 10)]
+    public void GivenAMaxLengthDomainValidation_whenFieldWithMoreThanCharacters_shouldThrowsAnException(string target, int maxLength)
+    {
+        Action action = () => DomainValidation.MaxLengthValidation(target, maxLength, "fieldName");
+
+        action.Should().Throw<EntityValidationException>().WithMessage($"fieldName should not be greater than {maxLength} characters long");
+    }
+
+    public static IEnumerable<object[]> GetAValueGreaterThanMaxLength(int numberOfTests = 5)
+    {
+        var fakeValues = new Faker();
+        for (int i = 0; i < numberOfTests; i++)
+        {
+            var generatedValue = fakeValues.Commerce.ProductName();
+            var generatedValueGreaterThanMax = generatedValue.Length - (new Random()).Next(1, 20);
+            yield return new object[] { generatedValue, generatedValueGreaterThanMax };
+        }
+    }
 }
