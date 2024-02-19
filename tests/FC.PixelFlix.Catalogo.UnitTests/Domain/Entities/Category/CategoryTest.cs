@@ -1,29 +1,35 @@
 ﻿using FC.Pixelflix.Catalogo.Domain.Exceptions;
+using FC.PixelFlix.Catalogo.UnitTests.Domain.Entities.Category;
 using FluentAssertions;
 using Xunit;
 using DomainEntity = FC.Pixelflix.Catalogo.Domain.Entities;
 
-
 namespace FC.PixelFlix.Catalogo.UnitTests.Domain.Entities.Category;
+
+
+[Collection(nameof(CategoryTestFixture))]
 public class CategoryTest
 {
+    private CategoryTestFixture _categoryTestFixture;
+
+    public CategoryTest(CategoryTestFixture categoryTestFixture)
+    {
+        _categoryTestFixture = categoryTestFixture;
+    }
+
     [Fact(DisplayName = nameof(GivenACategoryNewInstance_WhenIsValidDoesNotExist_ShouldBeOK))]
     [Trait("Domain", "Category - Aggregates")]
     public void GivenACategoryNewInstance_WhenIsValidDoesNotExist_ShouldBeOK()
     {
-        var validData = new
-        {
-            Name = "category name",
-            Description = "category description"
-        };
+        var anValidCategory = _categoryTestFixture.GetValidCategory();
         var dateTimeBefore = DateTime.Now;
 
-        var category = new DomainEntity.Category(validData.Name, validData.Description);
+        var category = new DomainEntity.Category(anValidCategory.Name, anValidCategory.Description);
         var dateTimeAfter = DateTime.Now;
 
         category.Should().NotBeNull();
-        category.Name.Should().Be(validData.Name);
-        category.Description.Should().Be(validData.Description);
+        category.Name.Should().Be(anValidCategory.Name);
+        category.Description.Should().Be(anValidCategory.Description);
         category.Id.Should().NotBe(default(Guid));
         category.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
         category.CreatedAt.Should().BeAfter(dateTimeBefore);
@@ -37,19 +43,15 @@ public class CategoryTest
     [InlineData(false)]
     public void GivenACategoryNewInstance_WhenIsValidExist_ShouldBeOK(bool isActive)
     {
-        var validData = new
-        {
-            Name = "category name",
-            Description = "category description"
-        };
+        var anValidCategory = _categoryTestFixture.GetValidCategory();
         var dateTimeBefore = DateTime.Now;
 
-        var category = new DomainEntity.Category(validData.Name, validData.Description, isActive);
+        var category = new DomainEntity.Category(anValidCategory.Name, anValidCategory.Description, isActive);
         var dateTimeAfter = DateTime.Now;
 
         category.Should().NotBeNull();
-        category.Name.Should().Be(validData.Name);
-        category.Description.Should().Be(validData.Description);
+        category.Name.Should().Be(anValidCategory.Name);
+        category.Description.Should().Be(anValidCategory.Description);
         category.Id.Should().NotBe(default(Guid));
         category.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
         category.CreatedAt.Should().BeAfter(dateTimeBefore);
