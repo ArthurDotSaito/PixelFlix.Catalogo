@@ -240,7 +240,7 @@ public class CategoryTest
 
         var category = new DomainEntity.Category(anValidCategory.Name, anValidCategory.Description, true);
 
-        var invalidName = String.Join(null, Enumerable.Range(1, 256).Select(_ => "A").ToArray());
+        var invalidName = _categoryTestFixture.Faker.Lorem.Letter(256);
         Action action = () => category.Update(invalidName);
         action.Should().Throw<EntityValidationException>();
 
