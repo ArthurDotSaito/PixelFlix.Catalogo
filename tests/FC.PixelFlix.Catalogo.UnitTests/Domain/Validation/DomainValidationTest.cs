@@ -73,4 +73,26 @@ public class DomainValidationTest
             yield return new object[] { generatedValue, generatedValueGreaterThanMin };
         }
     }
+
+    [Theory(DisplayName = nameof(GivenAMinLengthDomainValidation_whenFieldWithLessThanCharacters_shouldThrowsAnException))]
+    [Trait("Domain", "Domain Validation - Validation")]
+    [MemberData(nameof(GetAValueGreaterThanMinLength), parameters: 10)]
+    public void GivenAMinLengthDomainValidation_whenFieldWithMoreThanCharacters_shouldBeOK(string target, int minLength)
+    {
+        Action action = () => DomainValidation.MinLengthValidation(target, minLength, "fieldName");
+
+        action.Should().NotThrow();
+    }
+
+    public static IEnumerable<object[]> GetAValueGreaterThanMinLength(int numberOfTests = 5)
+    {
+        var fakeValues = new Faker();
+        for (int i = 0; i < numberOfTests; i++)
+        {
+            var generatedValue = fakeValues.Commerce.ProductName();
+            var generatedValueGreaterThanMin = generatedValue.Length - (new Random()).Next(1, 5);
+            yield return new object[] { generatedValue, generatedValueGreaterThanMin };
+        }
+    }
+
 }
