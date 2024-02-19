@@ -15,7 +15,7 @@ public class DomainValidationTest
     public void givenANotNullDomainValidation_whenFieldIsNotNull_shouldBeOk()
     {
         var aValidValue = Faker.Commerce.ProductName();
-        Action action = () => DomainValidation.NotNullDomainValidation(aValidValue, "Value");
+        Action action = () => DomainValidation.NotNullValidation(aValidValue, "Value");
 
         action.Should().NotThrow();
     }
@@ -25,8 +25,31 @@ public class DomainValidationTest
     public void givenANotNullDomainValidation_whenFieldIsNull_shouldThrowsAnException()
     {
         string nullField = null;
-        Action action = () => DomainValidation.NotNullDomainValidation(nullField, "FieldName");
+        Action action = () => DomainValidation.NotNullValidation(nullField, "fieldName");
 
-        action.Should().Throw<EntityValidationException>().WithMessage("FieldName should not be null");
+        action.Should().Throw<EntityValidationException>().WithMessage("fieldName should not be null");
+    }
+
+    [Theory(DisplayName = nameof(givenANotNullOrEmptyDomainValidation_whenFieldIsNullOrEmpty_shouldThrowsAnException))]
+    [Trait("Domain", "Domain Validation - Validation")]
+    [InlineData("")]
+    [InlineData(null)]
+    [InlineData("  ")]
+    public void givenANotNullOrEmptyDomainValidation_whenFieldIsNullOrEmpty_shouldThrowsAnException(string? target)
+    {
+        Action action = () => DomainValidation.NotNullOrEmptyValidation(target, "fieldName");
+
+        action.Should().Throw<EntityValidationException>().WithMessage("fieldName should not be null or empty");
+    }
+
+    [Fact(DisplayName = nameof(givenANotNullOrEmptyDomainValidation_whenFieldNotNullOrEmpty_shouldBeOk))]
+    [Trait("Domain", "Domain Validation - Validation")]
+    public void givenANotNullOrEmptyDomainValidation_whenFieldNotNullOrEmpty_shouldBeOk()
+    {
+        var validTarget = Faker.Commerce.ProductName();
+
+        Action action = () => DomainValidation.NotNullOrEmptyValidation(validTarget, "fieldName");
+
+        action.Should().NotThrow();
     }
 }
