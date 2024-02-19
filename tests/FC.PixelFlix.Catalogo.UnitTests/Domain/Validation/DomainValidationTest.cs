@@ -115,4 +115,25 @@ public class DomainValidationTest
             yield return new object[] { generatedValue, generatedValueGreaterThanMax };
         }
     }
+
+    [Theory(DisplayName = nameof(GivenAMaxLengthDomainValidation_whenFieldWithLessThanCharacters_shouldBeOK))]
+    [Trait("Domain", "Domain Validation - Validation")]
+    [MemberData(nameof(GetAValueSmallerThanMaxLength), parameters: 10)]
+    public void GivenAMaxLengthDomainValidation_whenFieldWithLessThanCharacters_shouldBeOK(string target, int maxLength)
+    {
+        Action action = () => DomainValidation.MaxLengthValidation(target, maxLength, "fieldName");
+
+        action.Should().NotThrow();
+    }
+
+    public static IEnumerable<object[]> GetAValueSmallerThanMaxLength(int numberOfTests = 5)
+    {
+        var fakeValues = new Faker();
+        for (int i = 0; i < numberOfTests; i++)
+        {
+            var generatedValue = fakeValues.Commerce.ProductName();
+            var generatedValueGreaterThanMax = generatedValue.Length + (new Random()).Next(1, 20);
+            yield return new object[] { generatedValue, generatedValueGreaterThanMax };
+        }
+    }
 }
