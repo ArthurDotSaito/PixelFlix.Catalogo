@@ -66,7 +66,9 @@ public class CategoryTest
     [InlineData("   ")]
     public void GivenACategoryNewInstance_WhenNamePropertyIsEmptyOrNull_ShouldThrowAnError(string? name)
     {
-        Action action = () => new DomainEntity.Category(name!, "Category Description");
+        var anValidCategory = _categoryTestFixture.GetValidCategory();
+
+        Action action = () => new DomainEntity.Category(name!, anValidCategory.Description);
         action.Should().Throw<EntityValidationException>();
 
         var exception = Assert.Throws<EntityValidationException>(action);
@@ -78,7 +80,9 @@ public class CategoryTest
     [Trait("Domain", "Category - Aggregates")]
     public void GivenACategoryNewInstance_WhenDescriptionPropertyIsNull_ShouldThrowAnError()
     {
-        Action action = () => new DomainEntity.Category("Category name", null!);
+        var anValidCategory = _categoryTestFixture.GetValidCategory();
+
+        Action action = () => new DomainEntity.Category(anValidCategory.Name, null!);
         action.Should().Throw<EntityValidationException>();
 
         var exception = Assert.Throws<EntityValidationException>(action);
@@ -93,7 +97,9 @@ public class CategoryTest
     [InlineData("a")]
     public void GivenACategoryNewInstance_WhenNameHasLessThan3Characters_ShouldThrowAnError(string invalidName)
     {
-        Action action = () => new DomainEntity.Category(invalidName, "Category Description");
+        var anValidCategory = _categoryTestFixture.GetValidCategory();
+
+        Action action = () => new DomainEntity.Category(invalidName, anValidCategory.Description);
         action.Should().Throw<EntityValidationException>();
 
         var exception = Assert.Throws<EntityValidationException>(action);
@@ -105,8 +111,10 @@ public class CategoryTest
     [Trait("Domain", "Category - Aggregates")]
     public void GivenACategoryNewInstance_WhenNameHasMoreThan255Characters_ShouldThrowAnError()
     {
+        var anValidCategory = _categoryTestFixture.GetValidCategory();
         var invalidName = String.Join(null, Enumerable.Range(1, 256).Select(_ => "A").ToArray());
-        Action action = () => new DomainEntity.Category(invalidName, "Category Description");
+
+        Action action = () => new DomainEntity.Category(invalidName, anValidCategory.Description);
         action.Should().Throw<EntityValidationException>();
 
         var exception = Assert.Throws<EntityValidationException>(action);
@@ -118,8 +126,10 @@ public class CategoryTest
     [Trait("Domain", "Category - Aggregates")]
     public void GivenACategoryNewInstance_WhenDescriptionHasMoreThan10000Characters_ShouldThrowAnError()
     {
+        var anValidCategory = _categoryTestFixture.GetValidCategory();
         var invalidDescription = String.Join(null, Enumerable.Range(1, 10001).Select(_ => "A").ToArray());
-        Action action = () => new DomainEntity.Category("Category Name", invalidDescription);
+
+        Action action = () => new DomainEntity.Category(anValidCategory.Name, invalidDescription);
         action.Should().Throw<EntityValidationException>();
 
         var exception = Assert.Throws<EntityValidationException>(action);
