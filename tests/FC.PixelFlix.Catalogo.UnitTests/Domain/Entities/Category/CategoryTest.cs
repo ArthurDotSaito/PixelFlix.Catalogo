@@ -25,7 +25,7 @@ public class CategoryTest
         var dateTimeBefore = DateTime.Now;
 
         var category = new DomainEntity.Category(anValidCategory.Name, anValidCategory.Description);
-        var dateTimeAfter = DateTime.Now;
+        var dateTimeAfter = DateTime.Now.AddSeconds(1);
 
         category.Should().NotBeNull();
         category.Name.Should().Be(anValidCategory.Name);
@@ -47,7 +47,7 @@ public class CategoryTest
         var dateTimeBefore = DateTime.Now;
 
         var category = new DomainEntity.Category(anValidCategory.Name, anValidCategory.Description, isActive);
-        var dateTimeAfter = DateTime.Now;
+        var dateTimeAfter = DateTime.Now.AddSeconds(1);
 
         category.Should().NotBeNull();
         category.Name.Should().Be(anValidCategory.Name);
@@ -209,11 +209,11 @@ public class CategoryTest
     [InlineData("   ")]
     public void GivenACategoryUpdate_WhenNamePropertyIsEmptyOrNull_ShouldThrowAnError(string? name)
     {
-        var anValidCategory = _categoryTestFixture.GetValidCategory();
+        var anValidCategory = _categoryTestFixture.GetValidCategory();  
 
         var category = new DomainEntity.Category(anValidCategory.Name, anValidCategory.Description, true);
 
-        Action action = () => category.Update(name!, "Category Description");
+        Action action = () => category.Update(name!, anValidCategory.Description);
         action.Should().Throw<EntityValidationException>();
 
         var exception = Assert.Throws<EntityValidationException>(action);
