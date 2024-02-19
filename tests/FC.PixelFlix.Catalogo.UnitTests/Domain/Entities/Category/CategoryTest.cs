@@ -171,16 +171,12 @@ public class CategoryTest
 
         var category = new DomainEntity.Category(anValidCategory.Name, anValidCategory.Description, true);
 
-        var newData = new
-        {
-            Name = "New Name",
-            Description = "New Description"
-        };
+        var anNewValidCategory = _categoryTestFixture.GetValidCategory();
 
-        category.Update(newData.Name, newData.Description);
+        category.Update(anNewValidCategory.Name, anNewValidCategory.Description);
 
-        category.Name.Should().Be(newData.Name);
-        category.Description.Should().Be(newData.Description);
+        category.Name.Should().Be(anNewValidCategory.Name);
+        category.Description.Should().Be(anNewValidCategory.Description);
     }
 
     [Fact(DisplayName = nameof(GivenANewCategory_WhenCallsUpdateOnlyWithNameProp_ShouldUpdateAnCategoryName))]
@@ -191,14 +187,11 @@ public class CategoryTest
 
         var category = new DomainEntity.Category(anValidCategory.Name, anValidCategory.Description, true);
 
-        var newData = new
-        {
-            Name = "New Name",
-        };
+        var anNewValidCategory = _categoryTestFixture.GetValidCategory();
 
-        category.Update(newData.Name);
+        category.Update(anNewValidCategory.Name);
 
-        category.Name.Should().Be(newData.Name);
+        category.Name.Should().Be(anNewValidCategory.Name);
         category.Description.Should().Be(anValidCategory.Description);
     }
 
