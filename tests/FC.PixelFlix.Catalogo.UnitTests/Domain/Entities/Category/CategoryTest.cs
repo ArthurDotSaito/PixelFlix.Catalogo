@@ -87,7 +87,7 @@ public class CategoryTest
 
         var exception = Assert.Throws<EntityValidationException>(action);
 
-        exception.Message.Should().Be("Description should not be empty or null");
+        exception.Message.Should().Be("Description should not be null");
     }
 
 
@@ -104,7 +104,7 @@ public class CategoryTest
 
         var exception = Assert.Throws<EntityValidationException>(action);
 
-        exception.Message.Should().Be("Name should be at least three characters long");
+        exception.Message.Should().Be("Name should be at least 3 characters long");
     }
 
     [Fact(DisplayName = nameof(GivenACategoryNewInstance_WhenNameHasMoreThan255Characters_ShouldThrowAnError))]
@@ -228,7 +228,7 @@ public class CategoryTest
 
         var exception = Assert.Throws<EntityValidationException>(action);
 
-        exception.Message.Should().Be("Name should be at least three characters long");
+        exception.Message.Should().Be("Name should be at least 3 characters long");
     }
 
     public static IEnumerable<object[]> GetNamesWithLessThan3Characters(int numberOfTests = 6)

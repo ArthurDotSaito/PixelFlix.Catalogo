@@ -39,7 +39,7 @@ public class DomainValidationTest
     {
         Action action = () => DomainValidation.NotNullOrEmptyValidation(target, "fieldName");
 
-        action.Should().Throw<EntityValidationException>().WithMessage("fieldName should not be null or empty");
+        action.Should().Throw<EntityValidationException>().WithMessage("fieldName should not be empty or null");
     }
 
     [Fact(DisplayName = nameof(GivenANotNullOrEmptyDomainValidation_whenFieldNotNullOrEmpty_shouldBeOk))]
@@ -60,7 +60,7 @@ public class DomainValidationTest
     {
         Action action = () => DomainValidation.MinLengthValidation(target, minLength, "fieldName");
 
-        action.Should().Throw<EntityValidationException>().WithMessage($"fieldName should not be less than {minLength} characters long");
+        action.Should().Throw<EntityValidationException>().WithMessage($"fieldName should be at least {minLength} characters long");
     }
 
     public static IEnumerable<object[]> GetAValueSmallerThanMinLength(int numberOfTests = 5)
@@ -102,7 +102,7 @@ public class DomainValidationTest
     {
         Action action = () => DomainValidation.MaxLengthValidation(target, maxLength, "fieldName");
 
-        action.Should().Throw<EntityValidationException>().WithMessage($"fieldName should not be greater than {maxLength} characters long");
+        action.Should().Throw<EntityValidationException>().WithMessage($"fieldName should be less than {maxLength} characters long");
     }
 
     public static IEnumerable<object[]> GetAValueGreaterThanMaxLength(int numberOfTests = 5)

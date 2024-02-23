@@ -15,7 +15,7 @@ public class DomainValidation
     {
         if (String.IsNullOrWhiteSpace(target))
         {
-            throw new EntityValidationException($"{fieldName} should not be null or empty");
+            throw new EntityValidationException($"{fieldName} should not be empty or null");
         }
     }
 
@@ -23,7 +23,7 @@ public class DomainValidation
     {
         if (target.Length < minLength)
         {
-            throw new EntityValidationException($"{fieldName} should not be less than {minLength} characters long");
+            throw new EntityValidationException($"{fieldName} should be at least {minLength} characters long");
         }
     }
 
@@ -31,7 +31,7 @@ public class DomainValidation
     {
         if (target.Length > maxLength)
         {
-            throw new EntityValidationException($"{fieldName} should not be greater than {maxLength} characters long");
+            throw new EntityValidationException($"{fieldName} should be less than {maxLength} characters long");
         }
     }
 }

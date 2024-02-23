@@ -1,6 +1,7 @@
 ﻿
 using FC.Pixelflix.Catalogo.Domain.Exceptions;
 using FC.Pixelflix.Catalogo.Domain.SeedWork;
+using FC.Pixelflix.Catalogo.Domain.Validation;
 
 namespace FC.Pixelflix.Catalogo.Domain.Entities;
 public class Category : AggretateRoot
@@ -22,20 +23,15 @@ public class Category : AggretateRoot
 
     private void Validate()
     {
-        if(String.IsNullOrWhiteSpace(Name))
-            throw new EntityValidationException($"{nameof(Name)} should not be empty or null");
+        DomainValidation.NotNullOrEmptyValidation(Name, nameof(Name));
 
-        if (Name.Length < 3)
-            throw new EntityValidationException($"{nameof(Name)} should be at least three characters long");
+        DomainValidation.MinLengthValidation(Name, 3, nameof(Name));
 
-        if (Name.Length > 255)
-            throw new EntityValidationException($"{nameof(Name)} should be less than 255 characters long");
+        DomainValidation.MaxLengthValidation(Name, 255, nameof(Name));
 
-        if (Description == null)
-            throw new EntityValidationException($"{nameof(Description)} should not be empty or null");
+        DomainValidation.NotNullValidation(Description, nameof(Description));
 
-        if (Description.Length > 10000)
-            throw new EntityValidationException($"{nameof(Description)} should be less than 10000 characters long");
+        DomainValidation.MaxLengthValidation(Description, 10000, nameof(Description));
     }
 
     public void Activate()
