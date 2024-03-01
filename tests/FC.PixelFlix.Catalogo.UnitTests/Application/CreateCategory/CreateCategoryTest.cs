@@ -36,13 +36,12 @@ public class CreateCategoryTest
             );
 
         output.Should().NotBeNull();
-        output.Id.Should().NotBe(null);
         output.Id.Should().NotBeEmpty();
         output.Id.Should().NotBe(default(Guid));
         output.Name.Should().Be(expectedName);
         output.Description.Should().Be(expectedDescription);
         output.IsActive.Should().BeTrue();
         output.CreatedAt.Should().NotBe(null);
-        output.CreatedAt.Should().NotBe(default(DateTime));
+        output.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
     }
 }

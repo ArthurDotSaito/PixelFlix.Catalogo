@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FC.Pixelflix.Catalogo.Domain\FC.Pixelflix.Catalogo.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
