@@ -8,11 +8,18 @@ public class CreateCategory : ICreateCategory
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICategoryRepository _categoryRepository;
+
+    public CreateCategory(IUnitOfWork unitOfWork, ICategoryRepository categoryRepository)
+    {
+        _unitOfWork = unitOfWork;
+        _categoryRepository = categoryRepository;
+    }
+
     public async Task<CreateCategoryOutput> Execute(CreateCategoryInput anInput, CancellationToken aCancellationToken)
     {
         var aCategory = new DomainEntity.Category(anInput.Name, anInput.Description, anInput.IsActive);
-        await _categoryRepository.Insert(aCategory, aCancellationToken);
 
+        await _categoryRepository.Insert(aCategory, aCancellationToken);
         await _unitOfWork.Commit(aCancellationToken);
 
         return new CreateCategoryOutput(aCategory.Id, aCategory.Name, aCategory.Description, aCategory.IsActive, aCategory.CreatedAt);

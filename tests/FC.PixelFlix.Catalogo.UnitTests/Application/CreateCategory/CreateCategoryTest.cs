@@ -1,9 +1,11 @@
 ﻿using FC.Pixelflix.Catalogo.Application.Interfaces;
 using FC.Pixelflix.Catalogo.Domain.Entities;
 using FC.Pixelflix.Catalogo.Domain.Repository;
+using FluentAssertions;
 using Moq;
 using Xunit;
 using useCaseData = FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
+using useCases = FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.CreateCategory;
 public class CreateCategoryTest
@@ -18,7 +20,7 @@ public class CreateCategoryTest
 
         var repositoryMock = new Mock<ICategoryRepository>();
         var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var useCase = new useCases.CreateCategory(repositoryMock.Object, unitOfWorkMock.Object);
+        var useCase = new useCases.CreateCategory(unitOfWorkMock.Object, repositoryMock.Object);
 
         var input = new useCaseData.CreateCategoryInput(expectedName, expectedDescription, expectedIsActive);
 
@@ -34,13 +36,13 @@ public class CreateCategoryTest
             );
 
         output.Should().NotBeNull();
-        output.Id.Should().NotBeNull();
+        output.Id.Should().NotBe(null);
         output.Id.Should().NotBeEmpty();
         output.Id.Should().NotBe(default(Guid));
-        output.Name.Should().BeEqual(expectedName);
-        output.Description.Should().BeEqual(expectedDescription);
+        output.Name.Should().Be(expectedName);
+        output.Description.Should().Be(expectedDescription);
         output.IsActive.Should().BeTrue();
-        output.CreatedAt.Should().NotBeNull();
+        output.CreatedAt.Should().NotBe(null);
         output.CreatedAt.Should().NotBe(default(DateTime));
     }
 }
