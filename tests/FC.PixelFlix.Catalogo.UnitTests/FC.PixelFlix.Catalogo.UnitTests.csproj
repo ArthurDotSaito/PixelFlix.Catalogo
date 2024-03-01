@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\FC.Pixelflix.Catalogo.Application\FC.Pixelflix.Catalogo.Application.csproj" />
     <ProjectReference Include="..\..\src\FC.Pixelflix.Catalogo.Domain\FC.Pixelflix.Catalogo.Domain.csproj" />
   </ItemGroup>
 

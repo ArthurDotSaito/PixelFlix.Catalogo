@@ -1,8 +1,9 @@
-﻿using FC.Pixelflix.Catalogo.Domain.Entities;
+﻿using FC.Pixelflix.Catalogo.Application.Interfaces;
+using FC.Pixelflix.Catalogo.Domain.Entities;
 using FC.Pixelflix.Catalogo.Domain.Repository;
 using Moq;
 using Xunit;
-using useCases = FC.PixelFlix.Catalogo.Application.UseCases.CreateCategory;
+using useCaseData = FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.CreateCategory;
 public class CreateCategoryTest
@@ -19,7 +20,7 @@ public class CreateCategoryTest
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var useCase = new useCases.CreateCategory(repositoryMock.Object, unitOfWorkMock.Object);
 
-        var input = new CreateCategoryInput(expectedName, expectedDescription, expectedIsActive);
+        var input = new useCaseData.CreateCategoryInput(expectedName, expectedDescription, expectedIsActive);
 
         var output = await useCase.Execute(input, CancellationToken.None);
 
