@@ -1,4 +1,5 @@
 ﻿using FC.Pixelflix.Catalogo.Domain.Entities;
+using FC.Pixelflix.Catalogo.Domain.Repository;
 using Moq;
 using Xunit;
 using useCases = FC.PixelFlix.Catalogo.Application.UseCases.CreateCategory;
