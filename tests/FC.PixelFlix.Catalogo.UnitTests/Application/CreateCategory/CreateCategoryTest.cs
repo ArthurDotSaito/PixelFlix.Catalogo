@@ -6,9 +6,9 @@ using useCases = FC.PixelFlix.Catalogo.Application.UseCases.CreateCategory;
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.CreateCategory;
 public class CreateCategoryTest
 {
-    [Fact(DisplayName = nameof()]
+    [Fact(DisplayName = nameof(GivenAValidCommand_whenCallsCreateCategory_shouldReturnACategory))]
     [Trait("Application", "CreateCategory - Use Cases")]
-    public async void CreateCategory()
+    public async void GivenAValidCommand_whenCallsCreateCategory_shouldReturnACategory()
     {
         var expectedName = "categoryName";
         var expectedDescription = "A category description";
@@ -22,8 +22,14 @@ public class CreateCategoryTest
 
         var output = await useCase.Execute(input, CancellationToken.None);
 
-        repositoryMock.Verify(repository => repository.Create(It.IsAny<Category>(), CancellationToken.None), Times.Once);
-        unitOfWorkMock.Verify(uow => uow.Commit(),Times.Once);
+        repositoryMock.Verify(repository => 
+            repository.Insert(It.IsAny<Category>(), It.IsAny<CancellationToken>()), 
+            Times.Once
+            );
+
+        unitOfWorkMock.Verify(uow => 
+            uow.Commit(It.IsAny<CancellationToken>()),Times.Once
+            );
 
         output.Should().NotBeNull();
         output.Id.Should().NotBeNull();
