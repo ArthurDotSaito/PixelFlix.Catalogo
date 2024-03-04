@@ -61,9 +61,9 @@ public class CreateCategoryTest
 
         var useCase = new useCases.CreateCategory(unitOfWorkMock.Object, repositoryMock.Object);
 
-        Action action = async () => await useCase.Execute(input, CancellationToken.None);
+        Func<Task> task = async () => await useCase.Execute(input, CancellationToken.None);
 
-        action.Should().Throw<EntityValidationException>().WithMessage(expectedExceptionMessage);
+        await task.Should().ThrowAsync<EntityValidationException>().WithMessage(expectedExceptionMessage);
     }   
 
     public static IEnumerable<object[]> GetInvalidInput()
@@ -85,7 +85,7 @@ public class CreateCategoryTest
         {
             longName = $"{longName}{fixture.Faker.Commerce.ProductName()}";
         }
-
+        invalidInputLongName.Name = longName;
         invalidInputList.Add(new object[]
         {
             invalidInputLongName,
