@@ -1,6 +1,9 @@
-﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
+﻿using FC.Pixelflix.Catalogo.Application.Interfaces;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
+using FC.Pixelflix.Catalogo.Domain.Repository;
 using FC.PixelFlix.Catalogo.UnitTests.Common;
 using FC.PixelFlix.Catalogo.UnitTests.Domain.Entities.Category;
+using Moq;
 using Xunit;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.CreateCategory;
@@ -49,4 +52,6 @@ public class CreateCategoryTestFixture : BaseFixture
     }
 
 
+    public Mock<ICategoryRepository> GetMockRepository() => new Mock<ICategoryRepository>();
+    public Mock<IUnitOfWork> GetMockUnitOfWork() => new Mock<IUnitOfWork>();
 }

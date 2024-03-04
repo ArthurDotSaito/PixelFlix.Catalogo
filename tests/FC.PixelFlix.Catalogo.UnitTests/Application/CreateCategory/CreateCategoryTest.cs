@@ -8,21 +8,27 @@ using useCaseData = FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
 using useCases = FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.CreateCategory;
+
+[Collection(nameof(CreateCategoryTestFixture))]
 public class CreateCategoryTest
 {
+    private readonly CreateCategoryTestFixture _fixture;
+
+    public CreateCategoryTest(CreateCategoryTestFixture fixture)
+    {
+        _fixture = fixture;
+    }
+
     [Fact(DisplayName = nameof(GivenAValidCommand_whenCallsCreateCategory_shouldReturnACategory))]
     [Trait("Application", "CreateCategory - Use Cases")]
     public async void GivenAValidCommand_whenCallsCreateCategory_shouldReturnACategory()
     {
-        var expectedName = "categoryName";
-        var expectedDescription = "A category description";
-        var expectedIsActive = true;
+        var repositoryMock = _fixture.GetMockRepository();
+        var unitOfWorkMock = _fixture.GetMockUnitOfWork();
 
-        var repositoryMock = new Mock<ICategoryRepository>();
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
         var useCase = new useCases.CreateCategory(unitOfWorkMock.Object, repositoryMock.Object);
 
-        var input = new useCaseData.CreateCategoryInput(expectedName, expectedDescription, expectedIsActive);
+        var input = _fixture.GetValidInput();
 
         var output = await useCase.Execute(input, CancellationToken.None);
 
@@ -38,9 +44,9 @@ public class CreateCategoryTest
         output.Should().NotBeNull();
         output.Id.Should().NotBeEmpty();
         output.Id.Should().NotBe(default(Guid));
-        output.Name.Should().Be(expectedName);
-        output.Description.Should().Be(expectedDescription);
-        output.IsActive.Should().BeTrue();
+        output.Name.Should().Be(input.Name);
+        output.Description.Should().Be(input.Description);
+        output.IsActive.Should().Be(input.IsActive);
         output.CreatedAt.Should().NotBe(null);
         output.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
     }
