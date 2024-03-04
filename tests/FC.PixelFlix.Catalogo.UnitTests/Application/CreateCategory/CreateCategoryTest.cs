@@ -1,5 +1,6 @@
 ﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
 using FC.Pixelflix.Catalogo.Domain.Entities;
+using FC.Pixelflix.Catalogo.Domain.Exceptions;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -53,7 +54,7 @@ public class CreateCategoryTest
     [Trait("Application", "CreateCategory - Use Cases")]
     [MemberData(nameof(GetInvalidInput))]
     public async void GivenAInvalidCommand_whenCallsCreateCategory_shouldThrowsAnException(
-        CreateCategoryInput input, string exceptionMessage)
+        CreateCategoryInput input, string expectedExceptionMessage)
     {
         var repositoryMock = _fixture.GetMockRepository();
         var unitOfWorkMock = _fixture.GetMockUnitOfWork();
@@ -61,10 +62,36 @@ public class CreateCategoryTest
         var useCase = new useCases.CreateCategory(unitOfWorkMock.Object, repositoryMock.Object);
 
         Action action = async () => await useCase.Execute(input, CancellationToken.None);
+
+        action.Should().Throw<EntityValidationException>().WithMessage(expectedExceptionMessage);
     }   
 
     public static IEnumerable<object[]> GetInvalidInput()
     {
-        return new List<object[]>();
+        var fixture = new CreateCategoryTestFixture();
+        var invalidInputList = new List<object[]>();
+
+        var invalidInputShortName = fixture.GetValidInput();
+        invalidInputShortName.Name = invalidInputShortName.Name.Substring(0, 2);
+        invalidInputList.Add(new object[]
+        {
+            invalidInputShortName,
+            "Name should be at least 3 characters long"
+        });
+
+        var invalidInputLongName = fixture.GetValidInput();
+        var longName = fixture.Faker.Commerce.ProductName(); ;
+        while(longName.Length < 255)
+        {
+            longName = $"{longName}{fixture.Faker.Commerce.ProductName()}";
+        }
+
+        invalidInputList.Add(new object[]
+        {
+            invalidInputLongName,
+            "Name should be less than 255 characters long"
+        });
+
+        return invalidInputList;
     }
 }
