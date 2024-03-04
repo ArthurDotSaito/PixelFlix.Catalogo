@@ -1,4 +1,5 @@
-﻿using FC.PixelFlix.Catalogo.UnitTests.Common;
+﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
+using FC.PixelFlix.Catalogo.UnitTests.Common;
 using FC.PixelFlix.Catalogo.UnitTests.Domain.Entities.Category;
 using Xunit;
 
@@ -36,4 +37,16 @@ public class CreateCategoryTestFixture : BaseFixture
 
         return aCategoryDescription;
     }
+
+    public Boolean GetRandomIsActive()
+    {
+       return (new Random()).NextDouble() < 0.5;
+    }
+
+    public CreateCategoryInput GetValidInput()
+    {
+        return new(GetValidCategoryName(), GetValidCategoryDescription(), GetRandomIsActive());
+    }
+
+
 }
