@@ -1,10 +1,8 @@
-﻿using FC.Pixelflix.Catalogo.Application.Interfaces;
+﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
 using FC.Pixelflix.Catalogo.Domain.Entities;
-using FC.Pixelflix.Catalogo.Domain.Repository;
 using FluentAssertions;
 using Moq;
 using Xunit;
-using useCaseData = FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
 using useCases = FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.CreateCategory;
@@ -49,5 +47,24 @@ public class CreateCategoryTest
         output.IsActive.Should().Be(input.IsActive);
         output.CreatedAt.Should().NotBe(null);
         output.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
+    }
+
+    [Theory(DisplayName = nameof(GivenAInvalidCommand_whenCallsCreateCategory_shouldThrowsAnException))]
+    [Trait("Application", "CreateCategory - Use Cases")]
+    [MemberData(nameof(GetInvalidInput))]
+    public async void GivenAInvalidCommand_whenCallsCreateCategory_shouldThrowsAnException(
+        CreateCategoryInput input, string exceptionMessage)
+    {
+        var repositoryMock = _fixture.GetMockRepository();
+        var unitOfWorkMock = _fixture.GetMockUnitOfWork();
+
+        var useCase = new useCases.CreateCategory(unitOfWorkMock.Object, repositoryMock.Object);
+
+        Action action = async () => await useCase.Execute(input, CancellationToken.None);
+    }   
+
+    public static IEnumerable<object[]> GetInvalidInput()
+    {
+        return new List<object[]>();
     }
 }
