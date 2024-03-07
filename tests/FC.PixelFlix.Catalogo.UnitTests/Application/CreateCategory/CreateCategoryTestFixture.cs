@@ -2,7 +2,6 @@
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
 using FC.Pixelflix.Catalogo.Domain.Repository;
 using FC.PixelFlix.Catalogo.UnitTests.Common;
-using FC.PixelFlix.Catalogo.UnitTests.Domain.Entities.Category;
 using Moq;
 using Xunit;
 

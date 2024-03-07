@@ -1,6 +1,7 @@
 ﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
 using FC.Pixelflix.Catalogo.Domain.Entities;
 using FC.Pixelflix.Catalogo.Domain.Exceptions;
+using FC.PixelFlix.Catalogo.UnitTests.Application.CreateCategory ;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -52,7 +53,8 @@ public class CreateCategoryTest
 
     [Theory(DisplayName = nameof(GivenAInvalidCommand_whenCallsCreateCategory_shouldThrowsAnException))]
     [Trait("Application", "CreateCategory - Use Cases")]
-    [MemberData(nameof(GetInvalidInput))]
+    [MemberData(nameof(CreateCategoryDataGenerator.GetInvalidInput), MemberType = typeof(CreateCategoryDataGenerator))]
+
     public async void GivenAInvalidCommand_whenCallsCreateCategory_shouldThrowsAnException(
         CreateCategoryInput input, string expectedExceptionMessage)
     {
@@ -65,57 +67,6 @@ public class CreateCategoryTest
 
         await task.Should().ThrowAsync<EntityValidationException>().WithMessage(expectedExceptionMessage);
     }   
-
-    public static IEnumerable<object[]> GetInvalidInput()
-    {
-        var fixture = new CreateCategoryTestFixture();
-        var invalidInputList = new List<object[]>();
-
-        var invalidInputShortName = fixture.GetValidInput();
-        invalidInputShortName.Name = invalidInputShortName.Name.Substring(0, 2);
-        invalidInputList.Add(new object[]
-        {
-            invalidInputShortName,
-            "Name should be at least 3 characters long"
-        });
-
-        var invalidInputLongName = fixture.GetValidInput();
-        var longName = fixture.Faker.Commerce.ProductName(); ;
-        while(longName.Length < 255)
-        {
-            longName = $"{longName}{fixture.Faker.Commerce.ProductName()}";
-        }
-        invalidInputLongName.Name = longName;
-        invalidInputList.Add(new object[]
-        {
-            invalidInputLongName,
-            "Name should be less than 255 characters long"
-        });
-
-        var invalidInputDescriptionNull = fixture.GetValidInput();
-        invalidInputDescriptionNull.Description = null!;
-        invalidInputList.Add(new object[]
-        {
-            invalidInputDescriptionNull,
-            "Description should not be null"
-        });
-
-        var invalidInputLongDescription = fixture.GetValidInput();
-        var longDescription = fixture.Faker.Commerce.ProductDescription(); ;
-        while (longDescription.Length < 10000)
-        {
-            longDescription = $"{longDescription}{fixture.Faker.Commerce.ProductDescription()}";
-        }
-        invalidInputLongDescription.Description = longDescription;
-        invalidInputList.Add(new object[]
-        {
-            invalidInputLongDescription,
-            "Description should be less than 10000 characters long"
-        });
-
-
-        return invalidInputList;
-    }
 
     [Fact(DisplayName = nameof(GivenAInvalidCommandWitName_whenCallsCreateCategory_shouldBeOk))]
     [Trait("Application", "CreateCategory - Use Cases")]
