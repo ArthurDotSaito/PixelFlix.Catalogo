@@ -57,7 +57,7 @@ public class CreateCategoryTestFixture : BaseFixture
         return invalidInputShortName;
     }
 
-    public CreateCategoryInput GetInvalidLongDescriptionInput()
+    public CreateCategoryInput GetInvalidLongNameInput()
     {
         var invalidInputLongName = GetValidInput();
         var longName = Faker.Commerce.ProductName(); ;
@@ -67,6 +67,13 @@ public class CreateCategoryTestFixture : BaseFixture
         }
         invalidInputLongName.Name = longName;
         return invalidInputLongName;
+    }
+
+    public CreateCategoryInput GetNullDescription()
+    {
+        var invalidInputDescriptionNull = GetValidInput();
+        invalidInputDescriptionNull.Description = null!;
+        return invalidInputDescriptionNull;
     }
 
     public Mock<ICategoryRepository> GetMockRepository() => new Mock<ICategoryRepository>();

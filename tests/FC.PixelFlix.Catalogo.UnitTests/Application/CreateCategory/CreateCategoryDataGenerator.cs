@@ -14,15 +14,13 @@ public class CreateCategoryDataGenerator
 
         invalidInputList.Add(new object[]
         {
-            fixture.GetInvalidLongDescriptionInput(),
+            fixture.GetInvalidLongNameInput(),
             "Name should be less than 255 characters long"
         });
 
-        var invalidInputDescriptionNull = fixture.GetValidInput();
-        invalidInputDescriptionNull.Description = null!;
         invalidInputList.Add(new object[]
         {
-            invalidInputDescriptionNull,
+            fixture.GetNullDescription(),
             "Description should not be null"
         });
 
