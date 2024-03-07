@@ -76,6 +76,18 @@ public class CreateCategoryTestFixture : BaseFixture
         return invalidInputDescriptionNull;
     }
 
+    public CreateCategoryInput GetInvalidLongDescription()
+    {
+        var invalidInputLongDescription = GetValidInput();
+        var longDescription = Faker.Commerce.ProductDescription(); ;
+        while (longDescription.Length < 10000)
+        {
+            longDescription = $"{longDescription}{Faker.Commerce.ProductDescription()}";
+        }
+        invalidInputLongDescription.Description = longDescription;
+        return invalidInputLongDescription;
+    }
+
     public Mock<ICategoryRepository> GetMockRepository() => new Mock<ICategoryRepository>();
     public Mock<IUnitOfWork> GetMockUnitOfWork() => new Mock<IUnitOfWork>();
 }
