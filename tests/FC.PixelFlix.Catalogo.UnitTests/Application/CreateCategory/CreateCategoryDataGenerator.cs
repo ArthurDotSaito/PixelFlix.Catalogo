@@ -17,35 +17,34 @@ public class CreateCategoryDataGenerator
                         fixture.GetInvalidShortNameInput(),
                         "Name should be at least 3 characters long"
                     });
-                break;
+                    break;
+
+                case 1:
+                    invalidInputList.Add(new object[]
+                    {
+                        fixture.GetInvalidLongNameInput(),
+                        "Name should be less than 255 characters long"
+                    });
+                    break;
+                case 2:
+                    invalidInputList.Add(new object[]
+                    {
+                        fixture.GetNullDescription(),
+                        "Description should not be null"
+                    });
+                    break;
+                case 3:
+                     invalidInputList.Add(new object[]
+                     {
+                        fixture.GetInvalidLongDescription(),
+                        "Description should be less than 10000 characters long"
+                    });
+                    break;
+                default:
+                    break;
 
             }
         }
-
-        invalidInputList.Add(new object[]
-        {
-            fixture.GetInvalidShortNameInput(),
-            "Name should be at least 3 characters long"
-        });
-
-        invalidInputList.Add(new object[]
-        {
-            fixture.GetInvalidLongNameInput(),
-            "Name should be less than 255 characters long"
-        });
-
-        invalidInputList.Add(new object[]
-        {
-            fixture.GetNullDescription(),
-            "Description should not be null"
-        });
-
-        invalidInputList.Add(new object[]
-        {
-            fixture.GetInvalidLongDescription(),
-            "Description should be less than 10000 characters long"
-        });
-
 
         return invalidInputList;
     }

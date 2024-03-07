@@ -53,7 +53,11 @@ public class CreateCategoryTest
 
     [Theory(DisplayName = nameof(GivenAInvalidCommand_whenCallsCreateCategory_shouldThrowsAnException))]
     [Trait("Application", "CreateCategory - Use Cases")]
-    [MemberData(nameof(CreateCategoryDataGenerator.GetInvalidInput), MemberType = typeof(CreateCategoryDataGenerator))]
+    [MemberData(
+        nameof(CreateCategoryDataGenerator.GetInvalidInput),
+        parameters:12,
+        MemberType = typeof(CreateCategoryDataGenerator)
+    )]
 
     public async void GivenAInvalidCommand_whenCallsCreateCategory_shouldThrowsAnException(
         CreateCategoryInput input, string expectedExceptionMessage)
