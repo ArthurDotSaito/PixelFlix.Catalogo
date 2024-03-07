@@ -50,6 +50,12 @@ public class CreateCategoryTestFixture : BaseFixture
         return new(GetValidCategoryName(), GetValidCategoryDescription(), GetRandomIsActive());
     }
 
+    public CreateCategoryInput GetInvalidShortNameInput()
+    {
+        var invalidInputShortName = GetValidInput();
+        invalidInputShortName.Name = invalidInputShortName.Name.Substring(0, 2);
+        return invalidInputShortName;
+    }
 
     public Mock<ICategoryRepository> GetMockRepository() => new Mock<ICategoryRepository>();
     public Mock<IUnitOfWork> GetMockUnitOfWork() => new Mock<IUnitOfWork>();
