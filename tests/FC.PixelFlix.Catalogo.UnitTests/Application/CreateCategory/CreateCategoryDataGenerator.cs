@@ -6,24 +6,15 @@ public class CreateCategoryDataGenerator
         var fixture = new CreateCategoryTestFixture();
         var invalidInputList = new List<object[]>();
 
-        var invalidInputShortName = fixture.GetValidInput();
-        invalidInputShortName.Name = invalidInputShortName.Name.Substring(0, 2);
         invalidInputList.Add(new object[]
         {
-            invalidInputShortName,
+            fixture.GetInvalidShortNameInput(),
             "Name should be at least 3 characters long"
         });
 
-        var invalidInputLongName = fixture.GetValidInput();
-        var longName = fixture.Faker.Commerce.ProductName(); ;
-        while (longName.Length < 255)
-        {
-            longName = $"{longName}{fixture.Faker.Commerce.ProductName()}";
-        }
-        invalidInputLongName.Name = longName;
         invalidInputList.Add(new object[]
         {
-            invalidInputLongName,
+            fixture.GetInvalidLongDescriptionInput(),
             "Name should be less than 255 characters long"
         });
 
