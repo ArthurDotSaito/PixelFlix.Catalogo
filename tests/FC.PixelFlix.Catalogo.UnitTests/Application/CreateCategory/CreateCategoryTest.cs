@@ -1,7 +1,6 @@
 ﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
 using FC.Pixelflix.Catalogo.Domain.Entities;
 using FC.Pixelflix.Catalogo.Domain.Exceptions;
-using FC.PixelFlix.Catalogo.UnitTests.Application.CreateCategory ;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -135,5 +134,4 @@ public class CreateCategoryTest
         output.CreatedAt.Should().NotBe(null);
         output.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
     }
-
 }

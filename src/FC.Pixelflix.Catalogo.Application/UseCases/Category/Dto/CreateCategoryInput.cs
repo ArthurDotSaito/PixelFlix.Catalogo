@@ -1,5 +1,7 @@
-﻿namespace FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
-public class CreateCategoryInput
+﻿using MediatR;
+
+namespace FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
+public class CreateCategoryInput : IRequest<CreateCategoryOutput>
 {
     public string Name { get; set; }
     public string Description { get; set; }

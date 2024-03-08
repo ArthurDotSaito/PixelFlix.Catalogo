@@ -14,6 +14,10 @@ public class CreateCategory : ICreateCategory
         _unitOfWork = unitOfWork;
         _categoryRepository = categoryRepository;
     }
+    public async Task<CreateCategoryOutput> Handle(CreateCategoryInput request, CancellationToken cancellationToken)
+    {
+        return await Execute(request, cancellationToken);
+    }
 
     public async Task<CreateCategoryOutput> Execute(CreateCategoryInput anInput, CancellationToken aCancellationToken)
     {
