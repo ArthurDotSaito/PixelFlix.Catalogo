@@ -1,5 +1,6 @@
 ﻿using FC.Pixelflix.Catalogo.Application.Interfaces;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
+using FC.Pixelflix.Catalogo.Domain.Entities;
 using FC.Pixelflix.Catalogo.Domain.Repository;
 using FC.PixelFlix.Catalogo.UnitTests.Common;
 using Moq;
@@ -45,19 +46,24 @@ public class CreateCategoryTestFixture : BaseFixture
        return (new Random()).NextDouble() < 0.5;
     }
 
-    public CreateCategoryInput GetValidInput()
+    public CreateCategoryRequest GetValidInput()
     {
         return new(GetValidCategoryName(), GetValidCategoryDescription(), GetRandomIsActive());
     }
 
-    public CreateCategoryInput GetInvalidShortNameInput()
+    public Category GetAValidCategory()
+    {
+        return new Category(GetValidCategoryName(), GetValidCategoryDescription());
+    }
+
+    public CreateCategoryRequest GetInvalidShortNameInput()
     {
         var invalidInputShortName = GetValidInput();
         invalidInputShortName.Name = invalidInputShortName.Name.Substring(0, 2);
         return invalidInputShortName;
     }
 
-    public CreateCategoryInput GetInvalidLongNameInput()
+    public CreateCategoryRequest GetInvalidLongNameInput()
     {
         var invalidInputLongName = GetValidInput();
         var longName = Faker.Commerce.ProductName(); ;
@@ -69,14 +75,14 @@ public class CreateCategoryTestFixture : BaseFixture
         return invalidInputLongName;
     }
 
-    public CreateCategoryInput GetNullDescription()
+    public CreateCategoryRequest GetNullDescription()
     {
         var invalidInputDescriptionNull = GetValidInput();
         invalidInputDescriptionNull.Description = null!;
         return invalidInputDescriptionNull;
     }
 
-    public CreateCategoryInput GetInvalidLongDescription()
+    public CreateCategoryRequest GetInvalidLongDescription()
     {
         var invalidInputLongDescription = GetValidInput();
         var longDescription = Faker.Commerce.ProductDescription(); ;

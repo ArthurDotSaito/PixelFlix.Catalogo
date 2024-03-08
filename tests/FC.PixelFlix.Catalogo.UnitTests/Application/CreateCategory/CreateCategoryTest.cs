@@ -59,7 +59,7 @@ public class CreateCategoryTest
     )]
 
     public async void GivenAInvalidCommand_whenCallsCreateCategory_shouldThrowsAnException(
-        CreateCategoryInput input, string expectedExceptionMessage)
+        CreateCategoryRequest input, string expectedExceptionMessage)
     {
         var repositoryMock = _fixture.GetMockRepository();
         var unitOfWorkMock = _fixture.GetMockUnitOfWork();
@@ -80,7 +80,7 @@ public class CreateCategoryTest
 
         var useCase = new useCases.CreateCategory(unitOfWorkMock.Object, repositoryMock.Object);
 
-        var input = new CreateCategoryInput(_fixture.GetValidCategoryName());
+        var input = new CreateCategoryRequest(_fixture.GetValidCategoryName());
 
         var output = await useCase.Execute(input, CancellationToken.None);
 
@@ -112,7 +112,7 @@ public class CreateCategoryTest
 
         var useCase = new useCases.CreateCategory(unitOfWorkMock.Object, repositoryMock.Object);
 
-        var input = new CreateCategoryInput(_fixture.GetValidCategoryName(), _fixture.GetValidCategoryDescription());
+        var input = new CreateCategoryRequest(_fixture.GetValidCategoryName(), _fixture.GetValidCategoryDescription());
 
         var output = await useCase.Execute(input, CancellationToken.None);
 

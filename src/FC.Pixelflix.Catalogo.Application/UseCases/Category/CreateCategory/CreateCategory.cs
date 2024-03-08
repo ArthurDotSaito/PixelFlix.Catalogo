@@ -14,18 +14,18 @@ public class CreateCategory : ICreateCategory
         _unitOfWork = unitOfWork;
         _categoryRepository = categoryRepository;
     }
-    public async Task<CreateCategoryOutput> Handle(CreateCategoryInput request, CancellationToken cancellationToken)
+    public async Task<CreateCategoryResponse> Handle(CreateCategoryRequest request, CancellationToken cancellationToken)
     {
         return await Execute(request, cancellationToken);
     }
 
-    public async Task<CreateCategoryOutput> Execute(CreateCategoryInput anInput, CancellationToken aCancellationToken)
+    public async Task<CreateCategoryResponse> Execute(CreateCategoryRequest anInput, CancellationToken aCancellationToken)
     {
         var aCategory = new DomainEntity.Category(anInput.Name, anInput.Description, anInput.IsActive);
 
         await _categoryRepository.Insert(aCategory, aCancellationToken);
         await _unitOfWork.Commit(aCancellationToken);
 
-        return CreateCategoryOutput.FromCategory(aCategory);
+        return CreateCategoryResponse.FromCategory(aCategory);
     }
 }

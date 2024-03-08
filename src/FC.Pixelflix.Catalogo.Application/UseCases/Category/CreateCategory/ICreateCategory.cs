@@ -2,8 +2,8 @@
 using MediatR;
 
 namespace FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory;
-public interface ICreateCategory : IRequestHandler<CreateCategoryInput, CreateCategoryOutput>
+public interface ICreateCategory : IRequestHandler<CreateCategoryRequest, CreateCategoryResponse>
 {
-    public Task<CreateCategoryOutput> Execute(CreateCategoryInput anInput, CancellationToken aCancellationToken);
+    public Task<CreateCategoryResponse> Execute(CreateCategoryRequest anInput, CancellationToken aCancellationToken);
 
 }
