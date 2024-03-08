@@ -21,5 +21,5 @@ public class GetCategoryResponse
     }
 
     public static GetCategoryResponse FromCategory(DomainEntity.Category aCategory) =>
-         new CreateCategoryResponse(aCategory.Id, aCategory.Name, aCategory.Description, aCategory.IsActive, aCategory.CreatedAt);
+         new GetCategoryResponse(aCategory.Id, aCategory.Name, aCategory.Description, aCategory.IsActive, aCategory.CreatedAt);
 }

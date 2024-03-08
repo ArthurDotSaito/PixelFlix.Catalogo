@@ -3,4 +3,7 @@
 namespace FC.Pixelflix.Catalogo.Application.UseCases.Category.GetCategory.Dto;
 public class GetCategoryRequest : IRequest<GetCategoryResponse>
 {
+    public Guid Id { get; set; }
+    public GetCategoryRequest(Guid id) => Id = id;
+
 }
