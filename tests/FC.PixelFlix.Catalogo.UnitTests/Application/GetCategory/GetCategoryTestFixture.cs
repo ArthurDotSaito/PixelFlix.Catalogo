@@ -15,7 +15,6 @@ public class GetCategoryTestFixture : BaseFixture
 
     public Mock<IUnitOfWork> GetUnitOfWork() => new();
 
-
     public string GetValidCategoryName()
     {
         var aCategoryName = "";
@@ -42,8 +41,13 @@ public class GetCategoryTestFixture : BaseFixture
         return aCategoryDescription;
     }
 
+    public Boolean GetRandomIsActive()
+    {
+        return (new Random()).NextDouble() < 0.5;
+    }
+
     public Category GetAValidCategory()
     {
-        return new Category(GetValidCategoryName(), GetValidCategoryDescription());
+        return new Category(GetValidCategoryName(), GetValidCategoryDescription(), GetRandomIsActive());
     }
 }
