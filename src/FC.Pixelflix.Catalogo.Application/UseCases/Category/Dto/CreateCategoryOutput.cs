@@ -1,4 +1,6 @@
-﻿namespace FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
+﻿using DomainEntity =  FC.Pixelflix.Catalogo.Domain.Entities;
+
+namespace FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
 public  class CreateCategoryOutput
 {
     public Guid Id { get; set; }
@@ -15,4 +17,7 @@ public  class CreateCategoryOutput
         IsActive = isActive;
         CreatedAt = createdAt;
     }
+
+    public static CreateCategoryOutput FromCategory(DomainEntity.Category aCategory) =>
+         new CreateCategoryOutput(aCategory.Id, aCategory.Name, aCategory.Description, aCategory.IsActive, aCategory.CreatedAt);
 }
