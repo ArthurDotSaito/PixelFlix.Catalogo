@@ -19,7 +19,7 @@ public class GetCategory : IRequestHandler<GetCategoryRequest, GetCategoryRespon
 
     public async Task<GetCategoryResponse> Execute(GetCategoryRequest anInput, CancellationToken aCancellationToken)
     {
-        var aCategory = _categoryRepository.Get(anInput.Id, aCancellationToken);
+        var aCategory = await _categoryRepository.Get(anInput.Id, aCancellationToken);
 
         return GetCategoryResponse.FromCategory(aCategory);
     }
