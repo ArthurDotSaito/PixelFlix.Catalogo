@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
+namespace FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
 public class CreateCategoryRequest : IRequest<CreateCategoryResponse>
 {
     public string Name { get; set; }

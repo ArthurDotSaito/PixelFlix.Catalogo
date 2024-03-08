@@ -1,5 +1,5 @@
 ﻿using FC.Pixelflix.Catalogo.Application.Interfaces;
-using FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
 using FC.Pixelflix.Catalogo.Domain.Repository;
 using DomainEntity = FC.Pixelflix.Catalogo.Domain.Entities;
 

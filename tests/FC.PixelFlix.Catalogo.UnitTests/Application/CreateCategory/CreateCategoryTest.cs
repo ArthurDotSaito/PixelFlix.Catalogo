@@ -1,4 +1,4 @@
-﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
+﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
 using FC.Pixelflix.Catalogo.Domain.Entities;
 using FC.Pixelflix.Catalogo.Domain.Exceptions;
 using FluentAssertions;

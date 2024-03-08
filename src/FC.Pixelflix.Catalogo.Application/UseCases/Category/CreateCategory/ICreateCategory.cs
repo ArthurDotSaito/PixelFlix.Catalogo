@@ -1,4 +1,4 @@
-﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.Dto;
+﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
 using MediatR;
 
 namespace FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory;
