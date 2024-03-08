@@ -6,15 +6,13 @@ using UseCase = FC.Pixelflix.Catalogo.Application.UseCases.Category.GetCategory;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.GetCategory;
 
-[Collection(nameof(GetCategoryFixtureCollection))]
+[Collection(nameof(GetCategoryTestFixture))]
 public class GetCategoryTest
 {
     private readonly GetCategoryTestFixture _fixture;
 
-    public GetCategoryTest(GetCategoryTestFixture fixture)
-    {
-        _fixture = fixture;
-    }
+    public GetCategoryTest(GetCategoryTestFixture fixture) => _fixture = fixture;
+   
 
     [Fact(DisplayName = nameof(GivenAValidId_whenCallsGetCategory_shouldReturnACategory))]
     [Trait("Application", "GetCategory - useCases")]

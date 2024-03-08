@@ -11,10 +11,9 @@ namespace FC.PixelFlix.Catalogo.UnitTests.Application.GetCategory;
 public class GetCategoryFixtureCollection : ICollectionFixture<GetCategoryTestFixture> { }
 public class GetCategoryTestFixture : BaseFixture
 {
+    public GetCategoryTestFixture() : base() { }
+
     public Mock<ICategoryRepository> GetRepositoryMock() => new();
-
-    public Mock<IUnitOfWork> GetUnitOfWork() => new();
-
     public string GetValidCategoryName()
     {
         var aCategoryName = "";
@@ -48,6 +47,6 @@ public class GetCategoryTestFixture : BaseFixture
 
     public Category GetAValidCategory()
     {
-        return new Category(GetValidCategoryName(), GetValidCategoryDescription(), GetRandomIsActive());
+        return new(GetValidCategoryName(), GetValidCategoryDescription());
     }
 }
