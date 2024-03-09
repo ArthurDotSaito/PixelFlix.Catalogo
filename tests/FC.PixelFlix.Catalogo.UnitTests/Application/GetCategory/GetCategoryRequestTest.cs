@@ -1,4 +1,6 @@
-﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.GetCategory.Dto;
+﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.GetCategory;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.GetCategory.Dto;
+using FluentAssertions;
 using Xunit;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.GetCategory;
@@ -29,7 +31,7 @@ public class GetCategoryRequestTest
         //then
         aValidResult.Should().NotBeNull();  
         aValidResult.IsValid.Should().BeTrue();
-        aValidResult.Error.Should().HaveCount(0);
+        aValidResult.Errors.Should().HaveCount(0);
         
     }
 }
