@@ -1,4 +1,5 @@
-﻿ using FC.Pixelflix.Catalogo.Application.UseCases.Category.GetCategory.Dto;
+﻿using FC.Pixelflix.Catalogo.Application.Exceptions;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.GetCategory.Dto;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -58,9 +59,7 @@ public class GetCategoryTest
         var aTask = async () => await useCase.Handle(request, CancellationToken.None);
 
         //then
-        aRepository.Verify(a => a.Get(It.IsAny<Guid>(), It.IsAny<CancellationToken>()),
-            Times.Once);
-
         await aTask.Should().ThrowAsync<NotFoundException>();
+        aRepository.Verify(a => a.Get(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }
