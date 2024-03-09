@@ -3,11 +3,11 @@ using FC.Pixelflix.Catalogo.Domain.Repository;
 using MediatR;
 
 namespace FC.Pixelflix.Catalogo.Application.UseCases.Category.GetCategory;
-public class GetCategory : IRequestHandler<GetCategoryRequest, GetCategoryResponse>
+public class GetCategory : IGetCategory
 {
     private readonly ICategoryRepository _categoryRepository;
 
-    public GetCategory(ICategoryRepository categoryRepository)
+    public GetCategory(ICategoryRepository categoryRepository)  
     {
         _categoryRepository = categoryRepository;
     }
