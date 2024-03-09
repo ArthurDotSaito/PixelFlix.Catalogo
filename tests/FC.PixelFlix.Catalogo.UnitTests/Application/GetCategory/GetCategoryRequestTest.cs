@@ -30,6 +30,6 @@ public class GetCategoryRequestTest
         aValidResult.Should().NotBeNull();  
         aValidResult.IsValid.Should().BeTrue();
         aValidResult.Error.Should().HaveCount(0);
-
+        
     }
 }
