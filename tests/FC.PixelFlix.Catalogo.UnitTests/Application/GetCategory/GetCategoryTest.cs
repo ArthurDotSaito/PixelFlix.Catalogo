@@ -1,4 +1,4 @@
-﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.GetCategory.Dto;
+﻿ using FC.Pixelflix.Catalogo.Application.UseCases.Category.GetCategory.Dto;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -39,5 +39,28 @@ public class GetCategoryTest
         response.Description.Should().Be(aCategory.Description);
         response.IsActive.Should().Be(aCategory.IsActive);
         response.CreatedAt.Should().Be(aCategory.CreatedAt);
+    }
+
+    [Fact(DisplayName = nameof(GivenValidId_whenCallsGetCategoryWhichDoesntExist_shouldReturnNotFound))]
+    [Trait("Application", "GetCategory - useCases")]
+    public async Task GivenValidId_whenCallsGetCategoryWhichDoesntExist_shouldReturnNotFound()
+    {
+        //given
+        var aRepository = _fixture.GetRepositoryMock();
+        var aGuid = Guid.NewGuid();
+
+        aRepository.Setup(category => category.Get(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new NotFoundException($"Category '{aGuid}' was not found"));
+        var request = new GetCategoryRequest(aGuid);
+        var useCase = new UseCase.GetCategory(aRepository.Object);
+
+        //when
+        var aTask = async () => await useCase.Handle(request, CancellationToken.None);
+
+        //then
+        aRepository.Verify(a => a.Get(It.IsAny<Guid>(), It.IsAny<CancellationToken>()),
+            Times.Once);
+
+        await aTask.Should().ThrowAsync<NotFoundException>();
     }
 }
