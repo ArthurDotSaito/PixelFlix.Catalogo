@@ -1,4 +1,4 @@
-﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
+﻿using DomainEntity = FC.Pixelflix.Catalogo.Domain.Entities;
 
 namespace FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
 public class CategoryModelResponse

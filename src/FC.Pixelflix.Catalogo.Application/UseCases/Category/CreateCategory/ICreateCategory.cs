@@ -1,9 +1,10 @@
-﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
+﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
 using MediatR;
 
 namespace FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory;
-public interface ICreateCategory : IRequestHandler<CreateCategoryRequest, CreateCategoryResponse>
+public interface ICreateCategory : IRequestHandler<CreateCategoryRequest, CategoryModelResponse>
 {
-    public Task<CreateCategoryResponse> Execute(CreateCategoryRequest anInput, CancellationToken aCancellationToken);
+    public Task<CategoryModelResponse> Execute(CreateCategoryRequest anInput, CancellationToken aCancellationToken);
 
 }

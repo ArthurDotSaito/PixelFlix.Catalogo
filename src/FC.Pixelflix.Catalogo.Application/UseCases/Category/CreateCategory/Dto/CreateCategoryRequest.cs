@@ -1,7 +1,8 @@
-﻿using MediatR;
+﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
+using MediatR;
 
 namespace FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
-public class CreateCategoryRequest : IRequest<CreateCategoryResponse>
+public class CreateCategoryRequest : IRequest<CategoryModelResponse>
 {
     public string Name { get; set; }
     public string Description { get; set; }

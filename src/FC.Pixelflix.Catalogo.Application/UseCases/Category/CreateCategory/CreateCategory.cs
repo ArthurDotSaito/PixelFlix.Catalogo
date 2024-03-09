@@ -1,4 +1,5 @@
 ﻿using FC.Pixelflix.Catalogo.Application.Interfaces;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
 using FC.Pixelflix.Catalogo.Domain.Repository;
 using DomainEntity = FC.Pixelflix.Catalogo.Domain.Entities;
@@ -14,18 +15,18 @@ public class CreateCategory : ICreateCategory
         _unitOfWork = unitOfWork;
         _categoryRepository = categoryRepository;
     }
-    public async Task<CreateCategoryResponse> Handle(CreateCategoryRequest request, CancellationToken cancellationToken)
+    public async Task<CategoryModelResponse> Handle(CreateCategoryRequest request, CancellationToken cancellationToken)
     {
         return await Execute(request, cancellationToken);
     }
 
-    public async Task<CreateCategoryResponse> Execute(CreateCategoryRequest anInput, CancellationToken aCancellationToken)
+    public async Task<CategoryModelResponse> Execute(CreateCategoryRequest anInput, CancellationToken aCancellationToken)
     {
         var aCategory = new DomainEntity.Category(anInput.Name, anInput.Description, anInput.IsActive);
 
         await _categoryRepository.Insert(aCategory, aCancellationToken);
         await _unitOfWork.Commit(aCancellationToken);
 
-        return CreateCategoryResponse.FromCategory(aCategory);
+        return CategoryModelResponse.FromCategory(aCategory);
     }
 }
