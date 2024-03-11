@@ -32,6 +32,25 @@ public class GetCategoryRequestTest
         aValidResult.Should().NotBeNull();  
         aValidResult.IsValid.Should().BeTrue();
         aValidResult.Errors.Should().HaveCount(0);
-        
+    }
+
+    [Fact(DisplayName = "")]
+    [Trait("Application", "GetCategoryRequestTest - UseCases")]
+    public void GivenEmptyId_whenCallsGetCategory_shouldThrowsAnException()
+    {
+        //given
+        var aInvalidId = Guid.Empty;
+        var aInvalidRequest = new GetCategoryRequest(aInvalidId);
+
+        var validation = new GetCategoryRequestValidation();
+
+        //when
+        var aValidResult = validation.Validate(aInvalidRequest);
+
+        //then
+        aValidResult.Should().NotBeNull();
+        aValidResult.IsValid.Should().BeFalse();
+        aValidResult.Errors.Should().HaveCount(1);
+        aValidResult.Errors[0].ErrorMessage.Should().Be("'Id' must not be empty.");
     }
 }
