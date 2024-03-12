@@ -19,7 +19,7 @@ public class DeleteCategory : IDeleteCategory
     public async Task<Unit> Handle(DeleteCategoryRequest request, CancellationToken cancellationToken)
     {
         var category = await _repository.Get(request.Id, cancellationToken);
-        await _repository.Delete(category);
+        await _repository.Delete(category, cancellationToken);
         await _unitOfWork.Commit(cancellationToken);
         return Unit.Value;
     }
