@@ -5,7 +5,7 @@ namespace FC.PixelFlix.Catalogo.UnitTests.Application.DeleteCategory;
 
 [Collection(nameof(DeleteCategoryTestFixture))]
 internal class DeleteCategoryTest
-{s
+{
     private readonly DeleteCategoryTestFixture _fixture;
 
     public DeleteCategoryTest(DeleteCategoryTestFixture fixture)

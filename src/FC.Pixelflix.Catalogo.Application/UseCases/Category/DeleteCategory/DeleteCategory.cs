@@ -1,6 +1,4 @@
 ﻿using FC.Pixelflix.Catalogo.Application.Interfaces;
-using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
-using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
 using FC.Pixelflix.Catalogo.Domain.Repository;
 using MediatR;
 
