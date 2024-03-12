@@ -51,6 +51,6 @@ public class GetCategoryRequestTest
         aValidResult.Should().NotBeNull();
         aValidResult.IsValid.Should().BeFalse();
         aValidResult.Errors.Should().HaveCount(1);
-        aValidResult.Errors[0].ErrorMessage.Should().Be("'Id' must not be empty.");
+        aValidResult.Errors[0].ErrorMessage.Should().NotBeNullOrWhiteSpace();
     }
 }

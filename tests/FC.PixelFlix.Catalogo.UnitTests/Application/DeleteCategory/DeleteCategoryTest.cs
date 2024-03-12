@@ -5,7 +5,7 @@ using FC.Pixelflix.Catalogo.Application.UseCases.Category.DeleteCategory;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.DeleteCategory;
 
-[Collection(nameof(DeleteCategoryTestFixture))]
+[Collection(nameof(DeleteCategoryFixtureCollection))]
 public class DeleteCategoryTest
 {
     private readonly DeleteCategoryTestFixture _fixture;
