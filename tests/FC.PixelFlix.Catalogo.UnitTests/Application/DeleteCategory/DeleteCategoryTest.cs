@@ -1,10 +1,12 @@
-﻿using Moq;
+﻿using UseCases = FC.Pixelflix.Catalogo.Application.UseCases.Category.DeleteCategory;
+using Moq;
 using Xunit;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.DeleteCategory;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.DeleteCategory;
 
 [Collection(nameof(DeleteCategoryTestFixture))]
-internal class DeleteCategoryTest
+public class DeleteCategoryTest
 {
     private readonly DeleteCategoryTestFixture _fixture;
 
@@ -28,7 +30,7 @@ internal class DeleteCategoryTest
 
         var request = new DeleteCategoryRequest(aValidCategory.Id);
 
-        var useCase = new DeleteCategory(aRepository.Object, aUnitOfWork.Object);
+        var useCase = new UseCases.DeleteCategory(aRepository.Object, aUnitOfWork.Object);
         
         //when
         await useCase.Handle(request, CancellationToken.None);
