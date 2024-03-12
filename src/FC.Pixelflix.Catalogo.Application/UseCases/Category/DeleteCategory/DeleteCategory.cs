@@ -16,13 +16,11 @@ public class DeleteCategory : IDeleteCategory
         _unitOfWork = unitOfWork;
     }
 
-    Task IRequestHandler<DeleteCategoryRequest>.Handle(DeleteCategoryRequest request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(DeleteCategoryRequest request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
-    }
-
-    public async Task<CategoryModelResponse> Execute(CreateCategoryRequest anInput, CancellationToken aCancellationToken)
-    {
-        throw new NotImplementedException();
+        var category = await _repository.Get(request.Id, cancellationToken);
+        await _repository.Delete(category);
+        await _unitOfWork.Commit(cancellationToken);
+        return Unit.Value;
     }
 }
