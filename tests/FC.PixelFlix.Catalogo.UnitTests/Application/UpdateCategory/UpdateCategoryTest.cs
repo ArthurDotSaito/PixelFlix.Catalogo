@@ -1,4 +1,7 @@
 ﻿
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
+using FluentAssertions;
+using Moq;
 using Xunit;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.UpdateCategory;
@@ -15,8 +18,40 @@ public class UpdateCategoryTest
 
     [Fact(DisplayName ="")]
     [Trait("Application", "UpdateCategory - UseCases")]
-    public void GivenAValidId_whenCallsUpdateCategory_shouldReturnACategory()
+    public async Task GivenAValidId_whenCallsUpdateCategory_shouldReturnACategory()
     {
+        //given
+        var aRepository = _fixture.GetRepositoryMock();
+        var aUnitOfWork = _fixture.GetMockUnitOfWork();
+        var aCategory = _fixture.GetAValidCategory();
+        var expectedName = _fixture.GetValidCategoryName();
+        var expectedDescription = _fixture.GetValidCategoryDescription();
+        var expectedIsActive = !_fixture.GetRandomIsActive();
 
+        aRepository.Setup(category => category.Get(aCategory.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aCategory);
+
+        var request = UpdateCategoryRequest(aCategory.Id ,expectedName, expectedDescription, expectedIsActive);
+
+        var useCase = new UpdateCategory(aRepository.Object, aUnitOfWork.Object);
+
+        //when
+
+        CategoryModelResponse response = await useCase.Handle(request);
+
+        //then
+
+        response.Should().NotBeNull();
+        response.Name.Should().Be(expectedName);
+        response.Description.Should().Be(expectedDescription);
+        response.IsActive.Should().Be(expectedIsActive);
+
+        aRepository.Verify(category => category.Get(aCategory.Id, It.IsAny<CancellationToken>()), 
+            Times.Once);
+
+        aRepository.Verify(category => category.Update(aCategory, It.IsAny<CancellationToken>()),
+            Times.Once);
+
+        aUnitOfWork.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
 }
