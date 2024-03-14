@@ -1,4 +1,5 @@
 ﻿using FC.Pixelflix.Catalogo.Application.Interfaces;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCategory;
 using FC.Pixelflix.Catalogo.Domain.Entities;
 using FC.Pixelflix.Catalogo.Domain.Repository;
 using FC.PixelFlix.Catalogo.UnitTests.Common;
@@ -51,5 +52,14 @@ public class UpdateCategoryTestFixture : BaseFixture
     public Category GetAValidCategory()
     {
         return new Category(GetValidCategoryName(), GetValidCategoryDescription(), GetRandomIsActive());
+    }
+
+    public UpdateCategoryRequest GetValidRequest(Guid? anId = null)
+    {
+        var aName = GetValidCategoryName();
+        var aDescription = GetValidCategoryDescription();
+        var anIsActive = GetRandomIsActive();
+
+        return new UpdateCategoryRequest(anId ?? Guid.NewGuid(), aName, aDescription, anIsActive);
     }
 }

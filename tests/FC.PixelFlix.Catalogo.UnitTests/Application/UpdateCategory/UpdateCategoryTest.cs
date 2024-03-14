@@ -6,6 +6,7 @@ using Moq;
 using Xunit;
 using FC.Pixelflix.Catalogo.Domain.Entities;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCategory;
+using FC.Pixelflix.Catalogo.Application.Exceptions;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.UpdateCategory;
 
@@ -56,5 +57,31 @@ public class UpdateCategoryTest
             Times.Once);
 
         aUnitOfWork.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact(DisplayName = "GivenAInvalidId_whenCallsUpdateCategory_shouldReturnNotFound")]
+    [Trait("Application", "UpdateCategory - Use Cases")]
+    public async Task GivenAInvalidId_whenCallsUpdateCategory_shouldReturnNotFound()
+    {
+        //given
+        var aRepository = _fixture.GetRepositoryMock();
+        var aUnitOfWork = _fixture.GetMockUnitOfWork();
+        var anId = Guid.NewGuid();
+        var cancellationToken = It.IsAny<CancellationToken>();
+
+        aRepository.Setup(category => category.Get(anId, cancellationToken))
+            .ThrowsAsync(new NotFoundException($"category '{anId}' was not found"));
+
+        var useCase = new UseCase.UpdateCategory(aRepository.Object, aUnitOfWork.Object);
+
+        //when
+        var aTask = async () => await useCase.Handle(request, CancellationToken.None);
+
+        //then
+
+        await aTask.Should().ThrowAsync<NotFoundException>();
+        aRepository.Verify(category => category.Get(aCategory.Id, It.IsAny<CancellationToken>()),
+            Times.Once);
+
     }
 }
