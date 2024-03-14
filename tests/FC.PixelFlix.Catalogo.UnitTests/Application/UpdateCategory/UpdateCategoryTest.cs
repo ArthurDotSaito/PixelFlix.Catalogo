@@ -20,7 +20,7 @@ public class UpdateCategoryTest
         _fixture = fixture;
     }
 
-    [Theory(DisplayName = "GivenAValidId_whenCallsUpdateCategory_shouldReturnACategory")]
+    [Theory(DisplayName = nameof(GivenAValidId_whenCallsUpdateCategory_shouldReturnACategory))]
     [Trait("Application", "UpdateCategory - UseCases")]
     [MemberData(
         nameof(UpdateCategoryTestDataGenerator.GetCategoriesToUpdate), 
@@ -59,28 +59,28 @@ public class UpdateCategoryTest
         aUnitOfWork.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
 
-    [Fact(DisplayName = "GivenAInvalidId_whenCallsUpdateCategory_shouldReturnNotFound")]
+    [Fact(DisplayName = nameof(GivenAInvalidId_whenCallsUpdateCategory_shouldReturnNotFound))]
     [Trait("Application", "UpdateCategory - Use Cases")]
     public async Task GivenAInvalidId_whenCallsUpdateCategory_shouldReturnNotFound()
     {
         //given
         var aRepository = _fixture.GetRepositoryMock();
         var aUnitOfWork = _fixture.GetMockUnitOfWork();
-        var anId = Guid.NewGuid();
+        var aRequest = _fixture.GetValidRequest();
         var cancellationToken = It.IsAny<CancellationToken>();
 
-        aRepository.Setup(category => category.Get(anId, cancellationToken))
-            .ThrowsAsync(new NotFoundException($"category '{anId}' was not found"));
+        aRepository.Setup(category => category.Get(aRequest.Id, cancellationToken))
+            .ThrowsAsync(new NotFoundException($"category '{aRequest.Id}' was not found"));
 
         var useCase = new UseCase.UpdateCategory(aRepository.Object, aUnitOfWork.Object);
 
         //when
-        var aTask = async () => await useCase.Handle(request, CancellationToken.None);
+        var aTask = async () => await useCase.Handle(aRequest, CancellationToken.None);
 
         //then
 
         await aTask.Should().ThrowAsync<NotFoundException>();
-        aRepository.Verify(category => category.Get(aCategory.Id, It.IsAny<CancellationToken>()),
+        aRepository.Verify(category => category.Get(aRequest.Id, It.IsAny<CancellationToken>()),
             Times.Once);
 
     }

@@ -8,12 +8,8 @@ public class UpdateCategoryTestDataGenerator
         var fixture = new UpdateCategoryTestFixture();
         for(int i = 0; i < times; i++)
         {
-            var aName = fixture.GetValidCategoryName();
-            var aDescription = fixture.GetValidCategoryDescription();
-            var anIsActive = fixture.GetRandomIsActive();
-
             var aCategory = fixture.GetAValidCategory();
-            var anRequest = new UpdateCategoryRequest(aCategory.Id, aName, aDescription, anIsActive);
+            var anRequest = fixture.GetValidRequest(aCategory.Id);
 
             yield return new object[] { aCategory, anRequest };
         }
