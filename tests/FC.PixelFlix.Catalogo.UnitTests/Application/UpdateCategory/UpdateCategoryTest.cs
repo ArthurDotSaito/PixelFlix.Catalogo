@@ -123,4 +123,44 @@ public class UpdateCategoryTest
 
         aUnitOfWork.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
+
+    [Theory(DisplayName = nameof(GivenAValidId_whenCallsUpdateCategoryWithOnlyName_shouldReturnACategory))]
+    [Trait("Application", "UpdateCategory - UseCases")]
+    [MemberData(
+        nameof(UpdateCategoryTestDataGenerator.GetCategoriesToUpdate),
+        parameters: 10,
+        MemberType = typeof(UpdateCategoryTestDataGenerator)
+        )]
+    public async Task GivenAValidId_whenCallsUpdateCategoryWithOnlyName_shouldReturnACategory(Category aCategory, UpdateCategoryRequest request)
+    {
+        //given
+        var aRepository = _fixture.GetRepositoryMock();
+        var aUnitOfWork = _fixture.GetMockUnitOfWork();
+        var aRequestWithName = new UpdateCategoryRequest(request.Id, request.Name);
+        var cancellationToken = It.IsAny<CancellationToken>();
+
+        aRepository.Setup(category => category.Get(aCategory.Id, cancellationToken))
+            .ReturnsAsync(aCategory);
+
+        var useCase = new UseCase.UpdateCategory(aRepository.Object, aUnitOfWork.Object);
+
+        //when
+
+        CategoryModelResponse response = await useCase.Handle(request, CancellationToken.None);
+
+        //then
+
+        response.Should().NotBeNull();
+        response.Name.Should().Be(aRequestWithName.Name);
+        response.Description.Should().Be(request.Description);
+        response.IsActive.Should().Be((bool)request.IsActive!);
+
+        aRepository.Verify(category => category.Get(aCategory.Id, It.IsAny<CancellationToken>()),
+            Times.Once);
+
+        aRepository.Verify(category => category.Update(aCategory, It.IsAny<CancellationToken>()),
+            Times.Once);
+
+        aUnitOfWork.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
+    }
 }
