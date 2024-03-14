@@ -1,5 +1,6 @@
 ﻿
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
+using UseCase = FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCategory;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -27,17 +28,19 @@ public class UpdateCategoryTest
         var expectedName = _fixture.GetValidCategoryName();
         var expectedDescription = _fixture.GetValidCategoryDescription();
         var expectedIsActive = !_fixture.GetRandomIsActive();
+        var cancellationToken = It.IsAny<CancellationToken>();
 
-        aRepository.Setup(category => category.Get(aCategory.Id, It.IsAny<CancellationToken>()))
+        aRepository.Setup(category => category.Get(aCategory.Id, cancellationToken))
             .ReturnsAsync(aCategory);
 
-        var request = UpdateCategoryRequest(aCategory.Id ,expectedName, expectedDescription, expectedIsActive);
+        var request = new UseCase.UpdateCategoryRequest(aCategory.Id ,expectedName, expectedDescription, expectedIsActive);
 
-        var useCase = new UpdateCategory(aRepository.Object, aUnitOfWork.Object);
+        var useCase = new UseCase.UpdateCategory(aRepository.Object, aUnitOfWork.Object);
+
 
         //when
 
-        CategoryModelResponse response = await useCase.Handle(request);
+        CategoryModelResponse response = await useCase.Handle(request, cancellationToken);
 
         //then
 

@@ -15,8 +15,19 @@ public class UpdateCategory : IUpdateCategory
         unitOfWork = _unitOfWork;
     }
 
-    public Task<CategoryModelResponse> Handle(UpdateCategoryRequest request, CancellationToken cancellationToken)
+    public async Task<CategoryModelResponse> Handle(UpdateCategoryRequest request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var category = await _categoryRepository.Get(request.Id, cancellationToken);
+        category.Update(request.Name, request.Description);
+        if(request.IsActive != category.IsActive)
+        {
+            if(request.IsActive) category.Activate();
+            else category.Deactivate();
+        }
+
+        await _categoryRepository.Update(category, cancellationToken);
+        await _unitOfWork.Commit(cancellationToken);
+
+        return CategoryModelResponse.FromCategory(category);
     }
 }
