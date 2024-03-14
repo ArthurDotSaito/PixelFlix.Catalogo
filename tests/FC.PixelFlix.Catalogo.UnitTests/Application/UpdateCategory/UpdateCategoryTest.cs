@@ -17,7 +17,7 @@ public class UpdateCategoryTest
         _fixture = fixture;
     }
 
-    [Fact(DisplayName ="")]
+    [Fact(DisplayName = "GivenAValidId_whenCallsUpdateCategory_shouldReturnACategory")]
     [Trait("Application", "UpdateCategory - UseCases")]
     public async Task GivenAValidId_whenCallsUpdateCategory_shouldReturnACategory()
     {
@@ -37,10 +37,9 @@ public class UpdateCategoryTest
 
         var useCase = new UseCase.UpdateCategory(aRepository.Object, aUnitOfWork.Object);
 
-
         //when
 
-        CategoryModelResponse response = await useCase.Handle(request, cancellationToken);
+        CategoryModelResponse response = await useCase.Handle(request, CancellationToken.None);
 
         //then
 

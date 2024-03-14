@@ -11,8 +11,8 @@ public class UpdateCategory : IUpdateCategory
 
     public UpdateCategory(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork)
     {
-        categoryRepository = _categoryRepository;
-        unitOfWork = _unitOfWork;
+        _categoryRepository = categoryRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<CategoryModelResponse> Handle(UpdateCategoryRequest request, CancellationToken cancellationToken)

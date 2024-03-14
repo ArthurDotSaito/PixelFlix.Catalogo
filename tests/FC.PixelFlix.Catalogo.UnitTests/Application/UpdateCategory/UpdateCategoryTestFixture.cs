@@ -7,7 +7,7 @@ using Xunit;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.UpdateCategory;
 
-[CollectionDefinition(nameof(UpdateCategoryTestFixture))]
+[CollectionDefinition(nameof(UpdateCategoryTestCollection))]
 public class UpdateCategoryTestCollection : ICollectionFixture<UpdateCategoryTestFixture>{ }
 
 public class UpdateCategoryTestFixture : BaseFixture
