@@ -48,7 +48,7 @@ public class UpdateCategoryTest
         response.Should().NotBeNull();
         response.Name.Should().Be(request.Name);
         response.Description.Should().Be(request.Description);
-        response.IsActive.Should().Be(request.IsActive);
+        response.IsActive.Should().Be((bool)request.IsActive!);
 
         aRepository.Verify(category => category.Get(aCategory.Id, It.IsAny<CancellationToken>()), 
             Times.Once);
@@ -82,6 +82,45 @@ public class UpdateCategoryTest
         await aTask.Should().ThrowAsync<NotFoundException>();
         aRepository.Verify(category => category.Get(aRequest.Id, It.IsAny<CancellationToken>()),
             Times.Once);
+    }
 
+    [Theory(DisplayName = nameof(GivenAValidId_whenCallsUpdateCategoryWithoutIsActive_shouldReturnACategory))]
+    [Trait("Application", "UpdateCategory - UseCases")]
+    [MemberData(
+    nameof(UpdateCategoryTestDataGenerator.GetCategoriesToUpdate),
+    parameters: 10,
+    MemberType = typeof(UpdateCategoryTestDataGenerator)
+    )]
+    public async Task GivenAValidId_whenCallsUpdateCategoryWithoutIsActive_shouldReturnACategory(Category aCategory, UpdateCategoryRequest request)
+    {
+        //given
+        var aRepository = _fixture.GetRepositoryMock();
+        var aUnitOfWork = _fixture.GetMockUnitOfWork();
+        var aRequestWithoutIsActive = new UpdateCategoryRequest(request.Id, request.Name, request.Description);
+        var cancellationToken = It.IsAny<CancellationToken>();
+
+        aRepository.Setup(category => category.Get(aCategory.Id, cancellationToken))
+            .ReturnsAsync(aCategory);
+
+        var useCase = new UseCase.UpdateCategory(aRepository.Object, aUnitOfWork.Object);
+
+        //when
+
+        CategoryModelResponse response = await useCase.Handle(request, CancellationToken.None);
+
+        //then
+
+        response.Should().NotBeNull();
+        response.Name.Should().Be(aRequestWithoutIsActive.Name);
+        response.Description.Should().Be(aRequestWithoutIsActive.Description);
+        response.IsActive.Should().Be((bool)request.IsActive!);
+
+        aRepository.Verify(category => category.Get(aCategory.Id, It.IsAny<CancellationToken>()),
+            Times.Once);
+
+        aRepository.Verify(category => category.Update(aCategory, It.IsAny<CancellationToken>()),
+            Times.Once);
+
+        aUnitOfWork.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
 }

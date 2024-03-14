@@ -8,9 +8,9 @@ public class UpdateCategoryRequest:IRequest<CategoryModelResponse>
     public Guid Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
-    public bool IsActive { get; set; }
+    public bool? IsActive { get; set; }
 
-    public UpdateCategoryRequest(Guid id, string name, string description, bool isActive)
+    public UpdateCategoryRequest(Guid id, string name, string description, bool? isActive = null)
     {
         Id = id;
         Name = name;
