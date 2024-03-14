@@ -4,6 +4,8 @@ using UseCase = FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCatego
 using FluentAssertions;
 using Moq;
 using Xunit;
+using FC.Pixelflix.Catalogo.Domain.Entities;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCategory;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.UpdateCategory;
 
@@ -17,23 +19,22 @@ public class UpdateCategoryTest
         _fixture = fixture;
     }
 
-    [Fact(DisplayName = "GivenAValidId_whenCallsUpdateCategory_shouldReturnACategory")]
+    [Theory(DisplayName = "GivenAValidId_whenCallsUpdateCategory_shouldReturnACategory")]
     [Trait("Application", "UpdateCategory - UseCases")]
-    public async Task GivenAValidId_whenCallsUpdateCategory_shouldReturnACategory()
+    [MemberData(
+        nameof(UpdateCategoryTestDataGenerator.GetCategoriesToUpdate), 
+        parameters:10, 
+        MemberType = typeof(UpdateCategoryTestDataGenerator)
+        )]
+    public async Task GivenAValidId_whenCallsUpdateCategory_shouldReturnACategory(Category aCategory, UpdateCategoryRequest request)
     {
         //given
         var aRepository = _fixture.GetRepositoryMock();
         var aUnitOfWork = _fixture.GetMockUnitOfWork();
-        var aCategory = _fixture.GetAValidCategory();
-        var expectedName = _fixture.GetValidCategoryName();
-        var expectedDescription = _fixture.GetValidCategoryDescription();
-        var expectedIsActive = !_fixture.GetRandomIsActive();
         var cancellationToken = It.IsAny<CancellationToken>();
 
         aRepository.Setup(category => category.Get(aCategory.Id, cancellationToken))
             .ReturnsAsync(aCategory);
-
-        var request = new UseCase.UpdateCategoryRequest(aCategory.Id ,expectedName, expectedDescription, expectedIsActive);
 
         var useCase = new UseCase.UpdateCategory(aRepository.Object, aUnitOfWork.Object);
 
@@ -44,9 +45,9 @@ public class UpdateCategoryTest
         //then
 
         response.Should().NotBeNull();
-        response.Name.Should().Be(expectedName);
-        response.Description.Should().Be(expectedDescription);
-        response.IsActive.Should().Be(expectedIsActive);
+        response.Name.Should().Be(request.Name);
+        response.Description.Should().Be(request.Description);
+        response.IsActive.Should().Be(request.IsActive);
 
         aRepository.Verify(category => category.Get(aCategory.Id, It.IsAny<CancellationToken>()), 
             Times.Once);
