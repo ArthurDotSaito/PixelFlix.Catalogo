@@ -7,6 +7,7 @@ using Xunit;
 using FC.Pixelflix.Catalogo.Domain.Entities;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCategory;
 using FC.Pixelflix.Catalogo.Application.Exceptions;
+using FC.Pixelflix.Catalogo.Domain.Exceptions;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.UpdateCategory;
 
@@ -162,5 +163,34 @@ public class UpdateCategoryTest
             Times.Once);
 
         aUnitOfWork.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Theory(DisplayName = "")]
+    [Trait("Application", "UpdateCategory - UseCases")]
+    [MemberData(
+        nameof(UpdateCategoryTestDataGenerator.GetInvalidInput),
+        parameters: 12,
+        MemberType = typeof(UpdateCategoryTestDataGenerator)
+        )]
+    public async void GivenAInvalidAttribute_whenCallsUpdateCategory_shouldThrowsADomainException(UpdateCategoryRequest request, 
+        string expectedExcepitonMesssage)
+    {
+        //given
+        var aCategory = _fixture.GetAValidCategory();
+        var aRepository = _fixture.GetRepositoryMock();
+        var aUnitOfWork = _fixture.GetMockUnitOfWork();
+        var cancellationToken = It.IsAny<CancellationToken>();
+
+        aRepository.Setup(category => category.Get(aCategory.Id, cancellationToken))
+            .ReturnsAsync(aCategory);
+
+        var useCase = new UseCase.UpdateCategory(aRepository.Object, aUnitOfWork.Object);
+        
+        //when
+        var aTask = async () => await useCase.Handle(request, CancellationToken.None);
+
+        //then
+        await aTask.Should().ThrowAsync<EntityValidationException>()
+            .WithMessage(expectedExcepitonMesssage);
     }
 }
