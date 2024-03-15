@@ -165,7 +165,7 @@ public class UpdateCategoryTest
         aUnitOfWork.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
 
-    [Theory(DisplayName = "")]
+    [Theory(DisplayName = nameof(GivenAInvalidAttribute_whenCallsUpdateCategory_shouldThrowsADomainException))]
     [Trait("Application", "UpdateCategory - UseCases")]
     [MemberData(
         nameof(UpdateCategoryTestDataGenerator.GetInvalidInput),
@@ -177,6 +177,7 @@ public class UpdateCategoryTest
     {
         //given
         var aCategory = _fixture.GetAValidCategory();
+        request.Id = aCategory.Id;
         var aRepository = _fixture.GetRepositoryMock();
         var aUnitOfWork = _fixture.GetMockUnitOfWork();
         var cancellationToken = It.IsAny<CancellationToken>();
@@ -192,5 +193,8 @@ public class UpdateCategoryTest
         //then
         await aTask.Should().ThrowAsync<EntityValidationException>()
             .WithMessage(expectedExcepitonMesssage);
+
+        aRepository.Verify(category => category.Get(aCategory.Id, cancellationToken),
+            Times.Once);
     }
 }
