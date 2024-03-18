@@ -14,10 +14,10 @@ public class UpdateCategoryRequestValidator
         _fixture = fixture;
     }
 
-    [Fact(DisplayName = nameof(givenAEmptyGuid_whenCallsUpdateCategory_thenReturnAException))]
+    [Fact(DisplayName = nameof(givenAEmptyGuid_whenCallsUpdateCategory_thenReturnAError))]
     [Trait("Application", "UpdateCategoryTestValidator - UseCases")]
 
-    public void givenAEmptyGuid_whenCallsUpdateCategory_thenReturnAException()
+    public void givenAEmptyGuid_whenCallsUpdateCategory_thenReturnAError()
     {
         //given
         var request = _fixture.GetValidRequest(Guid.Empty);
@@ -31,5 +31,24 @@ public class UpdateCategoryRequestValidator
         validationResponse.Should().NotBeNull();
         validationResponse.IsValid.Should().BeFalse();
         validationResponse.Errors.Should().HaveCount(1);
+    }
+
+    [Fact(DisplayName = nameof(givenValidRequest_whenCallsUpdateCategory_thenShouldValidate))]
+    [Trait("Application", "UpdateCategoryTestValidator - UseCases")]
+
+    public void givenValidRequest_whenCallsUpdateCategory_thenShouldValidate()
+    {
+        //given
+        var request = _fixture.GetValidRequest();
+
+        var validator = new UpdateCategoryRequestValidation();
+
+        //when
+        var validationResponse = validator.Validate(request);
+
+        //then
+        validationResponse.Should().NotBeNull();
+        validationResponse.IsValid.Should().BeTrue();
+        validationResponse.Errors.Should().HaveCount(0);
     }
 }
