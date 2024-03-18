@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using FluentAssertions;
 using Xunit;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCategory;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.UpdateCategory;
 [Collection(nameof(UpdateCategoryTestCollection))]
@@ -21,7 +23,7 @@ public class UpdateCategoryRequestValidator
         var expectedErrorMessage = "'Id' should not be empty";
         var request = _fixture.GetValidRequest(Guid.Empty);
 
-        var validator = new UpdateCategoryRequestValidator();
+        var validator = new UpdateCategoryRequestValidation();
 
         //when
         var validationResponse = validator.Validate(request);
