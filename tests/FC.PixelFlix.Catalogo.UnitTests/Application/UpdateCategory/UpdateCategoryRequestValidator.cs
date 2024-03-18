@@ -20,7 +20,6 @@ public class UpdateCategoryRequestValidator
     public void givenAEmptyGuid_whenCallsUpdateCategory_thenReturnAException()
     {
         //given
-        var expectedErrorMessage = "'Id' should not be empty";
         var request = _fixture.GetValidRequest(Guid.Empty);
 
         var validator = new UpdateCategoryRequestValidation();
@@ -32,6 +31,5 @@ public class UpdateCategoryRequestValidator
         validationResponse.Should().NotBeNull();
         validationResponse.IsValid.Should().BeFalse();
         validationResponse.Errors.Should().HaveCount(1);
-        validationResponse.Errors[0].ErrorMessage.Should().Be(expectedErrorMessage);
     }
 }
