@@ -1,7 +1,7 @@
 ﻿using FC.Pixelflix.Catalogo.Domain.Entities;
 
 namespace FC.Pixelflix.Catalogo.Domain.SeedWork;
-public interface IGenericRepository<TAggregate> : IRepository
+public interface IGenericRepository<TAggregate> : IRepository where TAggregate : AggretateRoot
 {
     public Task Insert(TAggregate anAggregate, CancellationToken aCancellationToken);
     public Task <TAggregate> Get(Guid id, CancellationToken aCancellationToken);
