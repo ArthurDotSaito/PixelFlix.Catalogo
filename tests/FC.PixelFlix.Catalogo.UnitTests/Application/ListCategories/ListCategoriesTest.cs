@@ -76,6 +76,6 @@ public class ListCategoriesTest
                     searchRequest.Order == request.Dir
                 ),
             It.IsAny<CancellationToken>()
-            )
+            ));
     }
 }
