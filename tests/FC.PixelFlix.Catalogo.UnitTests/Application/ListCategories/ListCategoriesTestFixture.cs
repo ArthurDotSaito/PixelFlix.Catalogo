@@ -1,7 +1,9 @@
 ﻿
 using FC.Pixelflix.Catalogo.Application.Interfaces;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.ListCategories;
 using FC.Pixelflix.Catalogo.Domain.Entities;
 using FC.Pixelflix.Catalogo.Domain.Repository;
+using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
 using FC.PixelFlix.Catalogo.UnitTests.Application.UpdateCategory;
 using FC.PixelFlix.Catalogo.UnitTests.Common;
 using Moq;
@@ -63,5 +65,18 @@ public class ListCategoriesTestFixture : BaseFixture
 
         return categoriesList;
  
+    }
+
+    public ListCategoriesRequest GetValidRequest()
+    {
+        var random = new Random();
+
+        return new ListCategoriesRequest(
+            page: random.Next(1, 10),
+            perPage: random.Next(1, 10),
+            search: Faker.Commerce.ProductName(),
+            sort: Faker.Commerce.ProductName(),
+            dir: random.Next(1, 10) > 5 ? SearchOrder.Asc : SearchOrder.Desc
+       );
     }
 }

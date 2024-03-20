@@ -25,19 +25,13 @@ public class ListCategoriesTest
         //given
         var aCategoryList = _fixture.GetValidCategoryList();
         var aRepository = _fixture.GetRepositoryMock();
-        var request = new UseCase.ListCategoriesRequest(
-            page: 2,
-            perPage: 15,
-            search: "search-example",
-            sort: "name",
-            dir: SearchOrder.Asc
-            );
+        var request = _fixture.GetValidRequest();
 
         var repositoryResponse = new SearchRepositoryResponse<Category>(
                     currentPage: request.Page,
                     perPage: request.PerPage,
                     items: (IReadOnlyList<Category>)aCategoryList,
-                    total: 70);
+                    total: (new Random()).Next(50,200));
 
         aRepository.Setup(category => category.Search(
             It.Is<SearchRepositoryRequest>(searchRequest =>
