@@ -5,5 +5,10 @@ using MediatR;
 namespace FC.Pixelflix.Catalogo.Application.UseCases.Category.ListCategories;
 public class ListCategoriesRequest : PaginatedListRequest, IRequest<ListCategoriesResponse>
 {
-    public ListCategoriesRequest(int page, int perPage, string search, string sort, SearchOrder dir) : base(page, perPage, search, sort, dir){}
+    public ListCategoriesRequest(
+        int page = 1,
+        int perPage = 15,
+        string search = "",
+        string sort = "",
+        SearchOrder dir = SearchOrder.Asc) : base(page, perPage, search, sort, dir){}
 }
