@@ -142,4 +142,56 @@ public class ListCategoriesTest
             It.IsAny<CancellationToken>()
             ));
     }
+
+    [Fact(DisplayName = nameof(GivenAValidRequest_WhenReturnEmpty_ShouldNeOk))]
+    [Trait("Application", "ListCategories - UseCases")]
+    public async Task GivenAValidRequest_WhenReturnEmpty_ShouldNeOk()
+    {
+        //given
+        var aRepository = _fixture.GetRepositoryMock();
+        var request = _fixture.GetValidRequest();
+
+        var repositoryResponse = new SearchRepositoryResponse<Category>(
+                    currentPage: request.Page,
+                    perPage: request.PerPage,
+                    items: (new List<Category>()).AsReadOnly(),
+                    total: 0
+        );
+
+        aRepository.Setup(category => category.Search(
+            It.Is<SearchRepositoryRequest>(searchRequest =>
+                    searchRequest.Page == request.Page &&
+                    searchRequest.PerPage == request.PerPage &&
+                    searchRequest.Search == request.Search &&
+                    searchRequest.OrderBy == request.Sort &&
+                    searchRequest.Order == request.Dir
+                ),
+            It.IsAny<CancellationToken>())
+        ).ReturnsAsync(repositoryResponse);
+
+        var useCase = new UseCase.ListCategories(aRepository.Object);
+
+        //when
+        var response = await useCase.Handle(request, CancellationToken.None);
+
+        //then
+        response.Should().NotBeNull();
+        response.Page.Should().Be(repositoryResponse.CurrentPage);
+        response.PerPage.Should().Be(repositoryResponse.PerPage);
+        response.Total.Should().Be(0);
+        response.Items.Should().HaveCount(0);
+
+        aRepository.Verify(category => category.Search(
+            It.Is<SearchRepositoryRequest>(searchRequest =>
+                    searchRequest.Page == request.Page &&
+                    searchRequest.PerPage == request.PerPage &&
+                    searchRequest.Search == request.Search &&
+                    searchRequest.OrderBy == request.Sort &&
+                    searchRequest.Order == request.Dir
+                ),
+            It.IsAny<CancellationToken>()
+            ));
+    }
+
+
 }

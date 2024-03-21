@@ -28,8 +28,8 @@ public class ListCategoryDataGenerator
                 case 4:
                     yield return new object[] { new ListCategoriesRequest(aRequest.Page, aRequest.PerPage, aRequest.Search, aRequest.Sort) };
                     break;
-                case 5:
-                    yield return new object[] { new ListCategoriesRequest(aRequest) };
+                case 5: 
+                    yield return new object[] {aRequest};
                     break;
                 default:
                     yield return new object[] { new ListCategoriesRequest() };
