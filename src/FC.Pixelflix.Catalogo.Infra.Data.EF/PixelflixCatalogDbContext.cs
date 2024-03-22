@@ -3,7 +3,7 @@ using FC.Pixelflix.Catalogo.Infra.Data.EF.Configurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace FC.Pixelflix.Catalogo.Infra.Data.EF;
-internal class PixelflixCatalogDbContext : DbContext
+public class PixelflixCatalogDbContext : DbContext
 {
     public DbSet<Category> Categories => Set<Category>();
 

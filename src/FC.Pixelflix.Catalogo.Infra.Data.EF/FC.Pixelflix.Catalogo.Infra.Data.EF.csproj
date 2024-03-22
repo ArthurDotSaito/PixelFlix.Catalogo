@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FC.Pixelflix.Catalogo.Application\FC.Pixelflix.Catalogo.Application.csproj" />
+    <ProjectReference Include="..\FC.Pixelflix.Catalogo.Domain\FC.Pixelflix.Catalogo.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

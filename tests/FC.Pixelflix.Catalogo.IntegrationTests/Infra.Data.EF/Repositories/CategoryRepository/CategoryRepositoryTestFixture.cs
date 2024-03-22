@@ -1,4 +1,5 @@
 ﻿using FC.Pixelflix.Catalogo.Domain.Entities;
+using FC.Pixelflix.Catalogo.Infra.Data.EF;
 using FC.Pixelflix.Catalogo.IntegrationTests.Base;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -10,13 +11,15 @@ public class CategoryRepositoryTestFixtureCollection : ICollectionFixture<Catego
     
 public class CategoryRepositoryTestFixture : BaseFixture
 {
-    public PixelFlixCatalogDbContext CreateDbContext()
+    public PixelflixCatalogDbContext CreateDbContext()
     {
-        var dbContext = new PixelFlixCatalogDbContext(
-            new DbContextOptionsBuilder<PixelFlixCatalogDbContext>()
+        var dbContext = new PixelflixCatalogDbContext(
+            new DbContextOptionsBuilder<PixelflixCatalogDbContext>()
             .UseInMemoryDatabase("integration-tests-db")
             .Options
         );
+
+        return dbContext;
     }
 
     public string GetValidCategoryName()
