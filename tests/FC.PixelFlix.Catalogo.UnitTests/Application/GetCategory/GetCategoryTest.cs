@@ -20,8 +20,8 @@ public class GetCategoryTest
     public async Task GivenAValidId_whenCallsGetCategory_shouldReturnACategory()
     {
         //given
-        var aRepository = _fixture.GetRepositoryMock();
-        var aCategory = _fixture.GetAValidCategory();
+        var aRepository = _fixture.GetMockRepository();
+        var aCategory = _fixture.GetValidCategory();
         
         aRepository.Setup(category => category.Get(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(aCategory);
         var request = new GetCategoryRequest(aCategory.Id);
@@ -47,7 +47,7 @@ public class GetCategoryTest
     public async Task GivenValidId_whenCallsGetCategoryWhichDoesntExist_shouldReturnNotFound()
     {
         //given
-        var aRepository = _fixture.GetRepositoryMock();
+        var aRepository = _fixture.GetMockRepository();
         var aGuid = Guid.NewGuid();
 
         aRepository.Setup(category => category.Get(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
