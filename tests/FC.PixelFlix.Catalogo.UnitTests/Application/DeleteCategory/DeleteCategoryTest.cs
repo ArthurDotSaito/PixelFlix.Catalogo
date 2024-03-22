@@ -22,7 +22,7 @@ public class DeleteCategoryTest
     public async Task GivenAValidId_whenCallsDeleteCategory_shouldBeOk()
     {
         //given
-        var aRepository = _fixture.GetRepositoryMock();
+        var aRepository = _fixture.GetMockRepository();
         var aUnitOfWork = _fixture.GetMockUnitOfWork();
 
         var aValidCategory = _fixture.GetValidCategory();
@@ -48,7 +48,7 @@ public class DeleteCategoryTest
     public async Task GivenAInexistentCategory_whenCallsDeleteCategory_shouldThrowNotFound()
     {
         //given
-        var aRepository = _fixture.GetRepositoryMock();
+        var aRepository = _fixture.GetMockRepository();
         var aUnitOfWork = _fixture.GetMockUnitOfWork();
 
         var aInvalidCategory = _fixture.GetValidCategory();

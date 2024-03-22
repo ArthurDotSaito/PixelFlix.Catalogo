@@ -2,6 +2,7 @@
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
 using FC.Pixelflix.Catalogo.Domain.Entities;
 using FC.Pixelflix.Catalogo.Domain.Repository;
+using FC.PixelFlix.Catalogo.UnitTests.Application.Common;
 using FC.PixelFlix.Catalogo.UnitTests.Common;
 using Moq;
 using Xunit;
@@ -11,40 +12,9 @@ namespace FC.PixelFlix.Catalogo.UnitTests.Application.CreateCategory;
 [CollectionDefinition(nameof(CreateCategoryTestFixture))]
 public class CreateCategoryTestFixtureCollection : ICollectionFixture<CreateCategoryTestFixture> { }
 
-public class CreateCategoryTestFixture : BaseFixture
+public class CreateCategoryTestFixture : CategoryUseCasesBaseFixture
 {
     public CreateCategoryTestFixture() : base() { }
-
-    public string GetValidCategoryName()
-    {
-        var aCategoryName = "";
-        while (aCategoryName.Length < 3)
-        {
-            aCategoryName = Faker.Commerce.Categories(1)[0];
-        }
-        if (aCategoryName.Length > 255)
-        {
-            aCategoryName = aCategoryName[..254];
-        }
-
-        return aCategoryName;
-    }
-
-    public string GetValidCategoryDescription()
-    {
-        var aCategoryDescription = Faker.Commerce.ProductDescription();
-        if (aCategoryDescription.Length > 10000)
-        {
-            aCategoryDescription = aCategoryDescription[..10000];
-        }
-
-        return aCategoryDescription;
-    }
-
-    public Boolean GetRandomIsActive()
-    {
-       return (new Random()).NextDouble() < 0.5;
-    }
 
     public CreateCategoryRequest GetValidInput()
     {
@@ -94,6 +64,4 @@ public class CreateCategoryTestFixture : BaseFixture
         return invalidInputLongDescription;
     }
 
-    public Mock<ICategoryRepository> GetMockRepository() => new Mock<ICategoryRepository>();
-    public Mock<IUnitOfWork> GetMockUnitOfWork() => new Mock<IUnitOfWork>();
 }
