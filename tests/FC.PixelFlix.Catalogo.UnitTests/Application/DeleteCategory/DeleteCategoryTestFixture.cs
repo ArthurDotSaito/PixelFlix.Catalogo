@@ -1,9 +1,4 @@
-﻿using FC.Pixelflix.Catalogo.Application.Interfaces;
-using FC.Pixelflix.Catalogo.Domain.Entities;
-using FC.Pixelflix.Catalogo.Domain.Repository;
-using FC.PixelFlix.Catalogo.UnitTests.Application.Common;
-using FC.PixelFlix.Catalogo.UnitTests.Common;
-using Moq;
+﻿using FC.PixelFlix.Catalogo.UnitTests.Application.Common;
 using Xunit;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.DeleteCategory;

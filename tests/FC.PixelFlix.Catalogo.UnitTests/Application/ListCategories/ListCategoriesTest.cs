@@ -25,7 +25,7 @@ public class ListCategoriesTest
     {
         //given
         var aCategoryList = _fixture.GetValidCategoryList();
-        var aRepository = _fixture.GetRepositoryMock();
+        var aRepository = _fixture.GetMockRepository();
         var request = _fixture.GetValidRequest();
 
         var repositoryResponse = new SearchRepositoryResponse<Category>(
@@ -90,7 +90,7 @@ public class ListCategoriesTest
     {
         //given
         var aCategoryList = _fixture.GetValidCategoryList();
-        var aRepository = _fixture.GetRepositoryMock();
+        var aRepository = _fixture.GetMockRepository();
 
         var repositoryResponse = new SearchRepositoryResponse<Category>(
                     currentPage: request.Page,
@@ -148,7 +148,7 @@ public class ListCategoriesTest
     public async Task GivenAValidRequest_WhenReturnEmpty_ShouldNeOk()
     {
         //given
-        var aRepository = _fixture.GetRepositoryMock();
+        var aRepository = _fixture.GetMockRepository();
         var request = _fixture.GetValidRequest();
 
         var repositoryResponse = new SearchRepositoryResponse<Category>(
