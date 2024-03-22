@@ -1,9 +1,9 @@
 ﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
-using FC.Pixelflix.Catalogo.Domain.Entities;
-using FC.PixelFlix.Catalogo.UnitTests.Application.Common;
+using FC.PixelFlix.Catalogo.UnitTests.Application.Category.Common;
+using CategoryClass = FC.Pixelflix.Catalogo.Domain.Entities;
 using Xunit;
 
-namespace FC.PixelFlix.Catalogo.UnitTests.Application.CreateCategory;
+namespace FC.PixelFlix.Catalogo.UnitTests.Application.Category.CreateCategory;
 
 [CollectionDefinition(nameof(CreateCategoryTestFixture))]
 public class CreateCategoryTestFixtureCollection : ICollectionFixture<CreateCategoryTestFixture> { }
@@ -17,9 +17,9 @@ public class CreateCategoryTestFixture : CategoryUseCasesBaseFixture
         return new(GetValidCategoryName(), GetValidCategoryDescription(), GetRandomIsActive());
     }
 
-    public Category GetAValidCategory()
+    public CategoryClass.Category GetAValidCategory()
     {
-        return new Category(GetValidCategoryName(), GetValidCategoryDescription());
+        return new CategoryClass.Category(GetValidCategoryName(), GetValidCategoryDescription());
     }
 
     public CreateCategoryRequest GetInvalidShortNameInput()

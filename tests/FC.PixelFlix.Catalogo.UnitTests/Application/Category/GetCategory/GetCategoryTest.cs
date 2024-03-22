@@ -5,7 +5,7 @@ using Moq;
 using Xunit;
 using UseCase = FC.Pixelflix.Catalogo.Application.UseCases.Category.GetCategory;
 
-namespace FC.PixelFlix.Catalogo.UnitTests.Application.GetCategory;
+namespace FC.PixelFlix.Catalogo.UnitTests.Application.Category.GetCategory;
 
 [Collection(nameof(GetCategoryTestFixture))]
 public class GetCategoryTest
@@ -13,7 +13,7 @@ public class GetCategoryTest
     private readonly GetCategoryTestFixture _fixture;
 
     public GetCategoryTest(GetCategoryTestFixture fixture) => _fixture = fixture;
-   
+
 
     [Fact(DisplayName = nameof(GivenAValidId_whenCallsGetCategory_shouldReturnACategory))]
     [Trait("Application", "GetCategory - useCases")]
@@ -22,7 +22,7 @@ public class GetCategoryTest
         //given
         var aRepository = _fixture.GetMockRepository();
         var aCategory = _fixture.GetValidCategory();
-        
+
         aRepository.Setup(category => category.Get(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(aCategory);
         var request = new GetCategoryRequest(aCategory.Id);
         var useCase = new UseCase.GetCategory(aRepository.Object);

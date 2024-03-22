@@ -1,10 +1,10 @@
 ﻿using FC.Pixelflix.Catalogo.Application.Interfaces;
-using FC.Pixelflix.Catalogo.Domain.Entities;
+using CategoryClass = FC.Pixelflix.Catalogo.Domain.Entities;
 using FC.Pixelflix.Catalogo.Domain.Repository;
 using FC.PixelFlix.Catalogo.UnitTests.Common;
 using Moq;
 
-namespace FC.PixelFlix.Catalogo.UnitTests.Application.Common;
+namespace FC.PixelFlix.Catalogo.UnitTests.Application.Category.Common;
 public abstract class CategoryUseCasesBaseFixture : BaseFixture
 {
     public Mock<ICategoryRepository> GetMockRepository() => new Mock<ICategoryRepository>();
@@ -36,12 +36,12 @@ public abstract class CategoryUseCasesBaseFixture : BaseFixture
         return aCategoryDescription;
     }
 
-    public Boolean GetRandomIsActive()
+    public bool GetRandomIsActive()
     {
-        return (new Random()).NextDouble() < 0.5;
+        return new Random().NextDouble() < 0.5;
     }
 
-    public Category GetValidCategory()
+    public CategoryClass.Category GetValidCategory()
     {
         var validData = new
         {
@@ -50,7 +50,7 @@ public abstract class CategoryUseCasesBaseFixture : BaseFixture
             IsActive = GetRandomIsActive()
         };
 
-        var category = new Category(validData.Name, validData.Description, validData.IsActive);
+        var category = new CategoryClass.Category(validData.Name, validData.Description, validData.IsActive);
         return category;
     }
 }

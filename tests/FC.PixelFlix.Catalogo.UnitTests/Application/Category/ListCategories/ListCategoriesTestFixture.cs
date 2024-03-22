@@ -1,27 +1,27 @@
 ﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.ListCategories;
-using FC.Pixelflix.Catalogo.Domain.Entities;
+using CategoryClass = FC.Pixelflix.Catalogo.Domain.Entities;
 using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
-using FC.PixelFlix.Catalogo.UnitTests.Application.Common;
+using FC.PixelFlix.Catalogo.UnitTests.Application.Category.Common;
 using Xunit;
 
-namespace FC.PixelFlix.Catalogo.UnitTests.Application.ListCategories;
+namespace FC.PixelFlix.Catalogo.UnitTests.Application.Category.ListCategories;
 
 
 [CollectionDefinition(nameof(ListCategoriesTestCollection))]
 public class ListCategoriesTestCollection : ICollectionFixture<ListCategoriesTestFixture> { }
 public class ListCategoriesTestFixture : CategoryUseCasesBaseFixture
 {
-   
-    public List<Category> GetValidCategoryList(int length = 10)
+
+    public List<CategoryClass.Category> GetValidCategoryList(int length = 10)
     {
-        var categoriesList = new List<Category>();
+        var categoriesList = new List<CategoryClass.Category>();
         for (var i = 0; i < length; i++)
         {
             categoriesList.Add(GetValidCategory());
         }
 
         return categoriesList;
- 
+
     }
 
     public ListCategoriesRequest GetValidRequest()

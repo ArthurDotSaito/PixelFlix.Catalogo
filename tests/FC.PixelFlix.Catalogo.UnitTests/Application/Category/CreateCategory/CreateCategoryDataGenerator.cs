@@ -1,23 +1,13 @@
-﻿namespace FC.PixelFlix.Catalogo.UnitTests.Application.UpdateCategory;
-public class UpdateCategoryTestDataGenerator
+﻿using FC.PixelFlix.Catalogo.UnitTests.Application.Category.CreateCategory;
+
+namespace FC.PixelFlix.Catalogo.UnitTests.Application.Category.CreateCategory;
+public class CreateCategoryDataGenerator
 {
-    public static IEnumerable<object[]> GetCategoriesToUpdate(int times = 0)
-    {
-        var fixture = new UpdateCategoryTestFixture();
-        for(int i = 0; i < times; i++)
-        {
-            var aCategory = fixture.GetValidCategory();
-            var anRequest = fixture.GetValidRequest(aCategory.Id);
-
-            yield return new object[] { aCategory, anRequest };
-        }
-    }
-
     public static IEnumerable<object[]> GetInvalidInput(int times = 12)
     {
-        var fixture = new UpdateCategoryTestFixture();
+        var fixture = new CreateCategoryTestFixture();
         var invalidInputList = new List<object[]>();
-        var totalInvalidCases = 3;
+        var totalInvalidCases = 4;
 
         for (int i = 0; i < times; i++)
         {
@@ -39,6 +29,13 @@ public class UpdateCategoryTestDataGenerator
                     });
                     break;
                 case 2:
+                    invalidInputList.Add(new object[]
+                    {
+                        fixture.GetNullDescription(),
+                        "Description should not be null"
+                    });
+                    break;
+                case 3:
                     invalidInputList.Add(new object[]
                     {
                         fixture.GetInvalidLongDescription(),

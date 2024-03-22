@@ -4,12 +4,12 @@ using UseCase = FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCatego
 using FluentAssertions;
 using Moq;
 using Xunit;
-using FC.Pixelflix.Catalogo.Domain.Entities;
+using CategoryClass = FC.Pixelflix.Catalogo.Domain.Entities;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCategory;
 using FC.Pixelflix.Catalogo.Application.Exceptions;
 using FC.Pixelflix.Catalogo.Domain.Exceptions;
 
-namespace FC.PixelFlix.Catalogo.UnitTests.Application.UpdateCategory;
+namespace FC.PixelFlix.Catalogo.UnitTests.Application.Category.UpdateCategory;
 
 [Collection(nameof(UpdateCategoryTestCollection))]
 public class UpdateCategoryTest
@@ -24,11 +24,11 @@ public class UpdateCategoryTest
     [Theory(DisplayName = nameof(GivenAValidId_whenCallsUpdateCategory_shouldReturnACategory))]
     [Trait("Application", "UpdateCategory - UseCases")]
     [MemberData(
-        nameof(UpdateCategoryTestDataGenerator.GetCategoriesToUpdate), 
-        parameters:10, 
+        nameof(UpdateCategoryTestDataGenerator.GetCategoriesToUpdate),
+        parameters: 10,
         MemberType = typeof(UpdateCategoryTestDataGenerator)
         )]
-    public async Task GivenAValidId_whenCallsUpdateCategory_shouldReturnACategory(Category aCategory, UpdateCategoryRequest request)
+    public async Task GivenAValidId_whenCallsUpdateCategory_shouldReturnACategory(CategoryClass.Category aCategory, UpdateCategoryRequest request)
     {
         //given
         var aRepository = _fixture.GetMockRepository();
@@ -51,7 +51,7 @@ public class UpdateCategoryTest
         response.Description.Should().Be(request.Description);
         response.IsActive.Should().Be((bool)request.IsActive!);
 
-        aRepository.Verify(category => category.Get(aCategory.Id, It.IsAny<CancellationToken>()), 
+        aRepository.Verify(category => category.Get(aCategory.Id, It.IsAny<CancellationToken>()),
             Times.Once);
 
         aRepository.Verify(category => category.Update(aCategory, It.IsAny<CancellationToken>()),
@@ -92,7 +92,7 @@ public class UpdateCategoryTest
     parameters: 10,
     MemberType = typeof(UpdateCategoryTestDataGenerator)
     )]
-    public async Task GivenAValidId_whenCallsUpdateCategoryWithoutIsActive_shouldReturnACategory(Category aCategory, UpdateCategoryRequest request)
+    public async Task GivenAValidId_whenCallsUpdateCategoryWithoutIsActive_shouldReturnACategory(CategoryClass.Category aCategory, UpdateCategoryRequest request)
     {
         //given
         var aRepository = _fixture.GetMockRepository();
@@ -132,7 +132,7 @@ public class UpdateCategoryTest
         parameters: 10,
         MemberType = typeof(UpdateCategoryTestDataGenerator)
         )]
-    public async Task GivenAValidId_whenCallsUpdateCategoryWithOnlyName_shouldReturnACategory(Category aCategory, UpdateCategoryRequest request)
+    public async Task GivenAValidId_whenCallsUpdateCategoryWithOnlyName_shouldReturnACategory(CategoryClass.Category aCategory, UpdateCategoryRequest request)
     {
         //given
         var aRepository = _fixture.GetMockRepository();
@@ -172,7 +172,7 @@ public class UpdateCategoryTest
         parameters: 12,
         MemberType = typeof(UpdateCategoryTestDataGenerator)
         )]
-    public async void GivenAInvalidAttribute_whenCallsUpdateCategory_shouldThrowsADomainException(UpdateCategoryRequest request, 
+    public async void GivenAInvalidAttribute_whenCallsUpdateCategory_shouldThrowsADomainException(UpdateCategoryRequest request,
         string expectedExcepitonMesssage)
     {
         //given
@@ -186,7 +186,7 @@ public class UpdateCategoryTest
             .ReturnsAsync(aCategory);
 
         var useCase = new UseCase.UpdateCategory(aRepository.Object, aUnitOfWork.Object);
-        
+
         //when
         var aTask = async () => await useCase.Handle(request, CancellationToken.None);
 

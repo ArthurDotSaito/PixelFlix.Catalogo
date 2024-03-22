@@ -3,7 +3,7 @@ using FluentAssertions;
 using Xunit;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCategory;
 
-namespace FC.PixelFlix.Catalogo.UnitTests.Application.UpdateCategory;
+namespace FC.PixelFlix.Catalogo.UnitTests.Application.Category.UpdateCategory;
 [Collection(nameof(UpdateCategoryTestCollection))]
 public class UpdateCategoryRequestValidator
 {

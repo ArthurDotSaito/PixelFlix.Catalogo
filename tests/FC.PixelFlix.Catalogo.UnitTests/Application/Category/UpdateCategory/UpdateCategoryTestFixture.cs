@@ -1,11 +1,11 @@
 ﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCategory;
-using FC.PixelFlix.Catalogo.UnitTests.Application.Common;
+using FC.PixelFlix.Catalogo.UnitTests.Application.Category.Common;
 using Xunit;
 
-namespace FC.PixelFlix.Catalogo.UnitTests.Application.UpdateCategory;
+namespace FC.PixelFlix.Catalogo.UnitTests.Application.Category.UpdateCategory;
 
 [CollectionDefinition(nameof(UpdateCategoryTestCollection))]
-public class UpdateCategoryTestCollection : ICollectionFixture<UpdateCategoryTestFixture>{ }
+public class UpdateCategoryTestCollection : ICollectionFixture<UpdateCategoryTestFixture> { }
 
 public class UpdateCategoryTestFixture : CategoryUseCasesBaseFixture
 {

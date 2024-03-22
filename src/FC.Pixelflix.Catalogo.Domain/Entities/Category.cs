@@ -1,6 +1,4 @@
-﻿
-using FC.Pixelflix.Catalogo.Domain.Exceptions;
-using FC.Pixelflix.Catalogo.Domain.SeedWork;
+﻿using FC.Pixelflix.Catalogo.Domain.SeedWork;
 using FC.Pixelflix.Catalogo.Domain.Validation;
 
 namespace FC.Pixelflix.Catalogo.Domain.Entities;

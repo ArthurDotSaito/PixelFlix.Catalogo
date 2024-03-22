@@ -3,7 +3,7 @@ using FC.Pixelflix.Catalogo.Application.UseCases.Category.GetCategory.Dto;
 using FluentAssertions;
 using Xunit;
 
-namespace FC.PixelFlix.Catalogo.UnitTests.Application.GetCategory;
+namespace FC.PixelFlix.Catalogo.UnitTests.Application.Category.GetCategory;
 
 [Collection(nameof(GetCategoryTestFixture))]
 public class GetCategoryRequestTest
@@ -15,7 +15,7 @@ public class GetCategoryRequestTest
         _fixture = fixture;
     }
 
-    [Fact(DisplayName ="")]
+    [Fact(DisplayName = "")]
     [Trait("Application", "GetCategoryRequestTest - UseCases")]
     public void GivenValidId_whenCallsGetCategory_shouldValidateOk()
     {
@@ -29,7 +29,7 @@ public class GetCategoryRequestTest
         var aValidResult = validation.Validate(aValidRequest);
 
         //then
-        aValidResult.Should().NotBeNull();  
+        aValidResult.Should().NotBeNull();
         aValidResult.IsValid.Should().BeTrue();
         aValidResult.Errors.Should().HaveCount(0);
     }

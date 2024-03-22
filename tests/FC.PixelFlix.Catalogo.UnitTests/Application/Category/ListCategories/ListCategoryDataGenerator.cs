@@ -1,6 +1,6 @@
 ﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.ListCategories;
 
-namespace FC.PixelFlix.Catalogo.UnitTests.Application.ListCategories;
+namespace FC.PixelFlix.Catalogo.UnitTests.Application.Category.ListCategories;
 public class ListCategoryDataGenerator
 {
     public static IEnumerable<object[]> GetRequestWithDefaultParams(int times = 12)
@@ -9,12 +9,12 @@ public class ListCategoryDataGenerator
 
         var aRequest = fixture.GetValidRequest();
 
-        for(int i = 0; i < times; i++)
+        for (int i = 0; i < times; i++)
         {
             switch (i % 6)
             {
                 case 0:
-                    yield return new object[] {new ListCategoriesRequest()};
+                    yield return new object[] { new ListCategoriesRequest() };
                     break;
                 case 1:
                     yield return new object[] { new ListCategoriesRequest(aRequest.Page) };
@@ -28,8 +28,8 @@ public class ListCategoryDataGenerator
                 case 4:
                     yield return new object[] { new ListCategoriesRequest(aRequest.Page, aRequest.PerPage, aRequest.Search, aRequest.Sort) };
                     break;
-                case 5: 
-                    yield return new object[] {aRequest};
+                case 5:
+                    yield return new object[] { aRequest };
                     break;
                 default:
                     yield return new object[] { new ListCategoriesRequest() };

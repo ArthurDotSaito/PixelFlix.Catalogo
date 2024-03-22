@@ -5,7 +5,7 @@ using FC.Pixelflix.Catalogo.Application.UseCases.Category.DeleteCategory;
 using FC.Pixelflix.Catalogo.Application.Exceptions;
 using FluentAssertions;
 
-namespace FC.PixelFlix.Catalogo.UnitTests.Application.DeleteCategory;
+namespace FC.PixelFlix.Catalogo.UnitTests.Application.Category.DeleteCategory;
 
 [Collection(nameof(DeleteCategoryFixtureCollection))]
 public class DeleteCategoryTest
@@ -33,7 +33,7 @@ public class DeleteCategoryTest
         var request = new DeleteCategoryRequest(aValidCategory.Id);
 
         var useCase = new UseCases.DeleteCategory(aRepository.Object, aUnitOfWork.Object);
-        
+
         //when
         await useCase.Handle(request, CancellationToken.None);
 
@@ -61,7 +61,7 @@ public class DeleteCategoryTest
         var useCase = new UseCases.DeleteCategory(aRepository.Object, aUnitOfWork.Object);
 
         //when
-        var aTask = async() => await useCase.Handle(request, CancellationToken.None);
+        var aTask = async () => await useCase.Handle(request, CancellationToken.None);
 
         //then
         await aTask.Should().ThrowAsync<NotFoundException>();

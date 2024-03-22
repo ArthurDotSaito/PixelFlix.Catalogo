@@ -1,12 +1,12 @@
 ﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
-using FC.Pixelflix.Catalogo.Domain.Entities;
+using CategoryClass = FC.Pixelflix.Catalogo.Domain.Entities;
 using FC.Pixelflix.Catalogo.Domain.Exceptions;
 using FluentAssertions;
 using Moq;
 using Xunit;
 using useCases = FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory;
 
-namespace FC.PixelFlix.Catalogo.UnitTests.Application.CreateCategory;
+namespace FC.PixelFlix.Catalogo.UnitTests.Application.Category.CreateCategory;
 
 [Collection(nameof(CreateCategoryTestFixture))]
 public class CreateCategoryTest
@@ -31,13 +31,13 @@ public class CreateCategoryTest
 
         var output = await useCase.Execute(input, CancellationToken.None);
 
-        repositoryMock.Verify(repository => 
-            repository.Insert(It.IsAny<Category>(), It.IsAny<CancellationToken>()), 
+        repositoryMock.Verify(repository =>
+            repository.Insert(It.IsAny<CategoryClass.Category>(), It.IsAny<CancellationToken>()),
             Times.Once
             );
 
-        unitOfWorkMock.Verify(uow => 
-            uow.Commit(It.IsAny<CancellationToken>()),Times.Once
+        unitOfWorkMock.Verify(uow =>
+            uow.Commit(It.IsAny<CancellationToken>()), Times.Once
             );
 
         output.Should().NotBeNull();
@@ -47,14 +47,14 @@ public class CreateCategoryTest
         output.Description.Should().Be(input.Description);
         output.IsActive.Should().Be(input.IsActive);
         output.CreatedAt.Should().NotBe(null);
-        output.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
+        output.CreatedAt.Should().NotBeSameDateAs(default);
     }
 
     [Theory(DisplayName = nameof(GivenAInvalidCommand_whenCallsCreateCategory_shouldThrowsAnException))]
     [Trait("Application", "CreateCategory - Use Cases")]
     [MemberData(
         nameof(CreateCategoryDataGenerator.GetInvalidInput),
-        parameters:12,
+        parameters: 12,
         MemberType = typeof(CreateCategoryDataGenerator)
     )]
 
@@ -69,7 +69,7 @@ public class CreateCategoryTest
         Func<Task> task = async () => await useCase.Execute(input, CancellationToken.None);
 
         await task.Should().ThrowAsync<EntityValidationException>().WithMessage(expectedExceptionMessage);
-    }   
+    }
 
     [Fact(DisplayName = nameof(GivenAInvalidCommandWitName_whenCallsCreateCategory_shouldBeOk))]
     [Trait("Application", "CreateCategory - Use Cases")]
@@ -85,7 +85,7 @@ public class CreateCategoryTest
         var output = await useCase.Execute(input, CancellationToken.None);
 
         repositoryMock.Verify(repository =>
-            repository.Insert(It.IsAny<Category>(), It.IsAny<CancellationToken>()),
+            repository.Insert(It.IsAny<CategoryClass.Category>(), It.IsAny<CancellationToken>()),
             Times.Once
             );
 
@@ -100,7 +100,7 @@ public class CreateCategoryTest
         output.Description.Should().Be("");
         output.IsActive.Should().Be(input.IsActive);
         output.CreatedAt.Should().NotBe(null);
-        output.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
+        output.CreatedAt.Should().NotBeSameDateAs(default);
     }
 
     [Fact(DisplayName = nameof(GivenAInvalidCommandWitNameAndDescription_whenCallsCreateCategory_shouldBeOk))]
@@ -117,7 +117,7 @@ public class CreateCategoryTest
         var output = await useCase.Execute(input, CancellationToken.None);
 
         repositoryMock.Verify(repository =>
-            repository.Insert(It.IsAny<Category>(), It.IsAny<CancellationToken>()),
+            repository.Insert(It.IsAny<CategoryClass.Category>(), It.IsAny<CancellationToken>()),
             Times.Once
             );
 
@@ -132,6 +132,6 @@ public class CreateCategoryTest
         output.Description.Should().Be(input.Description);
         output.IsActive.Should().Be(input.IsActive);
         output.CreatedAt.Should().NotBe(null);
-        output.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
+        output.CreatedAt.Should().NotBeSameDateAs(default);
     }
 }
