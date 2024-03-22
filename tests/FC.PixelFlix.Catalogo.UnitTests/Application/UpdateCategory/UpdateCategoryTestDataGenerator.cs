@@ -1,7 +1,4 @@
-﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCategory;
-using FC.PixelFlix.Catalogo.UnitTests.Application.CreateCategory;
-
-namespace FC.PixelFlix.Catalogo.UnitTests.Application.UpdateCategory;
+﻿namespace FC.PixelFlix.Catalogo.UnitTests.Application.UpdateCategory;
 public class UpdateCategoryTestDataGenerator
 {
     public static IEnumerable<object[]> GetCategoriesToUpdate(int times = 0)
@@ -9,7 +6,7 @@ public class UpdateCategoryTestDataGenerator
         var fixture = new UpdateCategoryTestFixture();
         for(int i = 0; i < times; i++)
         {
-            var aCategory = fixture.GetAValidCategory();
+            var aCategory = fixture.GetValidCategory();
             var anRequest = fixture.GetValidRequest(aCategory.Id);
 
             yield return new object[] { aCategory, anRequest };

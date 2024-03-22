@@ -31,7 +31,7 @@ public class UpdateCategoryTest
     public async Task GivenAValidId_whenCallsUpdateCategory_shouldReturnACategory(Category aCategory, UpdateCategoryRequest request)
     {
         //given
-        var aRepository = _fixture.GetRepositoryMock();
+        var aRepository = _fixture.GetMockRepository();
         var aUnitOfWork = _fixture.GetMockUnitOfWork();
         var cancellationToken = It.IsAny<CancellationToken>();
 
@@ -65,7 +65,7 @@ public class UpdateCategoryTest
     public async Task GivenAInvalidId_whenCallsUpdateCategory_shouldReturnNotFound()
     {
         //given
-        var aRepository = _fixture.GetRepositoryMock();
+        var aRepository = _fixture.GetMockRepository();
         var aUnitOfWork = _fixture.GetMockUnitOfWork();
         var aRequest = _fixture.GetValidRequest();
         var cancellationToken = It.IsAny<CancellationToken>();
@@ -95,7 +95,7 @@ public class UpdateCategoryTest
     public async Task GivenAValidId_whenCallsUpdateCategoryWithoutIsActive_shouldReturnACategory(Category aCategory, UpdateCategoryRequest request)
     {
         //given
-        var aRepository = _fixture.GetRepositoryMock();
+        var aRepository = _fixture.GetMockRepository();
         var aUnitOfWork = _fixture.GetMockUnitOfWork();
         var aRequestWithoutIsActive = new UpdateCategoryRequest(request.Id, request.Name, request.Description);
         var cancellationToken = It.IsAny<CancellationToken>();
@@ -135,7 +135,7 @@ public class UpdateCategoryTest
     public async Task GivenAValidId_whenCallsUpdateCategoryWithOnlyName_shouldReturnACategory(Category aCategory, UpdateCategoryRequest request)
     {
         //given
-        var aRepository = _fixture.GetRepositoryMock();
+        var aRepository = _fixture.GetMockRepository();
         var aUnitOfWork = _fixture.GetMockUnitOfWork();
         var aRequestWithName = new UpdateCategoryRequest(request.Id, request.Name);
         var cancellationToken = It.IsAny<CancellationToken>();
@@ -176,9 +176,9 @@ public class UpdateCategoryTest
         string expectedExcepitonMesssage)
     {
         //given
-        var aCategory = _fixture.GetAValidCategory();
+        var aCategory = _fixture.GetValidCategory();
         request.Id = aCategory.Id;
-        var aRepository = _fixture.GetRepositoryMock();
+        var aRepository = _fixture.GetMockRepository();
         var aUnitOfWork = _fixture.GetMockUnitOfWork();
         var cancellationToken = It.IsAny<CancellationToken>();
 
