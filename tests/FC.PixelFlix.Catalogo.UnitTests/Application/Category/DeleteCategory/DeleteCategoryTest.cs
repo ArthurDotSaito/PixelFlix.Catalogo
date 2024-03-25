@@ -18,7 +18,7 @@ public class DeleteCategoryTest
     }
 
     [Fact(DisplayName = nameof(GivenAValidId_whenCallsDeleteCategory_shouldBeOk))]
-    [Trait("Appliation", "DeleteCategory - Use Cases")]
+    [Trait("Application", "DeleteCategory - Use Cases")]
     public async Task GivenAValidId_whenCallsDeleteCategory_shouldBeOk()
     {
         //given
@@ -44,7 +44,7 @@ public class DeleteCategoryTest
     }
 
     [Fact(DisplayName = nameof(GivenAInexistentCategory_whenCallsDeleteCategory_shouldThrowNotFound))]
-    [Trait("Appliation", "DeleteCategory - Use Cases")]
+    [Trait("Application", "DeleteCategory - Use Cases")]
     public async Task GivenAInexistentCategory_whenCallsDeleteCategory_shouldThrowNotFound()
     {
         //given

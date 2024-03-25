@@ -18,14 +18,12 @@ public class CategoryRepository : ICategoryRepository
     {
         await _categories.AddAsync(anAggregate, aCancellationToken);
     }
-
-
-    public Task Delete(Category anAggregate, CancellationToken aCancellationToken)
+    public async Task<Category> Get(Guid id, CancellationToken aCancellationToken)
     {
-        throw new NotImplementedException();
+       return await _categories.FindAsync(new object[] { id }, aCancellationToken);
     }
 
-    public Task<Category> Get(Guid id, CancellationToken aCancellationToken)
+    public Task Delete(Category anAggregate, CancellationToken aCancellationToken)
     {
         throw new NotImplementedException();
     }
