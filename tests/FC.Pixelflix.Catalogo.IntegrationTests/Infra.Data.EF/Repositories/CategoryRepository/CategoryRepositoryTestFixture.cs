@@ -75,7 +75,7 @@ public class CategoryRepositoryTestFixture : BaseFixture
             IsActive = GetRandomIsActive()
         };
 
-        var categoriesList = Enumerable.Range(0, length).Select(_ => new Category(validData.Name, validData.Description, validData.IsActive)).ToList();
-        return category;
+        var categoriesList = Enumerable.Range(0, length).Select(_ => GetValidCategory()).ToList();
+        return categoriesList;
     }
 }
