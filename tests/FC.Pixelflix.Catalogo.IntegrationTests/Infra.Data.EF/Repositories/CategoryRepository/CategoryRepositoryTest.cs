@@ -2,6 +2,7 @@
 using Xunit;
 using FC.Pixelflix.Catalogo.Infra.Data.EF;
 using Repository = FC.Pixelflix.Catalogo.Infra.Data.EF.Repositories;
+using FC.Pixelflix.Catalogo.Application.Exceptions;
 
 namespace FC.Pixelflix.Catalogo.IntegrationTests.Infra.Data.EF.Repositories.CategoryRepository;
 
@@ -64,5 +65,26 @@ public class CategoryRepositoryTest
         dbCategory.Description.Should().Be(aCategory.Description);
         dbCategory.IsActive.Should().Be(aCategory.IsActive);
         dbCategory.CreatedAt.Should().Be(aCategory.CreatedAt);
+    }
+
+    [Fact(DisplayName = "Ao passar uma categoria válida, com Id não presente do Db, retornar notFound")]
+    [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
+    public async Task givenAValidCategory_whenCallsGetWithAIdNotPresent_shouldReturnNotFound()
+    {
+        //Given
+        var anId = Guid.NewGuid();
+        PixelflixCatalogDbContext dbContext = _fixture.CreateDbContext();
+        var categoriesList = _fixture.GetValidCategoryList(15);
+        var aCategoryRepository = new Repository.CategoryRepository(dbContext);
+
+        await dbContext.AddRangeAsync(categoriesList);
+        await dbContext.SaveChangesAsync(CancellationToken.None);
+
+        //When
+
+        var aTask = async () => await aCategoryRepository.Get(anId, CancellationToken.None);
+
+        //Then
+        await aTask.Should().ThrowAsync<NotFoundException>().WithMessage($"Category '{anId}' not Found.");
     }
 }
