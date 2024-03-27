@@ -22,12 +22,9 @@ public class CategoryRepository : ICategoryRepository
     public async Task<Category> Get(Guid id, CancellationToken aCancellationToken)
     {
        var aCategory = await _categories.FindAsync(new object[] { id }, aCancellationToken);
-        if(aCategory == null)
-        {
-            throw new NotFoundException($"Category '{id}' not found.");
-        }
+       NotFoundException.ThrowIfNull(aCategory, $"Category '{id}' not found.");
 
-        return aCategory;
+       return aCategory!;
     }
 
     public Task Delete(Category anAggregate, CancellationToken aCancellationToken)
