@@ -67,7 +67,7 @@ public class CategoryRepositoryTest
         dbCategory.CreatedAt.Should().Be(aCategory.CreatedAt);
     }
 
-    [Fact(DisplayName = "Ao passar uma categoria válida, com Id não presente do Db, retornar notFound")]
+    [Fact(DisplayName = "Ao passar uma categoria válida, com Id não presente do Db, retornar NotFound")]
     [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
     public async Task givenAValidCategory_whenCallsGetWithAIdNotPresent_shouldReturnNotFound()
     {
@@ -85,6 +85,6 @@ public class CategoryRepositoryTest
         var aTask = async () => await aCategoryRepository.Get(anId, CancellationToken.None);
 
         //Then
-        await aTask.Should().ThrowAsync<NotFoundException>().WithMessage($"Category '{anId}' not Found.");
+        await aTask.Should().ThrowAsync<NotFoundException>().WithMessage($"Category '{anId}' not found.");
     }
 }

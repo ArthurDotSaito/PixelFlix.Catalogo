@@ -1,4 +1,5 @@
-﻿using FC.Pixelflix.Catalogo.Domain.Entities;
+﻿using FC.Pixelflix.Catalogo.Application.Exceptions;
+using FC.Pixelflix.Catalogo.Domain.Entities;
 using FC.Pixelflix.Catalogo.Domain.Repository;
 using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,13 @@ public class CategoryRepository : ICategoryRepository
     }
     public async Task<Category> Get(Guid id, CancellationToken aCancellationToken)
     {
-       return await _categories.FindAsync(new object[] { id }, aCancellationToken);
+       var aCategory = await _categories.FindAsync(new object[] { id }, aCancellationToken);
+        if(aCategory == null)
+        {
+            throw new NotFoundException($"Category '{id}' not found.");
+        }
+
+        return aCategory;
     }
 
     public Task Delete(Category anAggregate, CancellationToken aCancellationToken)
