@@ -107,6 +107,7 @@ public class CategoryRepositoryTest
 
         //When
         await aCategoryRepository.Update(aCategory, CancellationToken.None);
+        await dbContext.SaveChangesAsync(CancellationToken.None);
 
         var dbCategory = await dbContext.Categories.FindAsync(aCategory.Id);
 
