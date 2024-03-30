@@ -21,7 +21,7 @@ public class CategoryRepository : ICategoryRepository
     }
     public async Task<Category> Get(Guid id, CancellationToken aCancellationToken)
     {
-       var aCategory = await _categories.FindAsync(new object[] { id }, aCancellationToken);
+       var aCategory = await _categories.AsNoTracking().FirstOrDefaultAsync(category => category.Id == id, aCancellationToken);
        NotFoundException.ThrowIfNull(aCategory, $"Category '{id}' not found.");
 
        return aCategory!;
