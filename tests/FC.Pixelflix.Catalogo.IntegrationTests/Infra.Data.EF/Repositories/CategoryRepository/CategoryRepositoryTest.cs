@@ -30,7 +30,8 @@ public class CategoryRepositoryTest
         await aCategoryRepository.Insert(aCategory, CancellationToken.None);
         await dbContext.SaveChangesAsync();
 
-        var dbCategory = await dbContext.Categories.FindAsync(aCategory.Id);
+        PixelflixCatalogDbContext aSecondContext = _fixture.CreateDbContext();
+        var dbCategory = await aSecondContext.Categories.FindAsync(aCategory.Id);
 
         //Then
         dbCategory.Should().NotBeNull();
@@ -109,7 +110,8 @@ public class CategoryRepositoryTest
         await aCategoryRepository.Update(aCategory, CancellationToken.None);
         await dbContext.SaveChangesAsync(CancellationToken.None);
 
-        var dbCategory = await dbContext.Categories.FindAsync(aCategory.Id);
+        PixelflixCatalogDbContext aSecondContext = _fixture.CreateDbContext();
+        var dbCategory = await aSecondContext.Categories.FindAsync(aCategory.Id);
 
         //Then
         dbCategory.Should().NotBeNull();
