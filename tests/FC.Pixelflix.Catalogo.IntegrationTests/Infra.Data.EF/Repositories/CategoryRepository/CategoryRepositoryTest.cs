@@ -87,4 +87,35 @@ public class CategoryRepositoryTest
         //Then
         await aTask.Should().ThrowAsync<NotFoundException>().WithMessage($"Category '{anId}' not found.");
     }
+
+    [Fact(DisplayName = "Verificar categoria e propriedades no repositório ao invocar UPDATE")]
+    [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
+    public async Task givenAValidCategory_whenCallsUpdate_shouldBeOk()
+    {
+        //Given
+        PixelflixCatalogDbContext dbContext = _fixture.CreateDbContext();
+        var aCategory = _fixture.GetValidCategory();
+        var aUpdatedCategory = _fixture.GetValidCategory();
+        var categoriesList = _fixture.GetValidCategoryList(15);
+        categoriesList.Add(aCategory);
+        var aCategoryRepository = new Repository.CategoryRepository(dbContext);
+
+        await dbContext.AddRangeAsync(categoriesList);
+        await dbContext.SaveChangesAsync(CancellationToken.None);
+
+        aCategory.Update(aUpdatedCategory.Name, aUpdatedCategory.Description);
+
+        //When
+        await aCategoryRepository.Update(aCategory, CancellationToken.None);
+
+        var dbCategory = await dbContext.Categories.FindAsync(aCategory.Id);
+
+        //Then
+        dbCategory.Should().NotBeNull();
+        dbCategory!.Id.Should().Be(aCategory.Id);
+        dbCategory.Name.Should().Be(aUpdatedCategory.Name);
+        dbCategory.Description.Should().Be(aUpdatedCategory.Description);
+        dbCategory.IsActive.Should().Be(aCategory.IsActive);
+        dbCategory.CreatedAt.Should().Be(aCategory.CreatedAt);
+    }
 }
