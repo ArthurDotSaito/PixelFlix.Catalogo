@@ -16,7 +16,7 @@ public class CategoryRepositoryTest
         _fixture = categoryRepositoryTestFixture;
     }
 
-    [Fact(DisplayName = "Verificar categoria e propriedades no repositório ao invocar INSERT")]
+    [Fact(DisplayName = "CategoryRepository Integration INSERT test")]
     [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
     public async Task givenAValidCategory_whenCallsInsert_shouldBeOk()
     {
@@ -41,7 +41,7 @@ public class CategoryRepositoryTest
         dbCategory.CreatedAt.Should().Be(aCategory.CreatedAt);
     }
 
-    [Fact(DisplayName = "Verificar categoria e propriedades no repositório ao invocar GET")]
+    [Fact(DisplayName = "CategoryRepository Integration GET test")]
     [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
     public async Task givenAValidCategory_whenCallsGet_shouldBeOk()
     {
@@ -68,7 +68,7 @@ public class CategoryRepositoryTest
         dbCategory.CreatedAt.Should().Be(aCategory.CreatedAt);
     }
 
-    [Fact(DisplayName = "Ao passar uma categoria válida, com Id não presente do Db, retornar NotFound")]
+    [Fact(DisplayName = "CategoryRepository Integration INVALID GET test")]
     [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
     public async Task givenAValidCategory_whenCallsGetWithAIdNotPresent_shouldReturnNotFound()
     {
@@ -89,9 +89,42 @@ public class CategoryRepositoryTest
         await aTask.Should().ThrowAsync<NotFoundException>().WithMessage($"Category '{anId}' not found.");
     }
 
-    [Fact(DisplayName = "Verificar categoria e propriedades no repositório ao invocar UPDATE")]
+    [Fact(DisplayName = "CategoryRepository Integration UPDATE test")]
     [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
     public async Task givenAValidCategory_whenCallsUpdate_shouldBeOk()
+    {
+        //Given
+        PixelflixCatalogDbContext dbContext = _fixture.CreateDbContext();
+        var aCategory = _fixture.GetValidCategory();
+        var aUpdatedCategory = _fixture.GetValidCategory();
+        var categoriesList = _fixture.GetValidCategoryList(15);
+        categoriesList.Add(aCategory);
+        var aCategoryRepository = new Repository.CategoryRepository(dbContext);
+
+        await dbContext.AddRangeAsync(categoriesList);
+        await dbContext.SaveChangesAsync(CancellationToken.None);
+
+        aCategory.Update(aUpdatedCategory.Name, aUpdatedCategory.Description);
+
+        //When
+        await aCategoryRepository.Update(aCategory, CancellationToken.None);
+        await dbContext.SaveChangesAsync(CancellationToken.None);
+
+        PixelflixCatalogDbContext aSecondContext = _fixture.CreateDbContext();
+        var dbCategory = await aSecondContext.Categories.FindAsync(aCategory.Id);
+
+        //Then
+        dbCategory.Should().NotBeNull();
+        dbCategory!.Id.Should().Be(aCategory.Id);
+        dbCategory.Name.Should().Be(aUpdatedCategory.Name);
+        dbCategory.Description.Should().Be(aUpdatedCategory.Description);
+        dbCategory.IsActive.Should().Be(aCategory.IsActive);
+        dbCategory.CreatedAt.Should().Be(aCategory.CreatedAt);
+    }
+
+    [Fact(DisplayName = "CategoryRepository Integration DELETE test")]
+    [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
+    public async Task givenAValidCategory_whenCallsDelete_shouldBeOk()
     {
         //Given
         PixelflixCatalogDbContext dbContext = _fixture.CreateDbContext();
