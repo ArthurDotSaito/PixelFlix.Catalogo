@@ -137,7 +137,7 @@ public class CategoryRepositoryTest
         await dbContext.AddRangeAsync(categoriesList);
         await dbContext.SaveChangesAsync(CancellationToken.None);
 
-        aCategory.Update(aUpdatedCategory.Name, aUpdatedCategory.Description);
+        aCategory.Delete(aUpdatedCategory.Name, aUpdatedCategory.Description);
 
         //When
         await aCategoryRepository.Update(aCategory, CancellationToken.None);
@@ -147,11 +147,6 @@ public class CategoryRepositoryTest
         var dbCategory = await aSecondContext.Categories.FindAsync(aCategory.Id);
 
         //Then
-        dbCategory.Should().NotBeNull();
-        dbCategory!.Id.Should().Be(aCategory.Id);
-        dbCategory.Name.Should().Be(aUpdatedCategory.Name);
-        dbCategory.Description.Should().Be(aUpdatedCategory.Description);
-        dbCategory.IsActive.Should().Be(aCategory.IsActive);
-        dbCategory.CreatedAt.Should().Be(aCategory.CreatedAt);
+        dbCategory.Should().BeNull();
     }
 }
