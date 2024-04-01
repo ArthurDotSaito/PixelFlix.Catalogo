@@ -137,10 +137,8 @@ public class CategoryRepositoryTest
         await dbContext.AddRangeAsync(categoriesList);
         await dbContext.SaveChangesAsync(CancellationToken.None);
 
-        aCategory.Delete(aUpdatedCategory.Name, aUpdatedCategory.Description);
-
         //When
-        await aCategoryRepository.Update(aCategory, CancellationToken.None);
+        await aCategoryRepository.Delete(aCategory, CancellationToken.None);
         await dbContext.SaveChangesAsync(CancellationToken.None);
 
         PixelflixCatalogDbContext aSecondContext = _fixture.CreateDbContext();

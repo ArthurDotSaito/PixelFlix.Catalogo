@@ -34,7 +34,7 @@ public class CategoryRepository : ICategoryRepository
 
     public Task Delete(Category anAggregate, CancellationToken aCancellationToken)
     {
-        throw new NotImplementedException();
+        return Task.FromResult(_categories.Remove(anAggregate));
     }
 
     public Task<SearchRepositoryResponse<Category>> Search(SearchRepositoryRequest request, CancellationToken cancellationToken)
