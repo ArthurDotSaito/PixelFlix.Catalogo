@@ -37,9 +37,12 @@ public class CategoryRepository : ICategoryRepository
         return Task.FromResult(_categories.Remove(anAggregate));
     }
 
-    public Task<SearchRepositoryResponse<Category>> Search(SearchRepositoryRequest request, CancellationToken cancellationToken)
+    public async Task<SearchRepositoryResponse<Category>> Search(SearchRepositoryRequest request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var total = await _categories.CountAsync();
+        var items = await _categories.ToListAsync();
+
+        return new(request.Page, request.PerPage, total, items);
     }
 
 
