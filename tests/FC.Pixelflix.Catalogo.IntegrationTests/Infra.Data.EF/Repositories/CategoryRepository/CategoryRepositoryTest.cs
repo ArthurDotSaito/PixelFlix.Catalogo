@@ -32,7 +32,7 @@ public class CategoryRepositoryTest
         await aCategoryRepository.Insert(aCategory, CancellationToken.None);
         await dbContext.SaveChangesAsync();
 
-        PixelflixCatalogDbContext aSecondContext = _fixture.CreateDbContext();
+        PixelflixCatalogDbContext aSecondContext = _fixture.CreateDbContext(true);
         var dbCategory = await aSecondContext.Categories.FindAsync(aCategory.Id);
 
         //Then
@@ -112,7 +112,7 @@ public class CategoryRepositoryTest
         await aCategoryRepository.Update(aCategory, CancellationToken.None);
         await dbContext.SaveChangesAsync(CancellationToken.None);
 
-        PixelflixCatalogDbContext aSecondContext = _fixture.CreateDbContext();
+        PixelflixCatalogDbContext aSecondContext = _fixture.CreateDbContext(true);
         var dbCategory = await aSecondContext.Categories.FindAsync(aCategory.Id);
 
         //Then
@@ -143,7 +143,7 @@ public class CategoryRepositoryTest
         await aCategoryRepository.Delete(aCategory, CancellationToken.None);
         await dbContext.SaveChangesAsync(CancellationToken.None);
 
-        PixelflixCatalogDbContext aSecondContext = _fixture.CreateDbContext();
+        PixelflixCatalogDbContext aSecondContext = _fixture.CreateDbContext(true);
         var dbCategory = await aSecondContext.Categories.FindAsync(aCategory.Id);
 
         //Then
@@ -186,5 +186,27 @@ public class CategoryRepositoryTest
             category.IsActive.Should().Be(aItem.IsActive);
             category.CreatedAt.Should().Be(aItem.CreatedAt);
         }
+    }
+
+    [Fact(DisplayName = "CategoryRepository Integration Search test - Empty results should return empty")]
+    [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
+    public async Task givenAValidParams_whenCallsSearchAndEmptyTotal_shouldReturnEmpty()
+    {
+        //Given
+        PixelflixCatalogDbContext dbContext = _fixture.CreateDbContext();
+        var aCategoryRepository = new Repository.CategoryRepository(dbContext);
+
+        var searchRequest = new SearchRepositoryRequest(1, 20, "", "", SearchOrder.Asc);
+
+        //When
+        var categoryListResponse = await aCategoryRepository.Search(searchRequest, CancellationToken.None);
+
+        //Then
+        categoryListResponse.Should().NotBeNull();
+        categoryListResponse.Items.Should().NotBeNull();
+        categoryListResponse.CurrentPage.Should().Be(searchRequest.Page);
+        categoryListResponse.PerPage.Should().Be(searchRequest.PerPage);
+        categoryListResponse.Total.Should().Be(0);
+        categoryListResponse.Items.Should().HaveCount(0);
     }
 }
