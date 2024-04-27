@@ -11,13 +11,15 @@ public class CategoryRepositoryTestFixtureCollection : ICollectionFixture<Catego
     
 public class CategoryRepositoryTestFixture : BaseFixture
 {
-    public PixelflixCatalogDbContext CreateDbContext()
+    public PixelflixCatalogDbContext CreateDbContext(bool preserveData = false)
     {
         var dbContext = new PixelflixCatalogDbContext(
             new DbContextOptionsBuilder<PixelflixCatalogDbContext>()
             .UseInMemoryDatabase("integration-tests-db")
             .Options
         );
+
+        if (preserveData == false) dbContext.Database.EnsureDeleted();
 
         return dbContext;
     }
