@@ -209,4 +209,51 @@ public class CategoryRepositoryTest
         categoryListResponse.Total.Should().Be(0);
         categoryListResponse.Items.Should().HaveCount(0);
     }
+
+    [Theory(DisplayName = "CategoryRepository Integration Search test with page param")]
+    [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
+    [InlineData(10, 1, 5, 5)]
+    [InlineData(10, 2, 5, 5)]
+    [InlineData(7, 2, 5, 2)]
+    [InlineData(7, 3, 5, 0)]
+    public async Task givenAValidParams_whenCallsSearchWithPagination_shouldReturnTotalPaginated(
+        int totalCategoriesGenerated,
+        int page,
+        int perPage,
+        int expetedItemsQuantity
+        )
+    {
+        //Given
+        PixelflixCatalogDbContext dbContext = _fixture.CreateDbContext();
+        var categoriesList = _fixture.GetValidCategoryList(totalCategoriesGenerated);
+        var aCategoryRepository = new Repository.CategoryRepository(dbContext);
+
+        await dbContext.AddRangeAsync(categoriesList);
+        await dbContext.SaveChangesAsync(CancellationToken.None);
+
+        var searchRequest = new SearchRepositoryRequest(page, perPage, "", "", SearchOrder.Asc);
+
+        //When
+        var categoryListResponse = await aCategoryRepository.Search(searchRequest, CancellationToken.None);
+
+        //Then
+        categoryListResponse.Should().NotBeNull();
+        categoryListResponse.Items.Should().NotBeNull();
+        categoryListResponse.CurrentPage.Should().Be(searchRequest.Page);
+        categoryListResponse.PerPage.Should().Be(searchRequest.PerPage);
+        categoryListResponse.Total.Should().Be(totalCategoriesGenerated);
+        categoryListResponse.Items.Should().HaveCount(expetedItemsQuantity);
+
+        foreach (var category in categoriesList)
+        {
+            var aItem = categoriesList.Find(item => item.Id == category.Id);
+            aItem.Should().NotBeNull();
+
+            category!.Id.Should().Be(aItem.Id);
+            category.Name.Should().Be(aItem.Name);
+            category.Description.Should().Be(aItem.Description);
+            category.IsActive.Should().Be(aItem.IsActive);
+            category.CreatedAt.Should().Be(aItem.CreatedAt);
+        }
+    }
 }

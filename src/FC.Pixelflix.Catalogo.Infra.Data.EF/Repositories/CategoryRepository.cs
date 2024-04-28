@@ -40,7 +40,10 @@ public class CategoryRepository : ICategoryRepository
     public async Task<SearchRepositoryResponse<Category>> Search(SearchRepositoryRequest request, CancellationToken cancellationToken)
     {
         var total = await _categories.CountAsync();
-        var items = await _categories.ToListAsync();
+
+        var toSkip = (request.Page - 1) * request.PerPage;
+
+        var items = await _categories.AsNoTracking().Skip(toSkip).Take(request.PerPage).ToListAsync();
 
         return new(request.Page, request.PerPage, total, items);
     }
