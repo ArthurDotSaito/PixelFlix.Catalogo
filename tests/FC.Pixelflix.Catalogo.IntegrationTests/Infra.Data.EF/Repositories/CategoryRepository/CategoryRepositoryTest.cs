@@ -256,4 +256,57 @@ public class CategoryRepositoryTest
             category.CreatedAt.Should().Be(aItem.CreatedAt);
         }
     }
+
+    [Theory(DisplayName = "CategoryRepository Integration Search Test with Text params")]
+    [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
+    [InlineData("Action", 1, 5, 1, 1)]
+    [InlineData("Horror", 1, 5, 2, 2)]
+    [InlineData("Horror", 2, 5, 0, 2)]
+    [InlineData("Sci-fi", 1, 5, 3, 3)]
+    [InlineData("Sci-fi", 1, 2, 2, 3)]
+    [InlineData("Sci-fi", 2, 2, 1, 3)]
+    [InlineData("Documen", 1, 2, 0, 0)]
+    [InlineData("IA", 1, 2, 1, 1)]
+    public async Task givenAValidCommand_whenCallsSearchWithText_shouldReturnCategories(
+    string searchTextParam,
+    int page,
+    int perPage,
+    int expetedItemsQuantityReturned,
+    int expetedTotalItemsQuantity
+    )
+    {
+        //Given
+        PixelflixCatalogDbContext dbContext = _fixture.CreateDbContext();
+        var categoriesNames = new List<string>() { "Action", "Horror", "Horror - Real Facts" , "Drama", "Sci-fi", "Sci-fi IA", "Sci-fi Space" };
+        var categoriesList = _fixture.GetValidCategoryListWithNames(categoriesNames);
+        var aCategoryRepository = new Repository.CategoryRepository(dbContext);
+
+        await dbContext.AddRangeAsync(categoriesList);
+        await dbContext.SaveChangesAsync(CancellationToken.None);
+
+        var searchRequest = new SearchRepositoryRequest(page, perPage, searchTextParam, "", SearchOrder.Asc);
+
+        //When
+        var categoryListResponse = await aCategoryRepository.Search(searchRequest, CancellationToken.None);
+
+        //Then
+        categoryListResponse.Should().NotBeNull();
+        categoryListResponse.Items.Should().NotBeNull();
+        categoryListResponse.CurrentPage.Should().Be(searchRequest.Page);
+        categoryListResponse.PerPage.Should().Be(searchRequest.PerPage);
+        categoryListResponse.Total.Should().Be(expetedTotalItemsQuantity);
+        categoryListResponse.Items.Should().HaveCount(expetedItemsQuantityReturned);
+
+        foreach (var category in categoriesList)
+        {
+            var aItem = categoriesList.Find(item => item.Id == category.Id);
+            aItem.Should().NotBeNull();
+
+            category!.Id.Should().Be(aItem.Id);
+            category.Name.Should().Be(aItem.Name);
+            category.Description.Should().Be(aItem.Description);
+            category.IsActive.Should().Be(aItem.IsActive);
+            category.CreatedAt.Should().Be(aItem.CreatedAt);
+        }
+    }
 }

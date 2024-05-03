@@ -80,4 +80,14 @@ public class CategoryRepositoryTestFixture : BaseFixture
         var categoriesList = Enumerable.Range(0, length).Select(_ => GetValidCategory()).ToList();
         return categoriesList;
     }
+
+    public List<Category> GetValidCategoryListWithNames(List<string> names)
+    {
+        return names.Select(name =>
+        {
+            var category = GetValidCategory();
+            category.Update(name);
+            return category;
+        }).ToList();
+    }
 }
