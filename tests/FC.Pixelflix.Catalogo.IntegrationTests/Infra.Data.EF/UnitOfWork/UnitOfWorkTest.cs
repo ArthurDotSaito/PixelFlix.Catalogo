@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using UnitOfWorkImplementation = FC.Pixelflix.Catalogo.Infra.Data.EF.UnitOfWork;
 
 
 namespace FC.Pixelflix.Catalogo.IntegrationTests.Infra.Data.EF.UnitOfWork;
@@ -15,7 +16,7 @@ public class UnitOfWorkTest
         _fixture = fixture;
     }
 
-    [Fact(DisplayName = "Commit")]
+    [Fact(DisplayName = nameof(Commit))]
     [Trait("Integration/Infra.Data ", "UnitOfWork - Persistence")]
 
     public async Task Commit()
@@ -25,7 +26,7 @@ public class UnitOfWorkTest
         var exampleCategoriesList = _fixture.GetValidCategoryList();
         await dbContext.AddRangeAsync(exampleCategoriesList);
 
-        var unitOfWork = new UnitOfWork(dbContext);
+        var unitOfWork = new UnitOfWorkImplementation(dbContext);
         
         //when
         await unitOfWork.Commit(CancellationToken.None);
