@@ -14,4 +14,9 @@ public class UnitOfWork : IUnitOfWork
     {
         return _dbContext.SaveChangesAsync(aCancellationToken);
     }
+
+    public Task Rollback(CancellationToken aCancellationToken)
+    {
+        return Task.CompletedTask;
+    }
 }
