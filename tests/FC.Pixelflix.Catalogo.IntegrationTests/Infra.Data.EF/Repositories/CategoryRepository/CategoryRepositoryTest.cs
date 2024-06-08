@@ -4,7 +4,6 @@ using FC.Pixelflix.Catalogo.Infra.Data.EF;
 using Repository = FC.Pixelflix.Catalogo.Infra.Data.EF.Repositories;
 using FC.Pixelflix.Catalogo.Application.Exceptions;
 using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
-using FC.Pixelflix.Catalogo.Domain.Entities;
 
 namespace FC.Pixelflix.Catalogo.IntegrationTests.Infra.Data.EF.Repositories.CategoryRepository;
 
