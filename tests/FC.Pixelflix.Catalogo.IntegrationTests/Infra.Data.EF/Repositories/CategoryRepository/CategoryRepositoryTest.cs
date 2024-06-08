@@ -268,11 +268,11 @@ public class CategoryRepositoryTest
     [InlineData("Documen", 1, 2, 0, 0)]
     [InlineData("IA", 1, 2, 1, 1)]
     public async Task givenAValidCommand_whenCallsSearchWithText_shouldReturnCategories(
-    string searchTextParam,
-    int page,
-    int perPage,
-    int expetedItemsQuantityReturned,
-    int expetedTotalItemsQuantity
+        string searchTextParam,
+        int page,
+        int perPage,
+        int expetedItemsQuantityReturned,
+        int expetedTotalItemsQuantity
     )
     {
         //Given
@@ -309,4 +309,54 @@ public class CategoryRepositoryTest
             category.CreatedAt.Should().Be(aItem.CreatedAt);
         }
     }
+ 
+    [Theory(DisplayName = "CategoryRepository Integration Search Test with ordenation params")]
+    [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
+    [InlineData("name", "asc")]
+    public async Task givenAValidCommand_whenCallsSearchWithOrdenation_shouldReturnCategories(
+        string orderBy,
+        string order
+    )
+    {
+        //Given
+        PixelflixCatalogDbContext dbContext = _fixture.CreateDbContext();
+        var categoriesList = _fixture.GetValidCategoryList(10);
+        var aCategoryRepository = new Repository.CategoryRepository(dbContext);
+
+        await dbContext.AddRangeAsync(categoriesList);
+        await dbContext.SaveChangesAsync(CancellationToken.None);
+        
+        var searchOrder = order.ToLower() == "asc" ? SearchOrder.Asc : SearchOrder.Desc;
+        var searchRequest = new SearchRepositoryRequest(1, 20, "", orderBy, searchOrder);
+
+        //When
+        var categoryListResponse = await aCategoryRepository.Search(searchRequest, CancellationToken.None);
+
+        //Then
+        
+        var expectedOrderedList = _fixture.CloneCategoryListListAndOrderIt(categoriesList, orderBy, searchOrder);
+        
+        categoryListResponse.Should().NotBeNull();
+        categoryListResponse.Items.Should().NotBeNull();
+        categoryListResponse.CurrentPage.Should().Be(searchRequest.Page);
+        categoryListResponse.PerPage.Should().Be(searchRequest.PerPage);
+        categoryListResponse.Total.Should().Be(categoriesList.Count);
+        categoryListResponse.Items.Should().HaveCount(categoriesList.Count);
+        for (int i = 0; i < expectedOrderedList.Count; i++)
+        {
+            var expectedItem = expectedOrderedList[i];
+            var responseItem = categoryListResponse.Items[i];
+            
+            expectedItem.Should().NotBeNull();
+            responseItem.Should().NotBeNull();
+            responseItem!.Id.Should().Be(expectedItem.Id);
+            responseItem.Name.Should().Be(expectedItem.Name);
+            responseItem.Description.Should().Be(expectedItem.Description);
+            responseItem.IsActive.Should().Be(expectedItem.IsActive);
+            responseItem.CreatedAt.Should().Be(expectedItem.CreatedAt);   
+        }
+    }
+    
+    
+
 }

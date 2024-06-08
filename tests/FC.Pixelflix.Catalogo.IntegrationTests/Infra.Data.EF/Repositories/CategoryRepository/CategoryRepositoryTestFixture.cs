@@ -1,4 +1,5 @@
 ﻿using FC.Pixelflix.Catalogo.Domain.Entities;
+using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
 using FC.Pixelflix.Catalogo.Infra.Data.EF;
 using FC.Pixelflix.Catalogo.IntegrationTests.Base;
 using Microsoft.EntityFrameworkCore;
@@ -89,5 +90,19 @@ public class CategoryRepositoryTestFixture : BaseFixture
             category.Update(name);
             return category;
         }).ToList();
+    }
+
+    public List<Category> CloneCategoryListListAndOrderIt(List<Category> categories,string orderBy, SearchOrder searchOrder)
+    {
+        var newCategoriesList = new List<Category>(categories);
+        var newCategoriesListEnumerable = (orderBy, searchOrder) switch
+        {
+
+            ("name", SearchOrder.Asc) => newCategoriesList.OrderBy(items => items.Name),
+            ("name", SearchOrder.Desc) => newCategoriesList.OrderByDescending(items => items.Name),
+            _ => newCategoriesList.OrderBy(items => items.Name),
+        };
+
+        return newCategoriesListEnumerable.ToList();
     }
 }
