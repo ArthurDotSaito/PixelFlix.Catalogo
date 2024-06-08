@@ -41,7 +41,7 @@ public class CategoryRepository : ICategoryRepository
     {
         var toSkip = (request.Page - 1) * request.PerPage;
         var query = _categories.AsNoTracking();
-        query = query.OrderBy(item => item.Name);
+        query = AddOrderToQuery(query, request.OrderBy, request.Order);
         if (!String.IsNullOrWhiteSpace(request.Search))
             query = query.Where(x => x.Name.Contains(request.Search));
 
@@ -51,5 +51,15 @@ public class CategoryRepository : ICategoryRepository
         return new(request.Page, request.PerPage, total, items);
     }
 
-
+    private IQueryable<Category> AddOrderToQuery(IQueryable<Category> aQuery, string orderProperty, SearchOrder orderBy)
+        => (orderProperty.ToLower(), orderBy) switch
+        {
+            ("name", SearchOrder.Asc) => aQuery.OrderBy(item => item.Name),
+            ("name", SearchOrder.Desc) => aQuery.OrderByDescending(item => item.Name),
+            ("id", SearchOrder.Asc) => aQuery.OrderBy(item => item.Id),
+            ("id", SearchOrder.Desc) => aQuery.OrderByDescending(item => item.Id),
+            ("createdat", SearchOrder.Asc) => aQuery.OrderBy(item => item.CreatedAt),
+            ("createdat", SearchOrder.Desc) => aQuery.OrderByDescending(item => item.CreatedAt),
+            _ => aQuery.OrderBy(item => item.Name),
+        };
 }

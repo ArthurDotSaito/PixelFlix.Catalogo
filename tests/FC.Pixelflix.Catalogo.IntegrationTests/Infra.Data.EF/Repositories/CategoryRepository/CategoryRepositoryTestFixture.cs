@@ -95,11 +95,15 @@ public class CategoryRepositoryTestFixture : BaseFixture
     public List<Category> CloneCategoryListListAndOrderIt(List<Category> categories,string orderBy, SearchOrder searchOrder)
     {
         var newCategoriesList = new List<Category>(categories);
-        var newCategoriesListEnumerable = (orderBy, searchOrder) switch
+        var newCategoriesListEnumerable = (orderBy.ToLower(), searchOrder) switch
         {
 
             ("name", SearchOrder.Asc) => newCategoriesList.OrderBy(items => items.Name),
             ("name", SearchOrder.Desc) => newCategoriesList.OrderByDescending(items => items.Name),
+            ("id", SearchOrder.Asc) => newCategoriesList.OrderBy(items => items.Id),
+            ("id", SearchOrder.Desc) => newCategoriesList.OrderByDescending(items => items.Id),
+            ("createdat", SearchOrder.Asc) => newCategoriesList.OrderBy(items => items.CreatedAt),
+            ("createdat", SearchOrder.Desc) => newCategoriesList.OrderByDescending(items => items.CreatedAt),
             _ => newCategoriesList.OrderBy(items => items.Name),
         };
 

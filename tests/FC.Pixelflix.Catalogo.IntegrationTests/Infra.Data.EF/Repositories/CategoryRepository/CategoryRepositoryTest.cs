@@ -313,7 +313,14 @@ public class CategoryRepositoryTest
     [Theory(DisplayName = "CategoryRepository Integration Search Test with ordenation params")]
     [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
     [InlineData("name", "asc")]
-    public async Task givenAValidCommand_whenCallsSearchWithOrdenation_shouldReturnCategories(
+    [InlineData("name", "desc")]
+    [InlineData("id", "asc")]
+    [InlineData("id", "desc")]
+    [InlineData("createdAt", "asc")]
+    [InlineData("createdAt", "desc")]
+    [InlineData("", "asc")]
+    
+    public async Task givenAValidCommand_whenCallsSearchWithOrdenationAsc_shouldReturnCategories(
         string orderBy,
         string order
     )
@@ -356,7 +363,4 @@ public class CategoryRepositoryTest
             responseItem.CreatedAt.Should().Be(expectedItem.CreatedAt);   
         }
     }
-    
-    
-
 }
