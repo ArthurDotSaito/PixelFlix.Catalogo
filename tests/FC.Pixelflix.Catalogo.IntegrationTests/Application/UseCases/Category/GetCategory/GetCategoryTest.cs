@@ -7,7 +7,7 @@ using UseCase = FC.Pixelflix.Catalogo.Application.UseCases.Category.GetCategory;
 
 namespace FC.Pixelflix.Catalogo.IntegrationTests.Application.UseCases.Category.GetCategory;
 
-[Collection(nameof(GetCategoryTestFixture))]
+[Collection(nameof(GetCategoryTestFixtureCollection))]
 public class GetCategoryTest
 {
     private readonly GetCategoryTestFixture _fixture;
@@ -45,24 +45,25 @@ public class GetCategoryTest
     }
 
     [Fact(DisplayName = nameof(GivenValidId_whenCallsGetCategoryWhichDoesntExist_shouldReturnNotFound))]
-    [Trait("Application", "GetCategory - useCases")]
+    [Trait("Integration/Application", "GetCategory - useCases")]
     public async Task GivenValidId_whenCallsGetCategoryWhichDoesntExist_shouldReturnNotFound()
     {
         //given
-        var aRepository = _fixture.GetMockRepository();
-        var aGuid = Guid.NewGuid();
+        var dbContext = _fixture.CreateDbContext();
+        var aCategory = _fixture.GetValidCategory();
 
-        aRepository.Setup(category => category.Get(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new NotFoundException($"Category '{aGuid}' was not found"));
-        var request = new GetCategoryRequest(aGuid);
-        var useCase = new UseCase.GetCategory(aRepository.Object);
-
+        dbContext.AddRangeAsync(aCategory);
+        dbContext.SaveChanges();
+        var repository = new CategoryRepository(dbContext);
+        
+        var request = new GetCategoryRequest(Guid.NewGuid());
+        var useCase = new UseCase.GetCategory(repository);
+        
         //when
         var aTask = async () => await useCase.Handle(request, CancellationToken.None);
 
         //then
-        await aTask.Should().ThrowAsync<NotFoundException>();
-        aRepository.Verify(a => a.Get(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
+        await aTask.Should().ThrowAsync<NotFoundException>().WithMessage($"Category '{request.Id}' not found.");
     }
     
 }
