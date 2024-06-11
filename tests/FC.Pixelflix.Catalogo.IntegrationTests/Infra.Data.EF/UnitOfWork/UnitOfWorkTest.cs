@@ -41,7 +41,7 @@ public class UnitOfWorkTest
     [Fact(DisplayName = nameof(Rollback))]
     [Trait("Integration/Infra.Data ", "UnitOfWork - Persistence")]
     public async Task Rollback()
-    {
+    {           
         //given
         var dbContext = _fixture.CreateDbContext();
         var unitOfWork = new UnitOfWorkImplementation(dbContext);
