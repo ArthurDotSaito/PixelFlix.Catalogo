@@ -1,5 +1,9 @@
-﻿using FC.Pixelflix.Catalogo.Infra.Data.EF.Repositories;
+﻿using FC.Pixelflix.Catalogo.Application.Exceptions;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.GetCategory.Dto;
+using FC.Pixelflix.Catalogo.Infra.Data.EF.Repositories;
+using FluentAssertions;
 using Xunit;
+using UseCase = FC.Pixelflix.Catalogo.Application.UseCases.Category.GetCategory;
 
 namespace FC.Pixelflix.Catalogo.IntegrationTests.Application.UseCases.Category.GetCategory;
 
@@ -20,17 +24,18 @@ public class GetCategoryTest
         //given
         var dbContext = _fixture.CreateDbContext();
         var aCategory = _fixture.GetValidCategory();
+
+        dbContext.AddRangeAsync(aCategory);
+        dbContext.SaveChanges();
         var repository = new CategoryRepository(dbContext);
+        
         var request = new GetCategoryRequest(aCategory.Id);
-        var useCase = new UseCase.GetCategory(aRepository.Object);
+        var useCase = new UseCase.GetCategory(repository);
 
         //when
         var response = await useCase.Handle(request, CancellationToken.None);
 
         //then
-        aRepository.Verify(a => a.Get(It.IsAny<Guid>(), It.IsAny<CancellationToken>()),
-            Times.Once);
-
         response.Should().NotBeNull();
         response.Id.Should().Be(aCategory.Id);
         response.Name.Should().Be(aCategory.Name);
