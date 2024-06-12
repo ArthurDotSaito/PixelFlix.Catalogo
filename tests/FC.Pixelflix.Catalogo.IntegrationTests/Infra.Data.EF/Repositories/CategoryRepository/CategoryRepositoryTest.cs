@@ -318,7 +318,6 @@ public class CategoryRepositoryTest
     [InlineData("createdAt", "asc")]
     [InlineData("createdAt", "desc")]
     [InlineData("", "asc")]
-    
     public async Task givenAValidCommand_whenCallsSearchWithOrdenationAsc_shouldReturnCategories(
         string orderBy,
         string order

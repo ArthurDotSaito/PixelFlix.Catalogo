@@ -1,4 +1,5 @@
 ﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
+using FC.Pixelflix.Catalogo.Domain.Exceptions;
 using FC.Pixelflix.Catalogo.Infra.Data.EF;
 using FC.Pixelflix.Catalogo.Infra.Data.EF.Repositories;
 using FluentAssertions;
@@ -104,5 +105,30 @@ public class CreateCategoryTestIT
         response.IsActive.Should().Be(request.IsActive);
         response.CreatedAt.Should().NotBe(null);
         response.CreatedAt.Should().NotBeSameDateAs(default);
+    }
+    
+    [Theory(DisplayName = nameof(GivenAInvalidCommand_whenCallsCreateCategory_shouldThrowsAnException))]
+    [Trait("Integration/Application", "CreateCategory - Use Cases")]
+    [MemberData(
+        nameof(CreateCategoryTestDataGenerator.GetInvalidInput),
+        parameters: 6,
+        MemberType = typeof(CreateCategoryTestDataGenerator)
+    )]
+    public async void GivenAInvalidCommand_whenCallsCreateCategory_shouldThrowsAnException(
+        CreateCategoryRequest request,
+        string expectedExceptionMessage)
+    {
+        //given
+        var dbContext = _fixture.CreateDbContext();
+        var repository = new CategoryRepository(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
+
+        var useCase = new useCases.CreateCategory(unitOfWork, repository);
+        
+        //when
+        var task = async () => await useCase.Execute(request, CancellationToken.None);
+
+        //then
+        await task.Should().ThrowAsync<EntityValidationException>().WithMessage(expectedExceptionMessage);
     }
 }
