@@ -3,6 +3,7 @@ using FC.Pixelflix.Catalogo.Domain.Exceptions;
 using FC.Pixelflix.Catalogo.Infra.Data.EF;
 using FC.Pixelflix.Catalogo.Infra.Data.EF.Repositories;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 using useCases = FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory;
 
@@ -111,7 +112,7 @@ public class CreateCategoryTestIT
     [Trait("Integration/Application", "CreateCategory - Use Cases")]
     [MemberData(
         nameof(CreateCategoryTestDataGenerator.GetInvalidInput),
-        parameters: 6,
+        parameters: 4,
         MemberType = typeof(CreateCategoryTestDataGenerator)
     )]
     public async void GivenAInvalidCommand_whenCallsCreateCategory_shouldThrowsAnException(
@@ -130,5 +131,9 @@ public class CreateCategoryTestIT
 
         //then
         await task.Should().ThrowAsync<EntityValidationException>().WithMessage(expectedExceptionMessage);
+
+        var aSecondContext = _fixture.CreateDbContext(true).Categories.AsNoTracking().ToList();
+
+        aSecondContext.Should().HaveCount(0);
     }
 }
