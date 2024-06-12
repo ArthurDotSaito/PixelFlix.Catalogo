@@ -64,15 +64,44 @@ public class CreateCategoryTestIT
         var useCase = new useCases.CreateCategory(unitOfWork, repository);
 
         var request = new CreateCategoryRequest(_fixture.GetValidRequest().Name);
-
+        //when
         var response = await useCase.Execute(request, CancellationToken.None);
 
+        //then
         response.Should().NotBeNull();
         response.Id.Should().NotBeEmpty();
         response.Id.Should().NotBe(default(Guid));
         response.Name.Should().Be(request.Name);
         response.Description.Should().Be("");
         response.IsActive.Should().Be(true);
+        response.CreatedAt.Should().NotBe(null);
+        response.CreatedAt.Should().NotBeSameDateAs(default);
+    }
+    
+    [Fact(DisplayName = nameof(GivenAInvalidCommandWitNameAndDescription_whenCallsCreateCategory_shouldPersistCategory))]
+    [Trait("Integration/Application", "CreateCategory - Use Cases")]
+    public async void GivenAInvalidCommandWitNameAndDescription_whenCallsCreateCategory_shouldPersistCategory()
+    {
+        //given
+        var dbContext = _fixture.CreateDbContext();
+        var repository = new CategoryRepository(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
+
+        var useCase = new useCases.CreateCategory(unitOfWork, repository);
+
+        var aCategoryRequest = _fixture.GetValidRequest();
+        var request = new CreateCategoryRequest(aCategoryRequest.Name,aCategoryRequest.Description);
+        
+        //when
+        var response = await useCase.Execute(request, CancellationToken.None);
+
+        //then
+        response.Should().NotBeNull();
+        response.Id.Should().NotBeEmpty();
+        response.Id.Should().NotBe(default(Guid));
+        response.Name.Should().Be(request.Name);
+        response.Description.Should().Be(request.Description);
+        response.IsActive.Should().Be(request.IsActive);
         response.CreatedAt.Should().NotBe(null);
         response.CreatedAt.Should().NotBeSameDateAs(default);
     }

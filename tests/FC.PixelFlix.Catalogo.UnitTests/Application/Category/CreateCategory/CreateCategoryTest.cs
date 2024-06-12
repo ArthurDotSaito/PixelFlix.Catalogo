@@ -102,9 +102,9 @@ public class CreateCategoryTest
         output.CreatedAt.Should().NotBeSameDateAs(default);
     }
 
-    [Fact(DisplayName = nameof(GivenAInvalidCommandWitNameAndDescription_whenCallsCreateCategory_shouldBeOk))]
+    [Fact(DisplayName = nameof(GivenAInvalidCommandWitNameAndDescription_whenCallsCreateCategory_shouldPersistCategory))]
     [Trait("Application", "CreateCategory - Use Cases")]
-    public async void GivenAInvalidCommandWitNameAndDescription_whenCallsCreateCategory_shouldBeOk()
+    public async void GivenAInvalidCommandWitNameAndDescription_whenCallsCreateCategory_shouldPersistCategory()
     {
         var repositoryMock = _fixture.GetMockRepository();
         var unitOfWorkMock = _fixture.GetMockUnitOfWork();
