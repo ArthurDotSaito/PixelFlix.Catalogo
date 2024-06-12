@@ -1,4 +1,5 @@
-﻿using FC.Pixelflix.Catalogo.Infra.Data.EF;
+﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
+using FC.Pixelflix.Catalogo.Infra.Data.EF;
 using FC.Pixelflix.Catalogo.Infra.Data.EF.Repositories;
 using FluentAssertions;
 using Xunit;
@@ -47,6 +48,31 @@ public class CreateCategoryTestIT
         response.Name.Should().Be(request.Name);
         response.Description.Should().Be(request.Description);
         response.IsActive.Should().Be(request.IsActive);
+        response.CreatedAt.Should().NotBe(null);
+        response.CreatedAt.Should().NotBeSameDateAs(default);
+    }
+    
+    [Fact(DisplayName = nameof(GivenAValidCommandWithNameOnly_whenCallsCreateCategory_shouldPersistACategory))]
+    [Trait("Integration/Application", "CreateCategory - Use Cases")]
+    public async void GivenAValidCommandWithNameOnly_whenCallsCreateCategory_shouldPersistACategory()
+    {
+        //given
+        var dbContext = _fixture.CreateDbContext();
+        var repository = new CategoryRepository(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
+
+        var useCase = new useCases.CreateCategory(unitOfWork, repository);
+
+        var request = new CreateCategoryRequest(_fixture.GetValidRequest().Name);
+
+        var response = await useCase.Execute(request, CancellationToken.None);
+
+        response.Should().NotBeNull();
+        response.Id.Should().NotBeEmpty();
+        response.Id.Should().NotBe(default(Guid));
+        response.Name.Should().Be(request.Name);
+        response.Description.Should().Be("");
+        response.IsActive.Should().Be(true);
         response.CreatedAt.Should().NotBe(null);
         response.CreatedAt.Should().NotBeSameDateAs(default);
     }
