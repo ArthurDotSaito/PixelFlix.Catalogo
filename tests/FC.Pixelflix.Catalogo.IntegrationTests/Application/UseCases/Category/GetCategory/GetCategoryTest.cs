@@ -25,7 +25,7 @@ public class GetCategoryTest
         var dbContext = _fixture.CreateDbContext();
         var aCategory = _fixture.GetValidCategory();
 
-        dbContext.AddRangeAsync(aCategory);
+        await dbContext.AddRangeAsync(aCategory);
         dbContext.SaveChanges();
         var repository = new CategoryRepository(dbContext);
         
@@ -52,7 +52,7 @@ public class GetCategoryTest
         var dbContext = _fixture.CreateDbContext();
         var aCategory = _fixture.GetValidCategory();
 
-        dbContext.AddRangeAsync(aCategory);
+        await dbContext.AddRangeAsync(aCategory);
         dbContext.SaveChanges();
         var repository = new CategoryRepository(dbContext);
         

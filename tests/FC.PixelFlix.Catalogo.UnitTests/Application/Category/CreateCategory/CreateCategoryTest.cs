@@ -18,9 +18,9 @@ public class CreateCategoryTest
         _fixture = fixture;
     }
 
-    [Fact(DisplayName = nameof(GivenAValidCommand_whenCallsCreateCategory_shouldBeOk))]
+    [Fact(DisplayName = nameof(GivenAValidCommand_whenCallsCreateCategory_shouldReturnACategory))]
     [Trait("Application", "CreateCategory - Use Cases")]
-    public async void GivenAValidCommand_whenCallsCreateCategory_shouldBeOk()
+    public async void GivenAValidCommand_whenCallsCreateCategory_shouldReturnACategory()
     {
         var repositoryMock = _fixture.GetMockRepository();
         var unitOfWorkMock = _fixture.GetMockUnitOfWork();
@@ -57,7 +57,6 @@ public class CreateCategoryTest
         parameters: 12,
         MemberType = typeof(CreateCategoryDataGenerator)
     )]
-
     public async void GivenAInvalidCommand_whenCallsCreateCategory_shouldThrowsAnException(
         CreateCategoryRequest input, string expectedExceptionMessage)
     {
@@ -71,9 +70,9 @@ public class CreateCategoryTest
         await task.Should().ThrowAsync<EntityValidationException>().WithMessage(expectedExceptionMessage);
     }
 
-    [Fact(DisplayName = nameof(GivenAInvalidCommandWitName_whenCallsCreateCategory_shouldBeOk))]
+    [Fact(DisplayName = nameof(GivenAValidCommandWithName_whenCallsCreateCategory_shouldPersistCategory))]
     [Trait("Application", "CreateCategory - Use Cases")]
-    public async void GivenAInvalidCommandWitName_whenCallsCreateCategory_shouldBeOk()
+    public async void GivenAValidCommandWithName_whenCallsCreateCategory_shouldPersistCategory()
     {
         var repositoryMock = _fixture.GetMockRepository();
         var unitOfWorkMock = _fixture.GetMockUnitOfWork();
@@ -103,9 +102,9 @@ public class CreateCategoryTest
         output.CreatedAt.Should().NotBeSameDateAs(default);
     }
 
-    [Fact(DisplayName = nameof(GivenAInvalidCommandWitNameAndDescription_whenCallsCreateCategory_shouldBeOk))]
+    [Fact(DisplayName = nameof(GivenAInvalidCommandWitNameAndDescription_whenCallsCreateCategory_shouldPersistCategory))]
     [Trait("Application", "CreateCategory - Use Cases")]
-    public async void GivenAInvalidCommandWitNameAndDescription_whenCallsCreateCategory_shouldBeOk()
+    public async void GivenAInvalidCommandWitNameAndDescription_whenCallsCreateCategory_shouldPersistCategory()
     {
         var repositoryMock = _fixture.GetMockRepository();
         var unitOfWorkMock = _fixture.GetMockUnitOfWork();

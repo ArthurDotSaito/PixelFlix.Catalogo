@@ -19,7 +19,7 @@ public class CategoryRepositoryTest
 
     [Fact(DisplayName = "CategoryRepository Integration INSERT test")]
     [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
-    public async Task givenAValidCategory_whenCallsInsert_shouldBeOk()
+    public async Task givenAValidCategory_whenCallsInsert_shouldPersistACategory()
     {
         //Given
         PixelflixCatalogDbContext dbContext = _fixture.CreateDbContext();
@@ -44,7 +44,7 @@ public class CategoryRepositoryTest
 
     [Fact(DisplayName = "CategoryRepository Integration GET test")]
     [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
-    public async Task givenAValidCategory_whenCallsGet_shouldBeOk()
+    public async Task givenAValidCategory_whenCallsGet_shouldReturnACategory()
     {
         //Given
         PixelflixCatalogDbContext dbContext = _fixture.CreateDbContext();
@@ -318,7 +318,6 @@ public class CategoryRepositoryTest
     [InlineData("createdAt", "asc")]
     [InlineData("createdAt", "desc")]
     [InlineData("", "asc")]
-    
     public async Task givenAValidCommand_whenCallsSearchWithOrdenationAsc_shouldReturnCategories(
         string orderBy,
         string order
