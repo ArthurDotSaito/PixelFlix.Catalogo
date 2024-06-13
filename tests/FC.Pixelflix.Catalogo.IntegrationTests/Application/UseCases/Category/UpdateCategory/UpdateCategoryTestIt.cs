@@ -1,4 +1,5 @@
-﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
+﻿using FC.Pixelflix.Catalogo.Application.Exceptions;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCategory;
 using FC.Pixelflix.Catalogo.Infra.Data.EF;
 using FC.Pixelflix.Catalogo.Infra.Data.EF.Repositories;
@@ -145,5 +146,22 @@ public class UpdateCategoryTestIt
         response.IsActive.Should().Be(aCategory.IsActive!);
     }
     
-    
+    [Fact(DisplayName = nameof(GivenAInvalidId_whenCallsUpdateCategory_shouldReturnNotFound))]
+    [Trait("Integration/Application", "UpdateCategory - Use Cases")]
+    public async Task GivenAInvalidId_whenCallsUpdateCategory_shouldReturnNotFound()
+    {
+        //given
+        var dbContext = _fixture.CreateDbContext();
+        var repository = new CategoryRepository(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
+        var aRequest = _fixture.GetValidRequest();
+
+        var useCase = new UseCase.UpdateCategory(repository, unitOfWork);
+
+        //when
+        var aTask = async () => await useCase.Handle(aRequest, CancellationToken.None);
+
+        //then
+        await aTask.Should().ThrowAsync<NotFoundException>();
+    }
 }
