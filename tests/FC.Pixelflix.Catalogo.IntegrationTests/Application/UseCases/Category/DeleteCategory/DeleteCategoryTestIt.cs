@@ -55,7 +55,7 @@ public class DeleteCategoryTestIt
     }
     
     [Fact(DisplayName = nameof(GivenAInexistentCategory_whenCallsDeleteCategory_shouldThrowNotFound))]
-    [Trait("Application", "DeleteCategory - Use Cases")]
+    [Trait("Integration/Application ", "DeleteCategory - Use Cases")]
     public async Task GivenAInexistentCategory_whenCallsDeleteCategory_shouldThrowNotFound()
     {
         //given
