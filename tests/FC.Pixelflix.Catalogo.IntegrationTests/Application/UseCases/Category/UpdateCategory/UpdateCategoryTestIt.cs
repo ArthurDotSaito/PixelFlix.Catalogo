@@ -1,6 +1,7 @@
 ﻿using FC.Pixelflix.Catalogo.Application.Exceptions;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCategory;
+using FC.Pixelflix.Catalogo.Domain.Exceptions;
 using FC.Pixelflix.Catalogo.Infra.Data.EF;
 using FC.Pixelflix.Catalogo.Infra.Data.EF.Repositories;
 using FluentAssertions;
@@ -163,5 +164,35 @@ public class UpdateCategoryTestIt
 
         //then
         await aTask.Should().ThrowAsync<NotFoundException>();
+    }
+    
+    [Theory(DisplayName = nameof(GivenAInvalidAttribute_whenCallsUpdateCategory_shouldThrowsADomainException))]
+    [Trait("Integration/Application", "UpdateCategory - UseCases")]
+    [MemberData(
+        nameof(UpdateCategoryTestDataGenerator.GetInvalidInput),
+        parameters: 3,
+        MemberType = typeof(UpdateCategoryTestDataGenerator)
+    )]
+    public async void GivenAInvalidAttribute_whenCallsUpdateCategory_shouldThrowsADomainException(UpdateCategoryRequest request,
+        string expectedExcepitonMesssage)
+    {
+        //given
+        var dbContext = _fixture.CreateDbContext();
+        var someCategories = _fixture.GetValidCategoryList();
+        var repository = new CategoryRepository(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
+        
+        await dbContext.AddRangeAsync(someCategories);
+        await dbContext.SaveChangesAsync();
+        request.Id = someCategories.First().Id;
+
+        var useCase = new UseCase.UpdateCategory(repository, unitOfWork);
+
+        //when
+        var aTask = async () => await useCase.Handle(request, CancellationToken.None);
+
+        //then
+        await aTask.Should().ThrowAsync<EntityValidationException>()
+            .WithMessage(expectedExcepitonMesssage);
     }
 }
