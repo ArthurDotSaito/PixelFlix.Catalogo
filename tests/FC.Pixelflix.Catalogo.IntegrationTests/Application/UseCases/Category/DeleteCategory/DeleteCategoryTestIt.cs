@@ -1,4 +1,5 @@
-﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.DeleteCategory;
+﻿using FC.Pixelflix.Catalogo.Application.Exceptions;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.DeleteCategory;
 using FC.Pixelflix.Catalogo.Infra.Data.EF;
 using FC.Pixelflix.Catalogo.Infra.Data.EF.Repositories;
 using FluentAssertions;
@@ -51,6 +52,26 @@ public class DeleteCategoryTestIt
         dbCategoryDeleted.Should().BeNull();
         var dbCategories = await assertDbContext.Categories.ToListAsync();
         dbCategories.Should().HaveCount(categoriesToPersist.Count);
+    }
+    
+    [Fact(DisplayName = nameof(GivenAInexistentCategory_whenCallsDeleteCategory_shouldThrowNotFound))]
+    [Trait("Application", "DeleteCategory - Use Cases")]
+    public async Task GivenAInexistentCategory_whenCallsDeleteCategory_shouldThrowNotFound()
+    {
+        //given
+        var dbContext = _fixture.CreateDbContext();
+        var repository = new CategoryRepository(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
+
+        var request = new DeleteCategoryRequest(Guid.NewGuid());
+
+        var useCase = new useCase.DeleteCategory(repository, unitOfWork);
+
+        //when
+        var aTask = async () => await useCase.Handle(request, CancellationToken.None);
+
+        //then
+        await aTask.Should().ThrowAsync<NotFoundException>();
     }
     
 }
