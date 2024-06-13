@@ -17,9 +17,9 @@ public class DeleteCategoryTest
         _fixture = fixture;
     }
 
-    [Fact(DisplayName = nameof(GivenAValidId_whenCallsDeleteCategory_shouldBeOk))]
+    [Fact(DisplayName = nameof(GivenAValidId_whenCallsDeleteCategory_shouldDeleteCategory))]
     [Trait("Application", "DeleteCategory - Use Cases")]
-    public async Task GivenAValidId_whenCallsDeleteCategory_shouldBeOk()
+    public async Task GivenAValidId_whenCallsDeleteCategory_shouldDeleteCategory()
     {
         //given
         var aRepository = _fixture.GetMockRepository();
