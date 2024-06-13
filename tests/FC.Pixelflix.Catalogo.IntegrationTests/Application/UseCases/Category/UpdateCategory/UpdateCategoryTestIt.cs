@@ -20,14 +20,14 @@ public class UpdateCategoryTestIt
         _fixture = fixture;
     }
     
-    [Theory(DisplayName = nameof(GivenAValidId_whenCallsUpdateCategory_shouldReturnACategory))]
+    [Theory(DisplayName = nameof(GivenAValidId_whenCallsUpdateCategory_shouldUpdateACategory))]
     [Trait("Integration/Application", "UpdateCategory - UseCases")]
     [MemberData(
         nameof(UpdateCategoryTestDataGenerator.GetCategoriesToUpdate),
         parameters: 5,
         MemberType = typeof(UpdateCategoryTestDataGenerator)
     )]
-    public async Task GivenAValidId_whenCallsUpdateCategory_shouldReturnACategory(CategoryDomain.Category aCategory, UpdateCategoryRequest request)
+    public async Task GivenAValidId_whenCallsUpdateCategory_shouldUpdateACategory(CategoryDomain.Category aCategory, UpdateCategoryRequest request)
     {
         //given
         var dbContext = _fixture.CreateDbContext();
@@ -59,5 +59,48 @@ public class UpdateCategoryTestIt
         dbCategory.Description.Should().Be(request.Description);
         dbCategory.IsActive.Should().Be((bool)request.IsActive);
         dbCategory.CreatedAt.Should().Be(response.CreatedAt);
+    }
+    
+    [Theory(DisplayName = nameof(GivenAValidId_whenCallsUpdateCategoryWithoutIsActive_shouldUpdateACategory))]
+    [Trait("Integration/Application", "UpdateCategory - UseCases")]
+    [MemberData(
+        nameof(UpdateCategoryTestDataGenerator.GetCategoriesToUpdate),
+        parameters: 5,
+        MemberType = typeof(UpdateCategoryTestDataGenerator)
+    )]
+    public async Task GivenAValidId_whenCallsUpdateCategoryWithoutIsActive_shouldUpdateACategory(CategoryDomain.Category aCategory, UpdateCategoryRequest request)
+    {
+        //given
+        var dbContext = _fixture.CreateDbContext();
+        var repository = new CategoryRepository(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
+        var aRequestWithoutIsActive = new UpdateCategoryRequest(request.Id, request.Name, request.Description);
+
+        await dbContext.AddRangeAsync(_fixture.GetValidCategoryList());
+        var categoryTracked = await dbContext.AddAsync(aCategory);
+        await dbContext.SaveChangesAsync();
+        
+        // Detach the entity to simulate a new context
+        categoryTracked.State = EntityState.Detached;
+        
+        var useCase = new UseCase.UpdateCategory(repository, unitOfWork);
+        
+        //when
+        CategoryModelResponse response = await useCase.Handle(request, CancellationToken.None);
+        PixelflixCatalogDbContext aSecondContext = _fixture.CreateDbContext(true);
+        var dbCategory = await aSecondContext.Categories.FindAsync(response.Id);
+
+        //then
+        response.Should().NotBeNull();
+        response.Name.Should().Be(aRequestWithoutIsActive.Name);
+        response.Description.Should().Be(aRequestWithoutIsActive.Description);
+        response.IsActive.Should().Be((bool)request.IsActive!);
+
+        dbCategory.Should().NotBeNull();
+        dbCategory!.Name.Should().Be(request.Name);
+        dbCategory.Description.Should().Be(request.Description);
+        dbCategory.IsActive.Should().Be((bool)request.IsActive);
+        dbCategory.CreatedAt.Should().Be(response.CreatedAt);
+
     }
 }
