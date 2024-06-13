@@ -101,6 +101,49 @@ public class UpdateCategoryTestIt
         dbCategory.Description.Should().Be(request.Description);
         dbCategory.IsActive.Should().Be((bool)request.IsActive);
         dbCategory.CreatedAt.Should().Be(response.CreatedAt);
-
     }
+    
+        
+    [Theory(DisplayName = nameof(GivenAValidId_whenCallsUpdateCategoryWithNameOnly_shouldUpdateACategory))]
+    [Trait("Integration/Application", "UpdateCategory - UseCases")]
+    [MemberData(
+        nameof(UpdateCategoryTestDataGenerator.GetCategoriesToUpdate),
+        parameters: 5,
+        MemberType = typeof(UpdateCategoryTestDataGenerator)
+    )]
+    public async Task GivenAValidId_whenCallsUpdateCategoryWithNameOnly_shouldUpdateACategory(CategoryDomain.Category aCategory, UpdateCategoryRequest request)
+    {
+        //given
+        var dbContext = _fixture.CreateDbContext();
+        var repository = new CategoryRepository(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
+        var aRequestWithOnlyName = new UpdateCategoryRequest(request.Id, request.Name);
+
+        await dbContext.AddRangeAsync(_fixture.GetValidCategoryList());
+        var categoryTracked = await dbContext.AddAsync(aCategory);
+        await dbContext.SaveChangesAsync();
+        
+        // Detach the entity to simulate a new context
+        categoryTracked.State = EntityState.Detached;
+        
+        var useCase = new UseCase.UpdateCategory(repository, unitOfWork);
+        
+        //when
+        CategoryModelResponse response = await useCase.Handle(aRequestWithOnlyName, CancellationToken.None);
+        PixelflixCatalogDbContext aSecondContext = _fixture.CreateDbContext(true);
+        var dbCategory = await aSecondContext.Categories.FindAsync(response.Id);
+
+        //then
+        dbCategory.Should().NotBeNull();
+        dbCategory!.Name.Should().Be(aRequestWithOnlyName.Name);
+        dbCategory.Description.Should().Be(aCategory.Description);
+        dbCategory.IsActive.Should().Be(aCategory.IsActive);
+        dbCategory.CreatedAt.Should().Be(response.CreatedAt);
+        response.Should().NotBeNull();
+        response.Name.Should().Be(aRequestWithOnlyName.Name);
+        response.Description.Should().Be(aCategory.Description);
+        response.IsActive.Should().Be(aCategory.IsActive!);
+    }
+    
+    
 }
