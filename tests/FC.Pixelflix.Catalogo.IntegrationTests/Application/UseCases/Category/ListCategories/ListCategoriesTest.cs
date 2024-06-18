@@ -1,4 +1,5 @@
 ﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.ListCategories;
+using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
 using UseCase = FC.Pixelflix.Catalogo.Application.UseCases.Category.ListCategories;
 using FC.Pixelflix.Catalogo.Infra.Data.EF.Repositories;
 using FluentAssertions;
@@ -172,11 +173,64 @@ public class ListCategoriesTest
             var aItem = categoriesList.Find(item => item.Id == category.Id);
             aItem.Should().NotBeNull();
 
-            category!.Id.Should().Be(aItem.Id);
+            category!.Id.Should().Be(aItem!.Id);
             category.Name.Should().Be(aItem.Name);
             category.Description.Should().Be(aItem.Description);
             category.IsActive.Should().Be(aItem.IsActive);
             category.CreatedAt.Should().Be(aItem.CreatedAt);
+        }
+    }
+    
+        [Theory(DisplayName = "CategoryRepository Integration Search Test with ordenation params")]
+    [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
+    [InlineData("name", "asc")]
+    [InlineData("name", "desc")]
+    [InlineData("id", "asc")]
+    [InlineData("id", "desc")]
+    [InlineData("createdAt", "asc")]
+    [InlineData("createdAt", "desc")]
+    [InlineData("", "asc")]
+    public async Task givenAValidCommand_whenCallsSearchWithOrdenationAsc_shouldReturnCategories(
+        string orderBy,
+        string order
+    )
+    {
+        //Given
+        var dbContext = _fixture.CreateDbContext();
+        var categoriesList = _fixture.GetValidCategoryList(10);
+        var aCategoryRepository = new CategoryRepository(dbContext);
+
+        await dbContext.AddRangeAsync(categoriesList);
+        await dbContext.SaveChangesAsync(CancellationToken.None);
+        
+        var useCase = new UseCase.ListCategories(aCategoryRepository);
+        var searchOrder = order.ToLower() == "asc" ? SearchOrder.Asc : SearchOrder.Desc;
+        var searchRequest = new ListCategoriesRequest(1, 20, "", orderBy, searchOrder);
+
+        //When
+        var categoryListResponse = await useCase.Handle(searchRequest, CancellationToken.None);
+
+        //Then
+        var expectedOrderedList = _fixture.CloneCategoryListListAndOrderIt(categoriesList, orderBy, searchOrder);
+        
+        categoryListResponse.Should().NotBeNull();
+        categoryListResponse.Items.Should().NotBeNull();
+        categoryListResponse.Page.Should().Be(searchRequest.Page);
+        categoryListResponse.PerPage.Should().Be(searchRequest.PerPage);
+        categoryListResponse.Total.Should().Be(categoriesList.Count);
+        categoryListResponse.Items.Should().HaveCount(categoriesList.Count);
+        for (int i = 0; i < expectedOrderedList.Count; i++)
+        {
+            var expectedItem = expectedOrderedList[i];
+            var responseItem = categoryListResponse.Items[i];
+            
+            expectedItem.Should().NotBeNull();
+            responseItem.Should().NotBeNull();
+            responseItem!.Id.Should().Be(expectedItem.Id);
+            responseItem.Name.Should().Be(expectedItem.Name);
+            responseItem.Description.Should().Be(expectedItem.Description);
+            responseItem.IsActive.Should().Be(expectedItem.IsActive);
+            responseItem.CreatedAt.Should().Be(expectedItem.CreatedAt);   
         }
     }
 }
