@@ -181,8 +181,8 @@ public class ListCategoriesTest
         }
     }
     
-        [Theory(DisplayName = "CategoryRepository Integration Search Test with ordenation params")]
-    [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
+    [Theory(DisplayName = "Category List/Search Integration Search test with Ordenation param")]
+    [Trait("Integration/Application", "ListCategories - UseCases")]
     [InlineData("name", "asc")]
     [InlineData("name", "desc")]
     [InlineData("id", "asc")]
