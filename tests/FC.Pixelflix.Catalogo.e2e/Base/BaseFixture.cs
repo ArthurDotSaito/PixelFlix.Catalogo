@@ -7,7 +7,8 @@ namespace FC.Pixelflix.Catalogo.e2e.Base;
 public class BaseFixture
 {
     protected Faker Faker {  get; set; }
-
+    public ApiClient ApiClient { get; set; }
+    
     public BaseFixture()
     {
         Faker = new Faker("pt_BR");

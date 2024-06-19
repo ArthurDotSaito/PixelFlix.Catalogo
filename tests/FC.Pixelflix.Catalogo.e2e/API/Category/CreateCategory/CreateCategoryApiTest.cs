@@ -1,4 +1,6 @@
-﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
+﻿using System.Net;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
+using FluentAssertions;
 using Xunit;
 
 namespace FC.Pixelflix.Catalogo.e2e.API.Category.CreateCategory;
@@ -21,11 +23,13 @@ public class CreateCategoryApiTest
         var createCategoryRequest = _fixture.GetAValidCreateCategoryRequest();
         
         //when
-        var response = await _fixture.Api.Post<CategoryModelResponse>("/categories", createCategoryRequest);
+        var (responseMessage, response) = await _fixture.ApiClient.Post<CategoryModelResponse>("/categories", createCategoryRequest);
         
         //then
+        responseMessage.Should().NotBeNull();
+        responseMessage!.StatusCode.Should().Be(HttpStatusCode.Created);
         response.Should().NotBeNull();
-        response.Id.Should().NotBeEmpty();
+        response!.Id.Should().NotBeEmpty();
         response.Name.Should().Be(createCategoryRequest.Name);
         response.Description.Should().Be(createCategoryRequest.Description);
         response.IsActive.Should().Be(createCategoryRequest.IsActive);
