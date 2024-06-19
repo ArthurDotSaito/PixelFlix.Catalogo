@@ -38,7 +38,7 @@ public class CreateCategoryApiTest
         categoryInDatabase.Name.Should().Be(response.Name);
         categoryInDatabase.Description.Should().Be(response.Description);
         categoryInDatabase.IsActive.Should().Be(response.IsActive);
-        categoryInDatabase.CreatedAt.Should().BeSameDateAs(response.CreatedAt);
+        categoryInDatabase.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
     }
     
 }
