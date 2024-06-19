@@ -33,8 +33,4 @@
       <ProjectReference Include="..\..\src\FC.Pixelflix.Catalogo.Infra.Data.EF\FC.Pixelflix.Catalogo.Infra.Data.EF.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="API\Common\" />
-    </ItemGroup>
-
 </Project>
