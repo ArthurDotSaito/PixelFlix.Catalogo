@@ -5,6 +5,13 @@ namespace FC.Pixelflix.Catalogo.e2e.API.Common;
 
 public class CategoryBaseFixture : BaseFixture
 {
+    public CategoryPersistence Persistence;
+
+    public CategoryBaseFixture() : base()
+    {
+        Persistence = new CategoryPersistence(CreateDbContext());
+    }
+    
     public string GetValidCategoryName()
     {
         var aCategoryName = "";
