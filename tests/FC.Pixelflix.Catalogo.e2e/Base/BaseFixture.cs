@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using FC.Pixelflix.Catalogo.Infra.Data.EF;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
 
 namespace FC.Pixelflix.Catalogo.e2e.Base;
 

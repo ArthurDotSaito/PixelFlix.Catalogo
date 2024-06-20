@@ -13,11 +13,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FC.Pixelflix.Catalogo.Domai
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FC.Pixelflix.Catalogo.Application", "src\FC.Pixelflix.Catalogo.Application\FC.Pixelflix.Catalogo.Application.csproj", "{F1157A5E-E335-44A4-B9B5-2A50574B0361}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FC.Pixelflix.Catalogo.IntegrationTests", "tests\FC.Pixelflix.Catalogo.IntegrationTests\FC.Pixelflix.Catalogo.IntegrationTests.csproj", "{C2CF5E45-80DD-4845-88AC-9E6123FA040E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FC.Pixelflix.Catalogo.IntegrationTests", "tests\FC.Pixelflix.Catalogo.IntegrationTests\FC.Pixelflix.Catalogo.IntegrationTests.csproj", "{C2CF5E45-80DD-4845-88AC-9E6123FA040E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FC.Pixelflix.Catalogo.Infra.Data.EF", "src\FC.Pixelflix.Catalogo.Infra.Data.EF\FC.Pixelflix.Catalogo.Infra.Data.EF.csproj", "{FAF722A2-C355-489E-888D-F162AF8CF680}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FC.Pixelflix.Catalogo.Infra.Data.EF", "src\FC.Pixelflix.Catalogo.Infra.Data.EF\FC.Pixelflix.Catalogo.Infra.Data.EF.csproj", "{FAF722A2-C355-489E-888D-F162AF8CF680}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FC.Pixelflix.Catalogo.e2e", "tests\FC.Pixelflix.Catalogo.e2e\FC.Pixelflix.Catalogo.e2e.csproj", "{25255FFE-A37D-483D-91AA-6E54EFB855CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FC.Pixelflix.Catalogo.e2e", "tests\FC.Pixelflix.Catalogo.e2e\FC.Pixelflix.Catalogo.e2e.csproj", "{25255FFE-A37D-483D-91AA-6E54EFB855CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FC.Pixelflix.Catalogo.Api", "src\FC.Pixelflix.Catalogo.Api\FC.Pixelflix.Catalogo.Api.csproj", "{8CC29339-028D-4E6C-9D6B-1BAF1FF0B312}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +51,10 @@ Global
 		{25255FFE-A37D-483D-91AA-6E54EFB855CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25255FFE-A37D-483D-91AA-6E54EFB855CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25255FFE-A37D-483D-91AA-6E54EFB855CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CC29339-028D-4E6C-9D6B-1BAF1FF0B312}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CC29339-028D-4E6C-9D6B-1BAF1FF0B312}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CC29339-028D-4E6C-9D6B-1BAF1FF0B312}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CC29339-028D-4E6C-9D6B-1BAF1FF0B312}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 		{C2CF5E45-80DD-4845-88AC-9E6123FA040E} = {034E90BD-368C-4684-97B6-70895E3D67A8}
 		{FAF722A2-C355-489E-888D-F162AF8CF680} = {1F191A30-A034-468A-AF2B-FC46A76A27E2}
 		{25255FFE-A37D-483D-91AA-6E54EFB855CF} = {034E90BD-368C-4684-97B6-70895E3D67A8}
+		{8CC29339-028D-4E6C-9D6B-1BAF1FF0B312} = {1F191A30-A034-468A-AF2B-FC46A76A27E2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6956845C-7310-41F0-ABDB-D74BDCAED20F}

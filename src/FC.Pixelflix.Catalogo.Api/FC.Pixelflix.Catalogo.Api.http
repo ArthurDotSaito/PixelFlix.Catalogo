@@ -1,0 +1,6 @@
+@FC.Pixelflix.Catalogo.Api_HostAddress = http://localhost:5089
+
+GET {{FC.Pixelflix.Catalogo.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

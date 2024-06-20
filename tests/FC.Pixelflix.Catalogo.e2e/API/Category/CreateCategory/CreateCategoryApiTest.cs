@@ -9,13 +9,12 @@ namespace FC.Pixelflix.Catalogo.e2e.API.Category.CreateCategory;
 public class CreateCategoryApiTest
 {
     private readonly CreateCategoryApiTestFixture _fixture;
-    
     public CreateCategoryApiTest(CreateCategoryApiTestFixture fixture)
     {
         _fixture = fixture;
     }
 
-    [Fact(DisplayName = "")]
+    [Fact(DisplayName = nameof(GivenAValidCreateCategoryRequest_WhenCallsCreateCategory_ShouldCreateCategory))]
     [Trait("E2E/API", "Category Endpoints")]
     public async Task GivenAValidCreateCategoryRequest_WhenCallsCreateCategory_ShouldCreateCategory()
     {
