@@ -5,6 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
+        <PreserveCompilationContext>true</PreserveCompilationContext>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>
@@ -31,6 +32,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\src\FC.Pixelflix.Catalogo.Api\FC.Pixelflix.Catalogo.Api.csproj" />
       <ProjectReference Include="..\..\src\FC.Pixelflix.Catalogo.Infra.Data.EF\FC.Pixelflix.Catalogo.Infra.Data.EF.csproj" />
     </ItemGroup>
 

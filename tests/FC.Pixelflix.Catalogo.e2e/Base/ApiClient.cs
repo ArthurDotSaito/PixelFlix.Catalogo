@@ -12,14 +12,21 @@ public class ApiClient
         _client = client;
     }
     
-    public async Task<(HttpResponseMessage?, TResponse?)> Post<TResponse>(string url, object request)
+    public async Task<(HttpResponseMessage?, TResponse?)> Post<TResponse>(string url, object request) where TResponse: class
     {
         var responseMessage = await _client.PostAsync(url, new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json"));
-
+        
         var responseString = await responseMessage.Content.ReadAsStringAsync();
-        var response = JsonSerializer.Deserialize<TResponse>(responseString, new JsonSerializerOptions{
+        
+        TResponse? response = null;
+
+        if (!String.IsNullOrWhiteSpace(responseString))
+        {
+            response = JsonSerializer.Deserialize<TResponse>(responseString, new JsonSerializerOptions{
                 PropertyNameCaseInsensitive = true
             });
+
+        }
 
         return (responseMessage, response);
     }

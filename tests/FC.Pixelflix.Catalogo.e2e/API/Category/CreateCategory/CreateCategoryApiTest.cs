@@ -9,13 +9,12 @@ namespace FC.Pixelflix.Catalogo.e2e.API.Category.CreateCategory;
 public class CreateCategoryApiTest
 {
     private readonly CreateCategoryApiTestFixture _fixture;
-    
     public CreateCategoryApiTest(CreateCategoryApiTestFixture fixture)
     {
         _fixture = fixture;
     }
 
-    [Fact(DisplayName = "")]
+    [Fact(DisplayName = nameof(GivenAValidCreateCategoryRequest_WhenCallsCreateCategory_ShouldCreateCategory))]
     [Trait("E2E/API", "Category Endpoints")]
     public async Task GivenAValidCreateCategoryRequest_WhenCallsCreateCategory_ShouldCreateCategory()
     {
@@ -33,16 +32,16 @@ public class CreateCategoryApiTest
         response.Name.Should().Be(createCategoryRequest.Name);
         response.Description.Should().Be(createCategoryRequest.Description);
         response.IsActive.Should().Be(createCategoryRequest.IsActive);
-        response.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
+        response.CreatedAt.Should().NotBeSameDateAs(default);
 
-        var categoryInDatabase = _fixture.Persistence.GetById(response.Id);
+        var categoryInDatabase = await _fixture.Persistence.GetById(response.Id);
         
         categoryInDatabase.Should().NotBeNull();
-        categoryInDatabase.Id.Should().Be(response.Id);
+        categoryInDatabase!.Id.Should().Be(response.Id);
         categoryInDatabase.Name.Should().Be(response.Name);
         categoryInDatabase.Description.Should().Be(response.Description);
         categoryInDatabase.IsActive.Should().Be(response.IsActive);
-        categoryInDatabase.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
+        categoryInDatabase.CreatedAt.Should().NotBeSameDateAs(default);
     }
     
 }
