@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
+using Newtonsoft.Json.Linq;
 
 namespace FC.Pixelflix.Catalogo.e2e.Base;
 
@@ -22,7 +23,10 @@ public class ApiClient
 
         if (!String.IsNullOrWhiteSpace(responseString))
         {
-            response = JsonSerializer.Deserialize<TResponse>(responseString, new JsonSerializerOptions{
+            var responseObject = JObject.Parse(responseString);
+            var responseContent = responseObject["response"]?.ToString();
+            
+            response = JsonSerializer.Deserialize<TResponse>(responseContent!, new JsonSerializerOptions{
                 PropertyNameCaseInsensitive = true
             });
 
