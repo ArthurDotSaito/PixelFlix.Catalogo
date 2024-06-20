@@ -5,13 +5,14 @@ using FC.Pixelflix.Catalogo.Infra.Data.EF;
 using FC.Pixelflix.Catalogo.Infra.Data.EF.Repositories;
 using MediatR;
 
+
 namespace FC.Pixelflix.Catalogo.Api.Configurations;
 
 public static class UseCasesConfiguration
 {
     public static IServiceCollection AddUseCases(this IServiceCollection services)
     {
-        services.AddMediatR(typeof(CreateCategory)); //May be any other class which uses IRequestHandler
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateCategory>()); //May be any other class which uses IRequestHandler
         services.AddRepositories();
         return services;
     }

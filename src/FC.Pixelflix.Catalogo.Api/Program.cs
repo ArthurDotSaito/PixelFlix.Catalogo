@@ -2,7 +2,11 @@ using FC.Pixelflix.Catalogo.Api.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddUseCases().AddAndConfigureControllers();
+builder.Services
+    .AddAppConnections()
+    .AddUseCases()
+    .AddAndConfigureControllers();
+
 
 var app = builder.Build();
 app.UseDocumentation();
