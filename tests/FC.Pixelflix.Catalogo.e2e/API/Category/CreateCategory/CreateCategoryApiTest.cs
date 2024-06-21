@@ -67,7 +67,6 @@ public class CreateCategoryApiTest
         response.Type.Should().Be("UnprocessableEntity");
         response.Status.Should().Be((int) HttpStatusCode.UnprocessableEntity);
         response.Detail.Should().Be(expectedErrorMessageDetail);
-        
     }
     
 }

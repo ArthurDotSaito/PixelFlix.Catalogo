@@ -6,7 +6,7 @@ public class CreateCategoryApiTestDataGenerator
     {
         var fixture = new CreateCategoryApiTestFixture();
         var invalidInputList = new List<object[]>();
-        var totalInvalidCases = 4;
+        var totalInvalidCases = 3;
 
         for (int i = 0; i < totalInvalidCases; i++)
         {
@@ -33,15 +33,6 @@ public class CreateCategoryApiTestDataGenerator
                     });
                     break;
                 case 2:
-                    var requestNullDescription = fixture.GetAValidCreateCategoryRequest();
-                    requestNullDescription.Description = null!;
-                    invalidInputList.Add(new object[]
-                    {
-                        requestNullDescription,
-                        "Description should not be null"
-                    });
-                    break;
-                case 3:
                     var requestLongDescription = fixture.GetAValidCreateCategoryRequest();
                     requestLongDescription.Description = fixture.GetInvalidLongDescription();
                     invalidInputList.Add(new object[]

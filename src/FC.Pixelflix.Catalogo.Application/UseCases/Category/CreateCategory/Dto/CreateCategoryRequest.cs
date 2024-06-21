@@ -11,7 +11,7 @@ public class CreateCategoryRequest : IRequest<CategoryModelResponse>
     public CreateCategoryRequest(string name, string? description = null, bool isActive = true)
     {
         Name = name;
-        Description = description ?? "";
+        Description = description ?? "";    
         IsActive = isActive;
     }
 }
