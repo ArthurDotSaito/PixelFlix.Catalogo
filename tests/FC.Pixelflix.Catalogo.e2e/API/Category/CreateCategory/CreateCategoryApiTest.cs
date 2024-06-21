@@ -2,6 +2,7 @@
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
 
@@ -65,7 +66,7 @@ public class CreateCategoryApiTest
         response.Should().NotBeNull();
         response!.Title.Should().Be("One or more validation errors occurred.");
         response.Type.Should().Be("UnprocessableEntity");
-        response.Status.Should().Be((int) HttpStatusCode.UnprocessableEntity);
+        response.Status.Should().Be(StatusCodes.Status422UnprocessableEntity);
         response.Detail.Should().Be(expectedErrorMessageDetail);
     }
     
