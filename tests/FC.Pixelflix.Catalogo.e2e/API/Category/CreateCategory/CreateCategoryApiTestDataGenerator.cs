@@ -2,13 +2,13 @@
 
 public class CreateCategoryApiTestDataGenerator
 {
-    public static IEnumerable<object[]> GetInvalidInput(int times = 12)
+    public static IEnumerable<object[]> GetInvalidInput()
     {
         var fixture = new CreateCategoryApiTestFixture();
         var invalidInputList = new List<object[]>();
         var totalInvalidCases = 4;
 
-        for (int i = 0; i < times; i++)
+        for (int i = 0; i < totalInvalidCases; i++)
         {
             switch (i % totalInvalidCases)
             {
