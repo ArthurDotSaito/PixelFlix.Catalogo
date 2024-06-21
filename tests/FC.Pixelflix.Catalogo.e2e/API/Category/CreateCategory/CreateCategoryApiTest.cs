@@ -1,6 +1,9 @@
 ﻿using System.Net;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Xunit;
 
 namespace FC.Pixelflix.Catalogo.e2e.API.Category.CreateCategory;
@@ -42,6 +45,29 @@ public class CreateCategoryApiTest
         categoryInDatabase.Description.Should().Be(response.Description);
         categoryInDatabase.IsActive.Should().Be(response.IsActive);
         categoryInDatabase.CreatedAt.Should().NotBeSameDateAs(default);
+    }
+    
+    [Theory(DisplayName = nameof(GivenInvalidCreateCategoryRequest_WhenCallsCreateCategory_ShouldThrowUnprocessableEntityException))]
+    [Trait("E2E/API", "Category Endpoints")]
+    [MemberData(nameof(CreateCategoryApiTestDataGenerator.GetInvalidInput), MemberType = typeof(CreateCategoryApiTestDataGenerator))]
+    public async Task GivenInvalidCreateCategoryRequest_WhenCallsCreateCategory_ShouldThrowUnprocessableEntityException(
+        CreateCategoryRequest request,
+        string expectedErrorMessageDetail
+        )
+    {
+        //given
+        
+        //when
+        var (responseMessage, response) = await _fixture.ApiClient.Post<ProblemDetails>("/categories", request);
+        
+        //then
+        responseMessage.Should().NotBeNull();
+        responseMessage!.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
+        response.Should().NotBeNull();
+        response!.Title.Should().Be("One or more validation errors occurred.");
+        response.Type.Should().Be("UnprocessableEntity");
+        response.Status.Should().Be(StatusCodes.Status422UnprocessableEntity);
+        response.Detail.Should().Be(expectedErrorMessageDetail);
     }
     
 }
