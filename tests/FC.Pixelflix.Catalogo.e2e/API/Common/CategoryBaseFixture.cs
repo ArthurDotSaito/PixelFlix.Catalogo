@@ -1,4 +1,5 @@
-﻿using FC.Pixelflix.Catalogo.e2e.Base;
+﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
+using FC.Pixelflix.Catalogo.e2e.Base;
 using CategoryDomain = FC.Pixelflix.Catalogo.Domain.Entities.Category; 
 
 namespace FC.Pixelflix.Catalogo.e2e.API.Common;
@@ -67,5 +68,31 @@ public class CategoryBaseFixture : BaseFixture
 
         var categoriesList = Enumerable.Range(0, length).Select(_ => GetValidCategory()).ToList();
         return categoriesList;
+    }
+    
+    public string GetInvalidShortName()
+    {
+        var aShortName = Faker.Commerce.ProductName().Substring(0,2);
+        return aShortName;
+    }
+
+    public string GetInvalidLongName()
+    {
+        var longName = Faker.Commerce.ProductName(); ;
+        while (longName.Length < 255)
+        {
+            longName = $"{longName}{Faker.Commerce.ProductName()}";
+        }
+        return longName;
+    }
+
+    public string GetInvalidLongDescription()
+    {
+        var longDescription = Faker.Commerce.ProductDescription(); ;
+        while (longDescription.Length < 10000)
+        {
+            longDescription = $"{longDescription}{Faker.Commerce.ProductDescription()}";
+        }
+        return longDescription;
     }
 }
