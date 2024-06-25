@@ -18,7 +18,7 @@ public class CreateCategoryApiTest
     }
 
     [Fact(DisplayName = nameof(GivenAValidCreateCategoryRequest_WhenCallsCreateCategory_ShouldCreateCategory))]
-    [Trait("E2E/API", "Category Endpoints")]
+    [Trait("E2E/API", "Category/Create Endpoints")]
     public async Task GivenAValidCreateCategoryRequest_WhenCallsCreateCategory_ShouldCreateCategory()
     {
         //given
@@ -48,7 +48,7 @@ public class CreateCategoryApiTest
     }
     
     [Theory(DisplayName = nameof(GivenInvalidCreateCategoryRequest_WhenCallsCreateCategory_ShouldThrowUnprocessableEntityException))]
-    [Trait("E2E/API", "Category Endpoints")]
+    [Trait("E2E/API", "Category/Create Endpoints")]
     [MemberData(nameof(CreateCategoryApiTestDataGenerator.GetInvalidInput), MemberType = typeof(CreateCategoryApiTestDataGenerator))]
     public async Task GivenInvalidCreateCategoryRequest_WhenCallsCreateCategory_ShouldThrowUnprocessableEntityException(
         CreateCategoryRequest request,

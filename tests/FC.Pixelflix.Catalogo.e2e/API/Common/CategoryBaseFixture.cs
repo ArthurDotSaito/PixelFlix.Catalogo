@@ -59,13 +59,6 @@ public class CategoryBaseFixture : BaseFixture
 
     public List<CategoryDomain> GetValidCategoryList(int length = 10)
     {
-        var validData = new
-        {
-            Name = GetValidCategoryName(),
-            Description = GetValidCategoryDescription(),
-            IsActive = GetRandomIsActive()
-        };
-
         var categoriesList = Enumerable.Range(0, length).Select(_ => GetValidCategory()).ToList();
         return categoriesList;
     }
