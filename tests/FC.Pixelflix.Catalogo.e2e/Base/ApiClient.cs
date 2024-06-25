@@ -23,13 +23,20 @@ public class ApiClient
 
         if (!String.IsNullOrWhiteSpace(responseString))
         {
-            var responseObject = JObject.Parse(responseString);
-            var responseContent = responseObject["response"]?.ToString();
-            
-            response = JsonSerializer.Deserialize<TResponse>(responseContent!, new JsonSerializerOptions{
-                PropertyNameCaseInsensitive = true
-            });
-
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var responseObject = JObject.Parse(responseString); 
+                var responseData = responseObject["response"]?.ToString();  
+                response = JsonSerializer.Deserialize<TResponse>(responseData!, new JsonSerializerOptions{
+                    PropertyNameCaseInsensitive = true
+                });   
+            }
+            else
+            {
+                response = JsonSerializer.Deserialize<TResponse>(responseString!, new JsonSerializerOptions{
+                    PropertyNameCaseInsensitive = true
+                }); 
+            }
         }
 
         return (responseMessage, response);
@@ -45,10 +52,7 @@ public class ApiClient
 
         if (!String.IsNullOrWhiteSpace(responseString))
         {
-            var responseObject = JObject.Parse(responseString);
-            var responseContent = responseObject["response"]?.ToString();
-            
-            response = JsonSerializer.Deserialize<TResponse>(responseContent!, new JsonSerializerOptions{
+            response = JsonSerializer.Deserialize<TResponse>(responseString, new JsonSerializerOptions{
                 PropertyNameCaseInsensitive = true
             });
 
