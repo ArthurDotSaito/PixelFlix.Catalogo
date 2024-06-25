@@ -1,4 +1,8 @@
-﻿using FC.Pixelflix.Catalogo.e2e.API.Common;
+﻿using System.Net;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
+using FC.Pixelflix.Catalogo.e2e.API.Common;
+using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Xunit;
 
 namespace FC.Pixelflix.Catalogo.e2e.API.Category.GetCategoryById;
@@ -26,11 +30,13 @@ public class GetCategoryApiTestFixture : CategoryBaseFixture
         
         var aCategory = categoriesList[10];
         //when
-        var (response, responseMessage) = await _fixture.ApiClient.Get<CategoryModelResponse>($"/categories/{aCategory.Id}");
+        var (responseMessage, response) = await _fixture.ApiClient.Get<CategoryModelResponse>($"/categories/{aCategory.Id}");
 
         //then
+        responseMessage.Should().NotBeNull();
+        responseMessage.StatusCode.Should().Be((HttpStatusCode) StatusCodes.Status200OK);
         response.Should().NotBeNull();
-        response.Id.Should().Be(aCategory.Id);
+        response!.Id.Should().Be(aCategory.Id);
         response.Name.Should().Be(aCategory.Name);
         response.Description.Should().Be(aCategory.Description);
         response.IsActive.Should().Be(aCategory.IsActive);
