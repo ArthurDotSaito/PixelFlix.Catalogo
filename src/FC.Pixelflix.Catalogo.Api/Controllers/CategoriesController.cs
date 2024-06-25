@@ -1,5 +1,6 @@
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.GetCategory.Dto;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,5 +24,13 @@ public class CategoriesController : ControllerBase
     {
         var response =  await _mediator.Send(request, cancellationToken);
         return CreatedAtAction(nameof(Create), new {response.Id, response});
+    }
+    
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status200OK)]
+    public async Task<IActionResult> Create([FromRoute] Guid id, CancellationToken cancellationToken)
+    {
+        var response =  await _mediator.Send(new GetCategoryRequest(id), cancellationToken);
+        return Ok(response);
     }
 }

@@ -34,7 +34,7 @@ public class GetCategoryApiTestFixture : CategoryBaseFixture
 
         //then
         responseMessage.Should().NotBeNull();
-        responseMessage.StatusCode.Should().Be((HttpStatusCode) StatusCodes.Status200OK);
+        responseMessage!.StatusCode.Should().Be((HttpStatusCode) StatusCodes.Status200OK);
         response.Should().NotBeNull();
         response!.Id.Should().Be(aCategory.Id);
         response.Name.Should().Be(aCategory.Name);
