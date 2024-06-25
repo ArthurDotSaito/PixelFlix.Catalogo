@@ -16,6 +16,12 @@ public class CategoryPersistence
     public async Task<CategoryDomain?> GetById(Guid anId)
     {
         return await _context.Categories.AsNoTracking().FirstOrDefaultAsync(c=>c.Id == anId);
-    } 
+    }
+
+    public async Task InsertList(List<CategoryDomain> categories)
+    {
+        await _context.Categories.AddRangeAsync(categories);
+        await _context.SaveChangesAsync();
+    }
     
 }
