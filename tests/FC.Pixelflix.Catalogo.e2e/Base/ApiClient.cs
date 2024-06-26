@@ -61,4 +61,24 @@ public class ApiClient
         return (responseMessage, response);
     }
 
+    public async Task<(HttpResponseMessage?, TResponse?)> Delete<TResponse>(string url) where TResponse: class
+    {
+        var responseMessage = await _client.DeleteAsync(url);
+        
+        var responseString = await responseMessage.Content.ReadAsStringAsync();
+        
+        TResponse? response = null;
+
+        if (!String.IsNullOrWhiteSpace(responseString))
+        {
+            response = JsonSerializer.Deserialize<TResponse>(responseString, new JsonSerializerOptions{
+                PropertyNameCaseInsensitive = true
+            });
+
+        }
+
+        return (responseMessage, response);
+    }
+    
+    
 }

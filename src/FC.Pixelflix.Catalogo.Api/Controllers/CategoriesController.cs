@@ -1,5 +1,6 @@
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.DeleteCategory;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.GetCategory.Dto;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -27,10 +28,21 @@ public class CategoriesController : ControllerBase
     }
     
     [HttpGet("{id:guid}")]
-    [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(CategoryModelResponse),StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status404NotFound)]
+    
     public async Task<IActionResult> Create([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var response =  await _mediator.Send(new GetCategoryRequest(id), cancellationToken);
         return Ok(response);
+    }
+    
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new DeleteCategoryRequest(id), cancellationToken);
+        return NoContent();
     }
 }
