@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using FC.Pixelflix.Catalogo.Application.Exceptions;
 using FC.Pixelflix.Catalogo.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -29,6 +30,13 @@ public class ApiGlobalExceptionFilter : IExceptionFilter
             details.Status = StatusCodes.Status422UnprocessableEntity;
             details.Type = "UnprocessableEntity";
             details.Detail = ex!.Message;
+        }
+        else if (exception is NotFoundException)
+        {
+            details.Title = "Not Found";
+            details.Status = StatusCodes.Status404NotFound;
+            details.Type = "NotFound";
+            details.Detail = exception!.Message;   
         }
         else
         {
