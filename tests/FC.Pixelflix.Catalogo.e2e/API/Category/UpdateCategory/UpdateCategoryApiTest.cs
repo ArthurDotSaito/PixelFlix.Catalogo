@@ -31,12 +31,19 @@ public class UpdateCategoryApiTest
         
         //then
         responseMessage.Should().NotBeNull();
-        responseMessage!.StatusCode.Should().Be((HttpStatusCode) StatusCodes.Status200OK);
+        responseMessage!.StatusCode.Should().Be(HttpStatusCode.OK);
         response.Should().NotBeNull();
         response!.Id.Should().Be(aCategory.Id);
-        response.Name.Should().Be(aCategory.Name);
-        response.Description.Should().Be(aCategory.Description);
-        response.IsActive.Should().Be(aCategory.IsActive);
-        response.CreatedAt.Should().Be(aCategory.CreatedAt);
+        response.Name.Should().Be(request.Name);
+        response.Description.Should().Be(request.Description);
+        response.IsActive.Should().Be((bool)request.IsActive!);
+
+        var categoryInDatabase = await _fixture.Persistence.GetById(aCategory.Id);
+        
+        categoryInDatabase.Should().NotBeNull();
+        categoryInDatabase!.Id.Should().Be(request.Id);
+        categoryInDatabase.Name.Should().Be(request.Name);
+        categoryInDatabase.Description.Should().Be(request.Description);
+        categoryInDatabase.IsActive.Should().Be((bool)request.IsActive);
     }
 }
