@@ -26,17 +26,7 @@ public class ApiClient
     {
         var responseMessage = await _client.GetAsync(url);
         
-        var responseString = await responseMessage.Content.ReadAsStringAsync();
-        
-        TResponse? response = null;
-
-        if (!String.IsNullOrWhiteSpace(responseString))
-        {
-            response = JsonSerializer.Deserialize<TResponse>(responseString, new JsonSerializerOptions{
-                PropertyNameCaseInsensitive = true
-            });
-
-        }
+        var response = await ProcessResponseAttributes<TResponse>(responseMessage);
 
         return (responseMessage, response);
     }
@@ -54,7 +44,7 @@ public class ApiClient
     {
         var responseMessage = await _client.PutAsync(url, new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json"));
 
-        var response = await ProcessResponse<TResponse>(responseMessage);
+        var response = await ProcessResponseAttributes<TResponse>(responseMessage);
 
         return (responseMessage, response);
     }
@@ -81,6 +71,23 @@ public class ApiClient
                     PropertyNameCaseInsensitive = true
                 }); 
             }
+        }
+
+        return response;
+    }
+    
+    private async Task<TResponse?> ProcessResponseAttributes<TResponse>(HttpResponseMessage responseMessage) where TResponse: class
+    {
+        var responseString = await responseMessage.Content.ReadAsStringAsync();
+        
+        TResponse? response = null;
+
+        if (!String.IsNullOrWhiteSpace(responseString))
+        {
+            response = JsonSerializer.Deserialize<TResponse>(responseString, new JsonSerializerOptions{
+                PropertyNameCaseInsensitive = true
+            });
+
         }
 
         return response;
