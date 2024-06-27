@@ -2,6 +2,7 @@ using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.DeleteCategory;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.GetCategory.Dto;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCategory;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,5 +45,16 @@ public class CategoriesController : ControllerBase
     {
         await _mediator.Send(new DeleteCategoryRequest(id), cancellationToken);
         return NoContent();
+    }
+    
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(typeof(CategoryModelResponse),StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Update([FromBody] UpdateCategoryRequest request, CancellationToken cancellationToken)
+    {
+        var response =  await _mediator.Send(request, cancellationToken);
+        return Ok(response);
     }
 }

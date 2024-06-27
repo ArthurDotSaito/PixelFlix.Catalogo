@@ -16,7 +16,41 @@ public class ApiClient
     public async Task<(HttpResponseMessage?, TResponse?)> Post<TResponse>(string url, object request) where TResponse: class
     {
         var responseMessage = await _client.PostAsync(url, new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json"));
+
+        var response = await ProcessResponse<TResponse>(responseMessage);
+
+        return (responseMessage, response);
+    }
+    
+    public async Task<(HttpResponseMessage?, TResponse?)> Get<TResponse>(string url) where TResponse: class
+    {
+        var responseMessage = await _client.GetAsync(url);
         
+        var response = await ProcessResponseAttributes<TResponse>(responseMessage);
+
+        return (responseMessage, response);
+    }
+
+    public async Task<(HttpResponseMessage?, TResponse?)> Delete<TResponse>(string url) where TResponse: class
+    {
+        var responseMessage = await _client.DeleteAsync(url);
+
+        var response = await ProcessResponse<TResponse>(responseMessage);
+
+        return (responseMessage, response);
+    }
+    
+    public async Task<(HttpResponseMessage?, TResponse?)> Put<TResponse>(string url, object request) where TResponse: class
+    {
+        var responseMessage = await _client.PutAsync(url, new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json"));
+
+        var response = await ProcessResponseAttributes<TResponse>(responseMessage);
+
+        return (responseMessage, response);
+    }
+    
+    private async Task<TResponse?> ProcessResponse<TResponse>(HttpResponseMessage responseMessage) where TResponse: class
+    {
         var responseString = await responseMessage.Content.ReadAsStringAsync();
         
         TResponse? response = null;
@@ -39,13 +73,11 @@ public class ApiClient
             }
         }
 
-        return (responseMessage, response);
+        return response;
     }
     
-    public async Task<(HttpResponseMessage?, TResponse?)> Get<TResponse>(string url) where TResponse: class
+    private async Task<TResponse?> ProcessResponseAttributes<TResponse>(HttpResponseMessage responseMessage) where TResponse: class
     {
-        var responseMessage = await _client.GetAsync(url);
-        
         var responseString = await responseMessage.Content.ReadAsStringAsync();
         
         TResponse? response = null;
@@ -58,27 +90,7 @@ public class ApiClient
 
         }
 
-        return (responseMessage, response);
+        return response;
     }
-
-    public async Task<(HttpResponseMessage?, TResponse?)> Delete<TResponse>(string url) where TResponse: class
-    {
-        var responseMessage = await _client.DeleteAsync(url);
-        
-        var responseString = await responseMessage.Content.ReadAsStringAsync();
-        
-        TResponse? response = null;
-
-        if (!String.IsNullOrWhiteSpace(responseString))
-        {
-            response = JsonSerializer.Deserialize<TResponse>(responseString, new JsonSerializerOptions{
-                PropertyNameCaseInsensitive = true
-            });
-
-        }
-
-        return (responseMessage, response);
-    }
-    
     
 }
