@@ -80,5 +80,33 @@ public class ApiClient
         return (responseMessage, response);
     }
     
+    public async Task<(HttpResponseMessage?, TResponse?)> Put<TResponse>(string url, object request) where TResponse: class
+    {
+        var responseMessage = await _client.PutAsync(url, new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json"));
+        
+        var responseString = await responseMessage.Content.ReadAsStringAsync();
+        
+        TResponse? response = null;
+
+        if (!String.IsNullOrWhiteSpace(responseString))
+        {
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var responseObject = JObject.Parse(responseString); 
+                var responseData = responseObject["response"]?.ToString();  
+                response = JsonSerializer.Deserialize<TResponse>(responseData!, new JsonSerializerOptions{
+                    PropertyNameCaseInsensitive = true
+                });   
+            }
+            else
+            {
+                response = JsonSerializer.Deserialize<TResponse>(responseString!, new JsonSerializerOptions{
+                    PropertyNameCaseInsensitive = true
+                }); 
+            }
+        }
+
+        return (responseMessage, response);
+    }
     
 }
