@@ -3,6 +3,7 @@ using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCategory;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Xunit;
 
 namespace FC.Pixelflix.Catalogo.e2e.API.Category.UpdateCategory;
@@ -114,5 +115,28 @@ public class UpdateCategoryApiTest
         categoryInDatabase.Name.Should().Be(request.Name);
         categoryInDatabase.Description.Should().Be(request.Description);
         categoryInDatabase.IsActive.Should().Be(aCategory.IsActive);
+    }
+    
+    [Fact(DisplayName = nameof(GivenAInvalidId_whenCallsUpdateCategory_shouldThrowsANotFound))]
+    [Trait("E2E/Api", "UpdateCategory - Endpoints")]
+    public async void GivenAInvalidId_whenCallsUpdateCategory_shouldThrowsANotFound()
+    {
+        //given
+        var categoriesList = _fixture.GetValidCategoryList(20);
+        await _fixture.Persistence.InsertList(categoriesList);
+
+        var anId = Guid.NewGuid();
+        var request = _fixture.GetAValidUpdateCategoryRequest(anId);
+        //when
+        var (responseMessage, response) = await _fixture.ApiClient.Put<ProblemDetails>($"/categories/{anId}", request);
+        
+        //then
+        responseMessage.Should().NotBeNull();
+        responseMessage!.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        response.Should().NotBeNull();
+        response!.Title.Should().Be("Not Found");
+        response!.Type.Should().Be("NotFound");
+        response!.Status.Should().Be((int)HttpStatusCode.NotFound);
+        response!.Detail.Should().Be($"Category '{anId}' not found.");
     }
 }
