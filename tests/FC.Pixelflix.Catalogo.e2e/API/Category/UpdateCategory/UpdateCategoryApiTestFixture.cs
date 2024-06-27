@@ -1,4 +1,5 @@
-﻿using FC.Pixelflix.Catalogo.e2e.API.Common;
+﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCategory;
+using FC.Pixelflix.Catalogo.e2e.API.Common;
 using Xunit;
 
 namespace FC.Pixelflix.Catalogo.e2e.API.Category.UpdateCategory;
@@ -10,5 +11,12 @@ public class UpdateCategoryFixtureCollection : ICollectionFixture<UpdateCategory
 
 public class UpdateCategoryApiTestFixture : CategoryBaseFixture
 {
-    
+    public UpdateCategoryRequest GetAValidUpdateCategoryRequest(Guid? guid = null)
+    {
+        var aName = GetValidCategoryName();
+        var aDescription = GetValidCategoryDescription();
+        var isActive = GetRandomIsActive();
+        
+        return new UpdateCategoryRequest(guid ?? Guid.NewGuid(),aName, aDescription, isActive);
+    }
 }

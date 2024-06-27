@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
+using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Xunit;
 
@@ -24,8 +25,9 @@ public class UpdateCategoryApiTest
         await _fixture.Persistence.InsertList(categoriesList);
         
         var aCategory = categoriesList[10];
+        var request = _fixture.GetAValidUpdateCategoryRequest(aCategory.Id);
         //when
-        var (responseMessage, response) = await _fixture.ApiClient.Put<CategoryModelResponse>($"/categories/{aCategory.Id}");
+        var (responseMessage, response) = await _fixture.ApiClient.Put<CategoryModelResponse>($"/categories/{aCategory.Id}", request);
         
         //then
         responseMessage.Should().NotBeNull();
