@@ -81,4 +81,38 @@ public class UpdateCategoryApiTest
         categoryInDatabase.Description.Should().Be(aCategory.Description);
         categoryInDatabase.IsActive.Should().Be(aCategory.IsActive);
     }
+    
+    [Fact(DisplayName = nameof(GivenAValidId_whenCallsUpdateCategoryWithNameAndDescription_shouldReturnACategory))]
+    [Trait("E2E/Api", "UpdateCategory - Endpoints")]
+    public async void GivenAValidId_whenCallsUpdateCategoryWithNameAndDescription_shouldReturnACategory()
+    {
+        //given
+        var categoriesList = _fixture.GetValidCategoryList(20);
+        await _fixture.Persistence.InsertList(categoriesList);
+        
+        var aCategory = categoriesList[10];
+        var request = new UpdateCategoryRequest(aCategory.Id, _fixture.GetValidCategoryName(), _fixture.GetValidCategoryDescription())
+        {
+            IsActive = aCategory.IsActive
+        };
+        //when
+        var (responseMessage, response) = await _fixture.ApiClient.Put<CategoryModelResponse>($"/categories/{aCategory.Id}", request);
+        
+        //then
+        responseMessage.Should().NotBeNull();
+        responseMessage!.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.Should().NotBeNull();
+        response!.Id.Should().Be(aCategory.Id);
+        response.Name.Should().Be(request.Name);
+        response.Description.Should().Be(request.Description);
+        response.IsActive.Should().Be(aCategory.IsActive);
+
+        var categoryInDatabase = await _fixture.Persistence.GetById(aCategory.Id);
+        
+        categoryInDatabase.Should().NotBeNull();
+        categoryInDatabase!.Id.Should().Be(request.Id);
+        categoryInDatabase.Name.Should().Be(request.Name);
+        categoryInDatabase.Description.Should().Be(request.Description);
+        categoryInDatabase.IsActive.Should().Be(aCategory.IsActive);
+    }
 }
