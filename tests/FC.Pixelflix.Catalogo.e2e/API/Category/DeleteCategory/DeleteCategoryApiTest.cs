@@ -7,7 +7,7 @@ using Xunit;
 namespace FC.Pixelflix.Catalogo.e2e.API.Category.DeleteCategory;
 
 [Collection(nameof(DeleteCategoryApiTestCollection))]
-public class DeleteCategoryApiTest
+public class DeleteCategoryApiTest : IDisposable
 {
     private readonly DeleteCategoryApiTestFixture _fixture;
     
@@ -59,5 +59,6 @@ public class DeleteCategoryApiTest
         response!.Status.Should().Be(StatusCodes.Status404NotFound);
         response!.Detail.Should().Be($"Category '{anId}' not found.");
     }
-    
+
+    public void Dispose() => _fixture.CleanDatabase();
 }

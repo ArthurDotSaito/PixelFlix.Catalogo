@@ -11,4 +11,6 @@ public class ListCategoriesRequest : PaginatedListRequest, IRequest<ListCategori
         string search = "",
         string sort = "",
         SearchOrder dir = SearchOrder.Asc) : base(page, perPage, search, sort, dir){}
+    
+    public ListCategoriesRequest() : base(1, 15, "", "", SearchOrder.Asc){}
 }

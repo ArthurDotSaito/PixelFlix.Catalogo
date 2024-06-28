@@ -9,7 +9,7 @@ using Xunit;
 namespace FC.Pixelflix.Catalogo.e2e.API.Category.UpdateCategory;
 
 [Collection(nameof(UpdateCategoryFixtureCollection))]
-public class UpdateCategoryApiTest
+public class UpdateCategoryApiTest : IDisposable
 {
     private readonly UpdateCategoryApiTestFixture _fixture;
     
@@ -164,4 +164,6 @@ public class UpdateCategoryApiTest
         response!.Status.Should().Be((int)HttpStatusCode.UnprocessableEntity);
         response!.Detail.Should().Be(expectedErrorMessage);
     }
+
+    public void Dispose() => _fixture.CleanDatabase();
 }

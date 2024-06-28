@@ -35,5 +35,11 @@
       <ProjectReference Include="..\..\src\FC.Pixelflix.Catalogo.Api\FC.Pixelflix.Catalogo.Api.csproj" />
       <ProjectReference Include="..\..\src\FC.Pixelflix.Catalogo.Infra.Data.EF\FC.Pixelflix.Catalogo.Infra.Data.EF.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <None Update="xunit.runner.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 
 </Project>
