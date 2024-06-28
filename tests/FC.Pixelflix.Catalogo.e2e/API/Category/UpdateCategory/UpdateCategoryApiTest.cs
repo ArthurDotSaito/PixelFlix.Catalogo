@@ -159,7 +159,7 @@ public class UpdateCategoryApiTest
         responseMessage.Should().NotBeNull();
         responseMessage!.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
         response.Should().NotBeNull();
-        response!.Title.Should().Be("One or more validations errors occurred.");
+        response!.Title.Should().Be("One or more validation errors occurred.");
         response!.Type.Should().Be("UnprocessableEntity");
         response!.Status.Should().Be((int)HttpStatusCode.UnprocessableEntity);
         response!.Detail.Should().Be(expectedErrorMessage);
