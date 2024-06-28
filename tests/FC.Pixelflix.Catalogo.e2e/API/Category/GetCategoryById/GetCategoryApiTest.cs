@@ -8,7 +8,7 @@ using Xunit;
 namespace FC.Pixelflix.Catalogo.e2e.API.Category.GetCategoryById;
 
 [Collection(nameof(GetCategoryApiTestFixtureCollection))]
-public class GetCategoryApiTest
+public class GetCategoryApiTest : IDisposable
 {
     private readonly GetCategoryApiTestFixture _fixture;
     
@@ -61,4 +61,6 @@ public class GetCategoryApiTest
         response.Detail.Should().Be($"Category '{anId}' not found.");
         response.Type.Should().Be("NotFound");
     }
+
+    public void Dispose() => _fixture.CleanDatabase();
 }

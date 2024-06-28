@@ -7,7 +7,7 @@ using Xunit;
 namespace FC.Pixelflix.Catalogo.e2e.API.Category.ListCategory;
 
 [Collection(nameof(ListCategoryApiTestFixtureCollection))]
-public class ListCategoryApiTest
+public class ListCategoryApiTest : IDisposable
 {
     private readonly ListCategoryApiTestFixture _fixture;
     
@@ -21,7 +21,7 @@ public class ListCategoryApiTest
     public async void GivenAValidRequest_whenCallsListCategories_shouldReturnAListOfCategories()
     {
         var expectedTotalItems = 20;
-        var expectedPerPage = 10;
+        var expectedPerPage = 15;
         //given
         var categoriesList = _fixture.GetValidCategoryList(expectedTotalItems);
         await _fixture.Persistence.InsertList(categoriesList);
@@ -47,5 +47,6 @@ public class ListCategoryApiTest
             category.CreatedAt.Should().Be(expectedItem.CreatedAt);
         }
     }
-    
+
+    public void Dispose() => _fixture.CleanDatabase();
 }

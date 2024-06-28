@@ -9,7 +9,7 @@ using Xunit;
 namespace FC.Pixelflix.Catalogo.e2e.API.Category.CreateCategory;
 
 [Collection(nameof(CreateCategoryApiTestFixtureCollection))]
-public class CreateCategoryApiTest
+public class CreateCategoryApiTest : IDisposable
 {
     private readonly CreateCategoryApiTestFixture _fixture;
     public CreateCategoryApiTest(CreateCategoryApiTestFixture fixture)
@@ -69,5 +69,7 @@ public class CreateCategoryApiTest
         response.Status.Should().Be(StatusCodes.Status422UnprocessableEntity);
         response.Detail.Should().Be(expectedErrorMessageDetail);
     }
+
+    public void Dispose() => _fixture.CleanDatabase();
     
 }
