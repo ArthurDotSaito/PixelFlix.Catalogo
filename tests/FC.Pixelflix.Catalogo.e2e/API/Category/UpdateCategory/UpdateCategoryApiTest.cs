@@ -139,4 +139,29 @@ public class UpdateCategoryApiTest
         response!.Status.Should().Be((int)HttpStatusCode.NotFound);
         response!.Detail.Should().Be($"Category '{anId}' not found.");
     }
+    
+    [Theory(DisplayName = nameof(GivenAInvalidCategoryRequest_whenCallsUpdateCategory_shouldThrowsUnprocessableEntity))]
+    [Trait("E2E/Api", "UpdateCategory - Endpoints")]
+    [MemberData(nameof(UpdateCategoryApiTestDataGenerator.GetInvalidInput), MemberType = typeof(UpdateCategoryApiTestDataGenerator))] 
+    public async void GivenAInvalidCategoryRequest_whenCallsUpdateCategory_shouldThrowsUnprocessableEntity(
+        UpdateCategoryRequest request,
+        string expectedErrorMessage)
+    {
+        //given
+        var categoriesList = _fixture.GetValidCategoryList(20);
+        await _fixture.Persistence.InsertList(categoriesList);
+        var aCategory = categoriesList[10];
+        request.Id = aCategory.Id;
+        //when
+        var (responseMessage, response) = await _fixture.ApiClient.Put<ProblemDetails>($"/categories/{aCategory.Id}", request);
+        
+        //then
+        responseMessage.Should().NotBeNull();
+        responseMessage!.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
+        response.Should().NotBeNull();
+        response!.Title.Should().Be("One or more validation errors occurred.");
+        response!.Type.Should().Be("UnprocessableEntity");
+        response!.Status.Should().Be((int)HttpStatusCode.UnprocessableEntity);
+        response!.Detail.Should().Be(expectedErrorMessage);
+    }
 }
