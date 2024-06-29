@@ -47,6 +47,23 @@ public class ListCategoryApiTest : IDisposable
             category.CreatedAt.Should().Be(expectedItem.CreatedAt);
         }
     }
+    
+    [Fact(DisplayName = nameof(GivenAValidRequest_whenCallsListCategoriesAndTheresNoPersistence_shouldReturnAEmptyList))]
+    [Trait("E2E/Api", "ListCategory - Endpoints")]
+    public async void GivenAValidRequest_whenCallsListCategoriesAndTheresNoPersistence_shouldReturnAEmptyList()
+    {
+        //given
+        
+        //when
+        var (responseMessage, response) = await _fixture.ApiClient.Get<ListCategoriesResponse>($"/categories");
+
+        //then
+        responseMessage.Should().NotBeNull();
+        responseMessage!.StatusCode.Should().Be((HttpStatusCode) StatusCodes.Status200OK);
+        response.Should().NotBeNull();
+        response!.Items.Should().HaveCount(0);
+        response.Total.Should().Be(0);
+    }
 
     public void Dispose() => _fixture.CleanDatabase();
 }

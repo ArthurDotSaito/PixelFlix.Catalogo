@@ -13,7 +13,6 @@ namespace FC.Pixelflix.Catalogo.Api.Controllers;
 public class CategoriesController : ControllerBase
 {
     private readonly IMediator _mediator;
-    
     public CategoriesController(IMediator mediator)
     {
         _mediator = mediator;
