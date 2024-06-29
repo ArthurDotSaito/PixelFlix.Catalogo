@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
+using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json.Linq;
 
 namespace FC.Pixelflix.Catalogo.e2e.Base;
@@ -22,8 +23,9 @@ public class ApiClient
         return (responseMessage, response);
     }
     
-    public async Task<(HttpResponseMessage?, TResponse?)> Get<TResponse>(string url) where TResponse: class
+    public async Task<(HttpResponseMessage?, TResponse?)> Get<TResponse>(string route, object? queryStringParams = null) where TResponse: class
     {
+        var url = PrepareQueryStringParams(route,  queryStringParams);
         var responseMessage = await _client.GetAsync(url);
         
         var response = await ProcessResponseAttributes<TResponse>(responseMessage);
@@ -91,6 +93,23 @@ public class ApiClient
         }
 
         return response;
+    }
+    
+    private string PrepareQueryStringParams(string route, object? queryStringParams)
+    {
+        if(queryStringParams == null)
+            return route;
+        
+        var jsonParameters = JsonSerializer.Serialize(queryStringParams);
+        
+        var jObject = JObject.Parse(jsonParameters);
+        
+        var filteredJObject = new JObject(jObject.Properties()
+            .Where(prop => !string.IsNullOrEmpty(prop.Value.ToString()) && prop.Value.ToString() != "0"));
+        
+        var filteredParams = filteredJObject.ToObject<Dictionary<string, string>>();
+
+        return QueryHelpers.AddQueryString(route, filteredParams!);
     }
     
 }
