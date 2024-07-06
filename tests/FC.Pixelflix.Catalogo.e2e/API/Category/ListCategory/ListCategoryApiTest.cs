@@ -18,7 +18,7 @@ public class ListCategoryApiTest : IDisposable
 
     [Fact(DisplayName = nameof(GivenAValidRequest_whenCallsListCategories_shouldReturnAListOfCategories))]
     [Trait("E2E/Api", "ListCategory - Endpoints")]
-    public async void GivenAValidRequest_whenCallsListCategories_shouldReturnAListOfCategories()
+    public async Task GivenAValidRequest_whenCallsListCategories_shouldReturnAListOfCategories()
     {
         var expectedTotalItems = 20;
         var expectedPerPage = 15;
@@ -50,7 +50,7 @@ public class ListCategoryApiTest : IDisposable
     
     [Fact(DisplayName = nameof(GivenAValidRequest_whenCallsListCategoriesAndTheresNoPersistence_shouldReturnAEmptyList))]
     [Trait("E2E/Api", "ListCategory - Endpoints")]
-    public async void GivenAValidRequest_whenCallsListCategoriesAndTheresNoPersistence_shouldReturnAEmptyList()
+    public async Task GivenAValidRequest_whenCallsListCategoriesAndTheresNoPersistence_shouldReturnAEmptyList()
     {
         //given
         
@@ -67,7 +67,7 @@ public class ListCategoryApiTest : IDisposable
     
     [Fact(DisplayName = nameof(GivenAValidRequest_whenCallsListCategories_shouldReturnAListOfCategories))]
     [Trait("E2E/Api", "ListCategory - Endpoints")]
-    public async void GivenAValidRequest_whenCallsListCategoriesWithPagination_shouldReturnAListOfCategoriesPaginated()
+    public async Task GivenAValidRequest_whenCallsListCategoriesWithPagination_shouldReturnAListOfCategoriesPaginated()
     {
         //given
         var expectedPage = 1;
