@@ -143,5 +143,53 @@ public class ListCategoryApiTest : IDisposable
         }
     }
     
+    [Theory(DisplayName = nameof(GivenAValidRequest_whenCallsListCategoriesWithTextParams_shouldReturnAListOfCategoriesPaginated))]
+    [Trait("E2E/Api", "ListCategory - Endpoints")]
+    [InlineData("Action", 1, 5, 1, 1)]
+    [InlineData("Horror", 1, 5, 2, 2)]
+    [InlineData("Horror", 2, 5, 0, 2)]
+    [InlineData("Sci-fi", 1, 5, 3, 3)]
+    [InlineData("Sci-fi", 1, 2, 2, 3)]
+    [InlineData("Sci-fi", 2, 2, 1, 3)]
+    [InlineData("Documen", 1, 2, 0, 0)]
+    [InlineData("IA", 1, 2, 1, 1)]
+    public async Task GivenAValidRequest_whenCallsListCategoriesWithTextParams_shouldReturnAListOfCategoriesPaginated(
+        string searchTextParam,
+        int page,
+        int perPage,
+        int expetedItemsQuantityReturned,
+        int expetedTotalItemsQuantity
+        )
+    {
+        //given
+        var categoriesNames = new List<string>() { "Action", "Horror", "Horror - Real Facts" , "Drama", "Sci-fi", "Sci-fi IA", "Sci-fi Space" };
+        var categoriesList = _fixture.GetValidCategoryListWithNames(categoriesNames);
+        await _fixture.Persistence.InsertList(categoriesList);
+        var requestPaginated = new ListCategoriesRequest(page, perPage, searchTextParam);
+        
+        //when
+        var (responseMessage, response) = await _fixture.ApiClient.Get<ListCategoriesResponse>($"/categories", requestPaginated);
+
+        //then
+        responseMessage.Should().NotBeNull();
+        responseMessage!.StatusCode.Should().Be((HttpStatusCode) StatusCodes.Status200OK);
+        response.Should().NotBeNull();
+        response!.Items.Should().HaveCount(expetedItemsQuantityReturned);
+        response.Page.Should().Be(page);
+        response.PerPage.Should().Be(perPage);
+        response.Total.Should().Be(expetedTotalItemsQuantity);
+
+        foreach (var category in response.Items)
+        {
+            var expectedItem = categoriesList.FirstOrDefault(x => x.Id == category.Id);
+
+            expectedItem.Should().NotBeNull();
+            category.Name.Should().Be(expectedItem!.Name);
+            category.Description.Should().Be(expectedItem.Description);
+            category.IsActive.Should().Be(expectedItem.IsActive);
+            category.CreatedAt.Should().Be(expectedItem.CreatedAt);
+        }
+    }
+    
     public void Dispose() => _fixture.CleanDatabase();
 }
