@@ -101,6 +101,47 @@ public class ListCategoryApiTest : IDisposable
             category.CreatedAt.Should().Be(expectedItem.CreatedAt);
         }
     }
+    
+    [Theory(DisplayName = nameof(GivenAValidRequest_whenCallsListCategoriesWithPaginationAndItemsPerPage_shouldReturnAListOfCategoriesPaginated))]
+    [Trait("E2E/Api", "ListCategory - Endpoints")]
+    [InlineData(10, 1, 5, 5)]
+    [InlineData(10, 2, 5, 5)]
+    [InlineData(7, 2, 5, 2)]
+    [InlineData(7, 3, 5, 0)]
+    public async Task GivenAValidRequest_whenCallsListCategoriesWithPaginationAndItemsPerPage_shouldReturnAListOfCategoriesPaginated(
+        int totalCategoriesGenerated,
+        int page,
+        int perPage,
+        int expetedItemsQuantity)
+    {
+        //given
+        var categoriesList = _fixture.GetValidCategoryList(totalCategoriesGenerated);
+        await _fixture.Persistence.InsertList(categoriesList);
+        var requestPaginated = new ListCategoriesRequest(page, perPage);
+        
+        //when
+        var (responseMessage, response) = await _fixture.ApiClient.Get<ListCategoriesResponse>($"/categories", requestPaginated);
 
+        //then
+        responseMessage.Should().NotBeNull();
+        responseMessage!.StatusCode.Should().Be((HttpStatusCode) StatusCodes.Status200OK);
+        response.Should().NotBeNull();
+        response!.Items.Should().HaveCount(expetedItemsQuantity);
+        response.Page.Should().Be(page);
+        response.PerPage.Should().Be(perPage);
+        response.Total.Should().Be(categoriesList.Count);
+
+        foreach (var category in response.Items)
+        {
+            var expectedItem = categoriesList.FirstOrDefault(x => x.Id == category.Id);
+
+            expectedItem.Should().NotBeNull();
+            category.Name.Should().Be(expectedItem!.Name);
+            category.Description.Should().Be(expectedItem.Description);
+            category.IsActive.Should().Be(expectedItem.IsActive);
+            category.CreatedAt.Should().Be(expectedItem.CreatedAt);
+        }
+    }
+    
     public void Dispose() => _fixture.CleanDatabase();
 }
