@@ -1,8 +1,6 @@
 ﻿using FC.Pixelflix.Catalogo.Domain.Entities;
 using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
-using FC.Pixelflix.Catalogo.Infra.Data.EF;
 using FC.Pixelflix.Catalogo.IntegrationTests.Base;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace FC.Pixelflix.Catalogo.IntegrationTests.Infra.Data.EF.Repositories.CategoryRepository;
