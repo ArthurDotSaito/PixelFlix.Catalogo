@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.ListCategories;
+using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Xunit;
@@ -188,6 +189,56 @@ public class ListCategoryApiTest : IDisposable
             category.Description.Should().Be(expectedItem.Description);
             category.IsActive.Should().Be(expectedItem.IsActive);
             category.CreatedAt.Should().Be(expectedItem.CreatedAt);
+        }
+    }
+    
+    [Theory(DisplayName = nameof(GivenAValidRequest_whenCallsListCategoriesWithOrdenation_shouldReturnAOrderedListOfCategories))]
+    [Trait("E2E/Api", "ListCategory - Endpoints")]
+    [InlineData("name", "asc")]
+    [InlineData("name", "desc")]
+    [InlineData("id", "asc")]
+    [InlineData("id", "desc")]
+    [InlineData("createdAt", "asc")]
+    [InlineData("createdAt", "desc")]
+    [InlineData("", "asc")]
+    public async Task GivenAValidRequest_whenCallsListCategoriesWithOrdenation_shouldReturnAOrderedListOfCategories(
+        string orderBy,
+        string order
+        )
+    {
+        //given
+        var expectedTotalItems = 10;
+        var categoriesList = _fixture.GetValidCategoryList(expectedTotalItems);
+        await _fixture.Persistence.InsertList(categoriesList);
+        var useCaseOrder = order == "asc" ? SearchOrder.Asc : SearchOrder.Desc;
+        var requestPaginated = new ListCategoriesRequest(page:1, perPage:20, sort: orderBy, dir: useCaseOrder);
+        
+        //when
+        var (responseMessage, response) = await _fixture.ApiClient.Get<ListCategoriesResponse>($"/categories", requestPaginated);
+
+        //then
+        responseMessage.Should().NotBeNull();
+        responseMessage!.StatusCode.Should().Be((HttpStatusCode) StatusCodes.Status200OK);
+        response.Should().NotBeNull();
+        response!.Items.Should().HaveCount(expectedTotalItems);
+        response.Page.Should().Be(requestPaginated.Page);
+        response.PerPage.Should().Be(requestPaginated.PerPage);
+        response.Total.Should().Be(categoriesList.Count);
+        
+        var expectedOrderedList = _fixture.CloneCategoryListListAndOrderIt(categoriesList, requestPaginated.Sort, requestPaginated.Dir);
+
+        for (int i = 0; i < expectedOrderedList.Count; i++)
+        {
+            var expectedItem = expectedOrderedList[i];
+            var responseItem = response.Items[i];
+            
+            expectedItem.Should().NotBeNull();
+            responseItem.Should().NotBeNull();
+            responseItem.Name.Should().Be(expectedItem.Name);
+            responseItem!.Id.Should().Be(expectedItem.Id);
+            responseItem.Description.Should().Be(expectedItem.Description);
+            responseItem.IsActive.Should().Be(expectedItem.IsActive);
+            responseItem.CreatedAt.Should().Be(expectedItem.CreatedAt);   
         }
     }
     
