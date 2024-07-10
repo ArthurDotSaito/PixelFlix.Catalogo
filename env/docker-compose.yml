@@ -1,0 +1,14 @@
+﻿version: '3.4'
+
+services:
+  fc.pixelflix.catalog.db:
+    container_name: catalog-db
+    hostname: catalog-db
+    image: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: catalog
+      MYSQL_USER: catalog
+      MYSQL_PASSWORD: catalog
