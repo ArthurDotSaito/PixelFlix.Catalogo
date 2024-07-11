@@ -6,7 +6,7 @@ services:
     hostname: catalog-db-e2e
     image: mysql
     ports:
-      - 33060:3307
+      - 33061:3307
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_TCP_PORT: 3307
