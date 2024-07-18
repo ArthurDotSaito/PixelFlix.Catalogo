@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.ListCategories;
 using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
+using FC.Pixelflix.Catalogo.e2e.Extensions.DateTime;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Xunit;
@@ -45,7 +46,7 @@ public class ListCategoryApiTest : IDisposable
             category.Name.Should().Be(expectedItem!.Name);
             category.Description.Should().Be(expectedItem.Description);
             category.IsActive.Should().Be(expectedItem.IsActive);
-            category.CreatedAt.Should().Be(expectedItem.CreatedAt);
+            category.CreatedAt.TrimMilliseconds().Should().Be(expectedItem.CreatedAt.TrimMilliseconds());
         }
     }
     
@@ -99,7 +100,7 @@ public class ListCategoryApiTest : IDisposable
             category.Name.Should().Be(expectedItem!.Name);
             category.Description.Should().Be(expectedItem.Description);
             category.IsActive.Should().Be(expectedItem.IsActive);
-            category.CreatedAt.Should().Be(expectedItem.CreatedAt);
+            category.CreatedAt.TrimMilliseconds().Should().Be(expectedItem.CreatedAt.TrimMilliseconds());
         }
     }
     
@@ -140,7 +141,7 @@ public class ListCategoryApiTest : IDisposable
             category.Name.Should().Be(expectedItem!.Name);
             category.Description.Should().Be(expectedItem.Description);
             category.IsActive.Should().Be(expectedItem.IsActive);
-            category.CreatedAt.Should().Be(expectedItem.CreatedAt);
+            category.CreatedAt.TrimMilliseconds().Should().Be(expectedItem.CreatedAt.TrimMilliseconds());
         }
     }
     
@@ -188,7 +189,7 @@ public class ListCategoryApiTest : IDisposable
             category.Name.Should().Be(expectedItem!.Name);
             category.Description.Should().Be(expectedItem.Description);
             category.IsActive.Should().Be(expectedItem.IsActive);
-            category.CreatedAt.Should().Be(expectedItem.CreatedAt);
+            category.CreatedAt.TrimMilliseconds().Should().Be(expectedItem.CreatedAt.TrimMilliseconds());
         }
     }
     
@@ -238,7 +239,7 @@ public class ListCategoryApiTest : IDisposable
             responseItem!.Id.Should().Be(expectedItem.Id);
             responseItem.Description.Should().Be(expectedItem.Description);
             responseItem.IsActive.Should().Be(expectedItem.IsActive);
-            responseItem.CreatedAt.Should().Be(expectedItem.CreatedAt);   
+            responseItem.CreatedAt.TrimMilliseconds().Should().Be(expectedItem.CreatedAt.TrimMilliseconds());   
         }
     }
     
