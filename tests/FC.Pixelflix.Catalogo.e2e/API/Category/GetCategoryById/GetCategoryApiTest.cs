@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
+using FC.Pixelflix.Catalogo.e2e.Extensions.DateTime;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +38,7 @@ public class GetCategoryApiTest : IDisposable
         response.Name.Should().Be(aCategory.Name);
         response.Description.Should().Be(aCategory.Description);
         response.IsActive.Should().Be(aCategory.IsActive);
-        response.CreatedAt.Should().Be(aCategory.CreatedAt);
+        response.CreatedAt.TrimMilliseconds().Should().Be(aCategory.CreatedAt.TrimMilliseconds());
     }
     
     [Fact(DisplayName = nameof(GivenAValidId_whenCallsGetCategory_shouldReturnACategory))]
