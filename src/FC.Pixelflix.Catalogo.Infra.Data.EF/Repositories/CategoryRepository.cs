@@ -55,14 +55,14 @@ public class CategoryRepository : ICategoryRepository
     {
         var orderedQuery = (orderProperty.ToLower(), orderBy) switch
         {
-            ("name", SearchOrder.Asc) => aQuery.OrderBy(item => item.Name),
-            ("name", SearchOrder.Desc) => aQuery.OrderByDescending(item => item.Name),
+            ("name", SearchOrder.Asc) => aQuery.OrderBy(item => item.Name).ThenBy(item=>item.Id),
+            ("name", SearchOrder.Desc) => aQuery.OrderByDescending(item => item.Name).ThenByDescending(item=>item.Id),
             ("id", SearchOrder.Asc) => aQuery.OrderBy(item => item.Id),
             ("id", SearchOrder.Desc) => aQuery.OrderByDescending(item => item.Id),
             ("createdat", SearchOrder.Asc) => aQuery.OrderBy(item => item.CreatedAt),
             ("createdat", SearchOrder.Desc) => aQuery.OrderByDescending(item => item.CreatedAt),
-            _ => aQuery.OrderBy(item => item.Name),
+            _ => aQuery.OrderBy(item => item.Name).ThenBy(item=>item.Id),
         };
-        return orderedQuery.ThenBy(e => e.CreatedAt);
+        return orderedQuery;
     }
 }

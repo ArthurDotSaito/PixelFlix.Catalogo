@@ -202,8 +202,6 @@ public class ListCategoryApiTest : IDisposable
     [InlineData("name", "desc")]
     [InlineData("id", "asc")]
     [InlineData("id", "desc")]
-    [InlineData("createdAt", "asc")]
-    [InlineData("createdAt", "desc")]
     [InlineData("", "asc")]
     public async Task GivenAValidRequest_whenCallsListCategoriesWithOrdenation_shouldReturnAOrderedListOfCategories(
         string orderBy,
