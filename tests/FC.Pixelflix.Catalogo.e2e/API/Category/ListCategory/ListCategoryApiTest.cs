@@ -274,6 +274,8 @@ public class ListCategoryApiTest : IDisposable
         response.PerPage.Should().Be(requestPaginated.PerPage);
         response.Total.Should().Be(categoriesList.Count);
 
+        DateTime? lastItemDate = null;
+
         foreach (var category in response.Items)
         {
             var expectedItem = categoriesList.FirstOrDefault(x => x.Id == category.Id);
@@ -283,6 +285,11 @@ public class ListCategoryApiTest : IDisposable
             category.Description.Should().Be(expectedItem.Description);
             category.IsActive.Should().Be(expectedItem.IsActive);
             category.CreatedAt.TrimMilliseconds().Should().Be(expectedItem.CreatedAt.TrimMilliseconds());
+            
+            if (lastItemDate != null && order == "asc") Assert.True(category.CreatedAt >= lastItemDate);
+            else if(lastItemDate != null && order == "desc") Assert.True(category.CreatedAt <= lastItemDate);
+            
+            lastItemDate = category.CreatedAt;
         }
     }
     
