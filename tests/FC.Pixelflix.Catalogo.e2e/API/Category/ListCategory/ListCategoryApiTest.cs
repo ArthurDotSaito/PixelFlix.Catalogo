@@ -5,6 +5,7 @@ using FC.Pixelflix.Catalogo.e2e.Extensions.DateTime;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace FC.Pixelflix.Catalogo.e2e.API.Category.ListCategory;
 
@@ -12,10 +13,12 @@ namespace FC.Pixelflix.Catalogo.e2e.API.Category.ListCategory;
 public class ListCategoryApiTest : IDisposable
 {
     private readonly ListCategoryApiTestFixture _fixture;
+    private readonly ITestOutputHelper _output;
     
-    public ListCategoryApiTest(ListCategoryApiTestFixture fixture)
+    public ListCategoryApiTest(ListCategoryApiTestFixture fixture, ITestOutputHelper output)
     {
         _fixture = fixture;
+        _output = output;
     }
 
     [Fact(DisplayName = nameof(GivenAValidRequest_whenCallsListCategories_shouldReturnAListOfCategories))]
@@ -199,8 +202,6 @@ public class ListCategoryApiTest : IDisposable
     [InlineData("name", "desc")]
     [InlineData("id", "asc")]
     [InlineData("id", "desc")]
-    [InlineData("createdAt", "asc")]
-    [InlineData("createdAt", "desc")]
     [InlineData("", "asc")]
     public async Task GivenAValidRequest_whenCallsListCategoriesWithOrdenation_shouldReturnAOrderedListOfCategories(
         string orderBy,
@@ -240,6 +241,53 @@ public class ListCategoryApiTest : IDisposable
             responseItem.Description.Should().Be(expectedItem.Description);
             responseItem.IsActive.Should().Be(expectedItem.IsActive);
             responseItem.CreatedAt.TrimMilliseconds().Should().Be(expectedItem.CreatedAt.TrimMilliseconds());   
+        }
+    }
+    
+    [Theory(DisplayName = nameof(GivenAValidRequest_whenCallsListCategoriesWithDateOrdenation_shouldReturnAOrderedListOfCategories))]
+    [Trait("E2E/Api", "ListCategory - Endpoints")]
+    [InlineData("createdAt", "asc")]
+    [InlineData("createdAt", "desc")]
+    public async Task GivenAValidRequest_whenCallsListCategoriesWithDateOrdenation_shouldReturnAOrderedListOfCategories(
+        string orderBy,
+        string order
+        )
+    {
+        //given
+        var expectedTotalItems = 10;
+        var categoriesList = _fixture.GetValidCategoryList(expectedTotalItems);
+        await _fixture.Persistence.InsertList(categoriesList);
+        var useCaseOrder = order == "asc" ? SearchOrder.Asc : SearchOrder.Desc;
+        var requestPaginated = new ListCategoriesRequest(page:1, perPage:20, sort: orderBy, dir: useCaseOrder);
+        
+        //when
+        var (responseMessage, response) = await _fixture.ApiClient.Get<ListCategoriesResponse>($"/categories", requestPaginated);
+
+        //then
+        responseMessage.Should().NotBeNull();
+        responseMessage!.StatusCode.Should().Be((HttpStatusCode) StatusCodes.Status200OK);
+        response.Should().NotBeNull();
+        response!.Items.Should().HaveCount(expectedTotalItems);
+        response.Page.Should().Be(requestPaginated.Page);
+        response.PerPage.Should().Be(requestPaginated.PerPage);
+        response.Total.Should().Be(categoriesList.Count);
+
+        DateTime? lastItemDate = null;
+
+        foreach (var category in response.Items)
+        {
+            var expectedItem = categoriesList.FirstOrDefault(x => x.Id == category.Id);
+
+            expectedItem.Should().NotBeNull();
+            category.Name.Should().Be(expectedItem!.Name);
+            category.Description.Should().Be(expectedItem.Description);
+            category.IsActive.Should().Be(expectedItem.IsActive);
+            category.CreatedAt.TrimMilliseconds().Should().Be(expectedItem.CreatedAt.TrimMilliseconds());
+            
+            if (lastItemDate != null && order == "asc") Assert.True(category.CreatedAt >= lastItemDate);
+            else if(lastItemDate != null && order == "desc") Assert.True(category.CreatedAt <= lastItemDate);
+            
+            lastItemDate = category.CreatedAt;
         }
     }
     

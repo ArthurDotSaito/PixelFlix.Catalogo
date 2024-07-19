@@ -25,14 +25,15 @@ public class ListCategoryApiTestFixture : CategoryBaseFixture
         var newCategoriesList = new List<CategoryDomain>(categories);
         var newCategoriesListEnumerable = (orderBy.ToLower(), searchOrder) switch
         {
-
-            ("name", SearchOrder.Asc) => newCategoriesList.OrderBy(items => items.Name),
-            ("name", SearchOrder.Desc) => newCategoriesList.OrderByDescending(items => items.Name),
+            ("name", SearchOrder.Asc) => newCategoriesList.OrderBy(items => items.Name)
+                .ThenBy(item =>item.Id),
+            ("name", SearchOrder.Desc) => newCategoriesList.OrderByDescending(items => items.Name)
+                .ThenByDescending(item =>item.Id),
             ("id", SearchOrder.Asc) => newCategoriesList.OrderBy(items => items.Id),
             ("id", SearchOrder.Desc) => newCategoriesList.OrderByDescending(items => items.Id),
             ("createdat", SearchOrder.Asc) => newCategoriesList.OrderBy(items => items.CreatedAt),
             ("createdat", SearchOrder.Desc) => newCategoriesList.OrderByDescending(items => items.CreatedAt),
-            _ => newCategoriesList.OrderBy(items => items.Name),
+            _ => newCategoriesList.OrderBy(items => items.Name).ThenBy(item =>item.Id),
         };
  
         return newCategoriesListEnumerable.ThenBy(e=>e.CreatedAt).ToList();
