@@ -10,3 +10,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_TCP_PORT: 3307
+      
+networks:
+  default:
+    name: service_catalog
