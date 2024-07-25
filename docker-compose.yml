@@ -11,8 +11,9 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_TCP_PORT: 3307
     networks: 
-      - service_catalog
+      - default
 
 networks:
-  service_catalog:
-    driver: bridge
+  default:
+      name: service_catalog
+      external: true
