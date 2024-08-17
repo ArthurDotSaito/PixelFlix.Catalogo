@@ -37,8 +37,4 @@
     <ProjectReference Include="..\FC.Pixelflix.Catalogo.Infra.Data.EF\FC.Pixelflix.Catalogo.Infra.Data.EF.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="NovaPasta\" />
-  </ItemGroup>
-
 </Project>

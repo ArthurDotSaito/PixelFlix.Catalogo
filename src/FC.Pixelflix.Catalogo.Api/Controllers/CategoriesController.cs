@@ -1,3 +1,4 @@
+using FC.Pixelflix.Catalogo.Api.ApiModels.Category;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.DeleteCategory;
@@ -60,9 +61,10 @@ public class CategoriesController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update([FromRoute] Guid id,[FromBody] UpdateCategoryRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update([FromRoute] Guid id,[FromBody] UpdateCategoryApiRequest request, CancellationToken cancellationToken)
     {
-        var response =  await _mediator.Send(request, cancellationToken);
+        var input = new UpdateCategoryRequest(id, request.Name, request.Description, request.IsActive);
+        var response =  await _mediator.Send(input, cancellationToken);
         return Ok(response);
     }
 }

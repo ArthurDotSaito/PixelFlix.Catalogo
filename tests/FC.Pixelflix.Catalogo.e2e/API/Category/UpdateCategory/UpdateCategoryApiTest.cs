@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using FC.Pixelflix.Catalogo.Api.ApiModels.Category;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCategory;
 using FluentAssertions;
@@ -27,7 +28,7 @@ public class UpdateCategoryApiTest : IDisposable
         await _fixture.Persistence.InsertList(categoriesList);
         
         var aCategory = categoriesList[10];
-        var request = _fixture.GetAValidUpdateCategoryRequest(aCategory.Id);
+        var request = _fixture.GetAValidUpdateCategoryApiRequest();
         //when
         var (responseMessage, response) = await _fixture.ApiClient.Put<CategoryModelResponse>($"/categories/{aCategory.Id}", request);
         
@@ -43,7 +44,7 @@ public class UpdateCategoryApiTest : IDisposable
         var categoryInDatabase = await _fixture.Persistence.GetById(aCategory.Id);
         
         categoryInDatabase.Should().NotBeNull();
-        categoryInDatabase!.Id.Should().Be(request.Id);
+        categoryInDatabase!.Id.Should().Be(aCategory.Id);
         categoryInDatabase.Name.Should().Be(request.Name);
         categoryInDatabase.Description.Should().Be(request.Description);
         categoryInDatabase.IsActive.Should().Be((bool)request.IsActive);
@@ -126,7 +127,7 @@ public class UpdateCategoryApiTest : IDisposable
         await _fixture.Persistence.InsertList(categoriesList);
 
         var anId = Guid.NewGuid();
-        var request = _fixture.GetAValidUpdateCategoryRequest(anId);
+        var request = _fixture.GetAValidUpdateCategoryApiRequest();
         //when
         var (responseMessage, response) = await _fixture.ApiClient.Put<ProblemDetails>($"/categories/{anId}", request);
         
