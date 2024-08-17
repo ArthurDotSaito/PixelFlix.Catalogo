@@ -145,14 +145,13 @@ public class UpdateCategoryApiTest : IDisposable
     [Trait("E2E/Api", "UpdateCategory - Endpoints")]
     [MemberData(nameof(UpdateCategoryApiTestDataGenerator.GetInvalidInput), MemberType = typeof(UpdateCategoryApiTestDataGenerator))] 
     public async void GivenAInvalidCategoryRequest_whenCallsUpdateCategory_shouldThrowsUnprocessableEntity(
-        UpdateCategoryRequest request,
+        UpdateCategoryApiRequest request,
         string expectedErrorMessage)
     {
         //given
         var categoriesList = _fixture.GetValidCategoryList(20);
         await _fixture.Persistence.InsertList(categoriesList);
         var aCategory = categoriesList[10];
-        request.Id = aCategory.Id;
         //when
         var (responseMessage, response) = await _fixture.ApiClient.Put<ProblemDetails>($"/categories/{aCategory.Id}", request);
         
