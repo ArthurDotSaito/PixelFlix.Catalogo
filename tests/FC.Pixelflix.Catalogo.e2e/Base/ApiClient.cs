@@ -113,7 +113,7 @@ public class ApiClient
         if(queryStringParams == null)
             return route;
         
-        var jsonParameters = JsonSerializer.Serialize(queryStringParams);
+        var jsonParameters = JsonSerializer.Serialize(queryStringParams, _defaultSerializerOptions);
         
         var jObject = JObject.Parse(jsonParameters);
         
