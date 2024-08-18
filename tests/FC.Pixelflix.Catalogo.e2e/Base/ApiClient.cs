@@ -1,22 +1,39 @@
 ﻿using System.Text;
 using System.Text.Json;
+using FC.Pixelflix.Catalogo.e2e.Extensions.String;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json.Linq;
 
 namespace FC.Pixelflix.Catalogo.e2e.Base;
 
+class SnakeCaseNamingPolicy : JsonNamingPolicy
+{
+    public override string ConvertName(string name)
+    {
+        return name.ToSnakeCase();
+    }
+}
+
 public class ApiClient
 {
     private readonly HttpClient _client;
+
+    private readonly JsonSerializerOptions _defaultSerializerOptions;
     
     public ApiClient(HttpClient client)
     {
         _client = client;
+        _defaultSerializerOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = new SnakeCaseNamingPolicy(),
+            PropertyNameCaseInsensitive = true
+        };
     }
     
     public async Task<(HttpResponseMessage?, TResponse?)> Post<TResponse>(string url, object request) where TResponse: class
     {
-        var responseMessage = await _client.PostAsync(url, new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json"));
+        var responseMessage = await _client.PostAsync(url, new StringContent(
+            JsonSerializer.Serialize(request, _defaultSerializerOptions), Encoding.UTF8, "application/json"));
 
         var response = await ProcessResponse<TResponse>(responseMessage);
 
@@ -44,7 +61,8 @@ public class ApiClient
     
     public async Task<(HttpResponseMessage?, TResponse?)> Put<TResponse>(string url, object request) where TResponse: class
     {
-        var responseMessage = await _client.PutAsync(url, new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json"));
+        var responseMessage = await _client.PutAsync(url, new StringContent(
+            JsonSerializer.Serialize(request, _defaultSerializerOptions), Encoding.UTF8, "application/json"));
 
         var response = await ProcessResponseAttributes<TResponse>(responseMessage);
 
@@ -86,10 +104,7 @@ public class ApiClient
 
         if (!String.IsNullOrWhiteSpace(responseString))
         {
-            response = JsonSerializer.Deserialize<TResponse>(responseString, new JsonSerializerOptions{
-                PropertyNameCaseInsensitive = true
-            });
-
+            response = JsonSerializer.Deserialize<TResponse>(responseString, _defaultSerializerOptions);
         }
 
         return response;
