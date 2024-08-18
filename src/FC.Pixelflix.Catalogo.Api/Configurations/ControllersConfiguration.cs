@@ -1,4 +1,5 @@
-﻿using FC.Pixelflix.Catalogo.Api.Filter;
+﻿using FC.Pixelflix.Catalogo.Api.Configurations.Policies;
+using FC.Pixelflix.Catalogo.Api.Filter;
 
 namespace FC.Pixelflix.Catalogo.Api.Configurations;
 
@@ -6,7 +7,11 @@ public static class ControllersConfiguration
 {
     public static IServiceCollection AddAndConfigureControllers(this IServiceCollection services)
     {
-        services.AddControllers(options => options.Filters.Add(typeof(ApiGlobalExceptionFilter)));
+        services.AddControllers(options => options.Filters.Add(typeof(ApiGlobalExceptionFilter)))
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNamingPolicy = new JsonSnakeCasePolicy();
+            });
         services.AddDocumentation();
         return services;
     }

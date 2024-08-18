@@ -81,9 +81,7 @@ public class ApiClient
             {
                 var responseObject = JObject.Parse(responseString); 
                 var responseData = responseObject["response"]?.ToString();  
-                response = JsonSerializer.Deserialize<TResponse>(responseData!, new JsonSerializerOptions{
-                    PropertyNameCaseInsensitive = true
-                });   
+                response = JsonSerializer.Deserialize<TResponse>(responseData!, _defaultSerializerOptions);   
             }
             else
             {
