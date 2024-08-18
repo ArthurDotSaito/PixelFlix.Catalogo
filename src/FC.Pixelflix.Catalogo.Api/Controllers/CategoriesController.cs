@@ -5,6 +5,7 @@ using FC.Pixelflix.Catalogo.Application.UseCases.Category.DeleteCategory;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.GetCategory.Dto;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.ListCategories;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCategory;
+using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,8 +42,22 @@ public class CategoriesController : ControllerBase
     
     [HttpGet]
     [ProducesResponseType(typeof(CategoryModelResponse),StatusCodes.Status200OK)]
-    public async Task<IActionResult> List([FromQuery] ListCategoriesRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> List(
+        CancellationToken cancellationToken,
+        [FromQuery] int? page = null,
+        [FromQuery(Name = "per_page")] int? perPage = null,
+        [FromQuery] string? search = null,
+        [FromQuery] string? sort = null,
+        [FromQuery] SearchOrder? dir = null
+        )
     {
+        var request = new ListCategoriesRequest();
+        if(page is not null) request.Page = page.Value;
+        if(perPage is not null) request.PerPage = perPage.Value;
+        if(!String.IsNullOrWhiteSpace(search)) request.Search = search;
+        if(!String.IsNullOrWhiteSpace(sort)) request.Sort = sort;
+        if(dir is not null) request.Dir = dir.Value;
+        
         var response =  await _mediator.Send(request, cancellationToken);
         return Ok(response);
     }
