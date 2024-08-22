@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.ListCategories;
 using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
 using FC.Pixelflix.Catalogo.e2e.Extensions.DateTime;
@@ -8,6 +9,26 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace FC.Pixelflix.Catalogo.e2e.API.Category.ListCategory;
+
+class CategoryListResponse
+{
+    public IReadOnlyList<CategoryModelResponse> Data { get; private set; }
+    public Meta Meta { get; private set; }
+}
+
+class Meta
+{
+    public Meta(int page, int perPage, int total)
+    {
+        CurrentPage = page;
+        PerPage = perPage;
+        Total = total;
+    }
+    public int CurrentPage { get; private set; }
+    public int PerPage { get; private set; }
+    public int Total { get; private set; 
+}
+    
 
 [Collection(nameof(ListCategoryApiTestFixtureCollection))]
 public class ListCategoryApiTest : IDisposable
@@ -32,14 +53,18 @@ public class ListCategoryApiTest : IDisposable
         await _fixture.Persistence.InsertList(categoriesList);
         
         //when
-        var (responseMessage, response) = await _fixture.ApiClient.Get<ListCategoriesResponse>($"/categories");
+        var (responseMessage, response) = await _fixture.ApiClient.Get<CategoryListResponse>($"/categories");
 
         //then
         responseMessage.Should().NotBeNull();
         responseMessage!.StatusCode.Should().Be((HttpStatusCode) StatusCodes.Status200OK);
         response.Should().NotBeNull();
-        response!.Items.Should().HaveCount(expectedPerPage);
-        response.Total.Should().Be(categoriesList.Count);
+        response!.Data.Should().NotBeNull();
+        response.Meta.Should().NotBeNull();
+        response!.Data.Should().HaveCount(expectedPerPage);
+        response.Meta.Total.Should().Be(categoriesList.Count);
+        response.Meta.PerPage.Should().Be(expectedPerPage);
+        response.Meta.CurrentPage.Should().Be(1);
 
         foreach (var category in response.Items)
         {
