@@ -1,4 +1,5 @@
 using FC.Pixelflix.Catalogo.Api.ApiModels.Category;
+using FC.Pixelflix.Catalogo.Api.ApiModels.Response;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.DeleteCategory;
@@ -31,13 +32,13 @@ public class CategoriesController : ControllerBase
     }
     
     [HttpGet("{id:guid}")]
-    [ProducesResponseType(typeof(CategoryModelResponse),StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<CategoryModelResponse>),StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status404NotFound)]
     
     public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var response =  await _mediator.Send(new GetCategoryRequest(id), cancellationToken);
-        return Ok(response);
+        return Ok(new ApiResponse<CategoryModelResponse>(response));
     }
     
     [HttpGet]

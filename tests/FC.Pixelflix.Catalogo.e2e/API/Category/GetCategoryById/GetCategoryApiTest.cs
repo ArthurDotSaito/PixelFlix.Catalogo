@@ -10,7 +10,7 @@ namespace FC.Pixelflix.Catalogo.e2e.API.Category.GetCategoryById;
 
 class GetCategoryResponse
 {
-    public CategoryModelResponse Data { get; }
+    public CategoryModelResponse Data { get; set; }
 }
 
 [Collection(nameof(GetCategoryApiTestFixtureCollection))]
