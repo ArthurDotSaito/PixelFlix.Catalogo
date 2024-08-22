@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using FC.Pixelflix.Catalogo.Api.ApiModels.Response;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.CreateCategory.Dto;
 using FluentAssertions;
@@ -25,25 +26,26 @@ public class CreateCategoryApiTest : IDisposable
         var createCategoryRequest = _fixture.GetAValidCreateCategoryRequest();
         
         //when
-        var (responseMessage, response) = await _fixture.ApiClient.Post<CategoryModelResponse>("/categories", createCategoryRequest);
+        var (responseMessage, response) = await _fixture.ApiClient.Post<ApiResponse<CategoryModelResponse>>("/categories", createCategoryRequest);
         
         //then
         responseMessage.Should().NotBeNull();
         responseMessage!.StatusCode.Should().Be(HttpStatusCode.Created);
         response.Should().NotBeNull();
-        response!.Id.Should().NotBeEmpty();
-        response.Name.Should().Be(createCategoryRequest.Name);
-        response.Description.Should().Be(createCategoryRequest.Description);
-        response.IsActive.Should().Be(createCategoryRequest.IsActive);
-        response.CreatedAt.Should().NotBeSameDateAs(default);
+        response.Data.Should().NotBeNull();
+        response!.Data.Id.Should().NotBeEmpty();
+        response.Data.Name.Should().Be(createCategoryRequest.Name);
+        response.Data.Description.Should().Be(createCategoryRequest.Description);
+        response.Data.IsActive.Should().Be(createCategoryRequest.IsActive);
+        response.Data.CreatedAt.Should().NotBeSameDateAs(default);
 
-        var categoryInDatabase = await _fixture.Persistence.GetById(response.Id);
+        var categoryInDatabase = await _fixture.Persistence.GetById(response.Data.Id);
         
         categoryInDatabase.Should().NotBeNull();
-        categoryInDatabase!.Id.Should().Be(response.Id);
-        categoryInDatabase.Name.Should().Be(response.Name);
-        categoryInDatabase.Description.Should().Be(response.Description);
-        categoryInDatabase.IsActive.Should().Be(response.IsActive);
+        categoryInDatabase!.Id.Should().Be(response.Data.Id);
+        categoryInDatabase.Name.Should().Be(response.Data.Name);
+        categoryInDatabase.Description.Should().Be(response.Data.Description);
+        categoryInDatabase.IsActive.Should().Be(response.Data.IsActive);
         categoryInDatabase.CreatedAt.Should().NotBeSameDateAs(default);
     }
     

@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using FC.Pixelflix.Catalogo.Api.ApiModels.Response;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
 using FC.Pixelflix.Catalogo.e2e.Extensions.DateTime;
 using FluentAssertions;
@@ -28,17 +29,18 @@ public class GetCategoryApiTest : IDisposable
         
         var aCategory = categoriesList[10];
         //when
-        var (responseMessage, response) = await _fixture.ApiClient.Get<CategoryModelResponse>($"/categories/{aCategory.Id}");
+        var (responseMessage, response) = await _fixture.ApiClient.Get<ApiResponse<CategoryModelResponse>>($"/categories/{aCategory.Id}");
 
         //then
         responseMessage.Should().NotBeNull();
         responseMessage!.StatusCode.Should().Be((HttpStatusCode) StatusCodes.Status200OK);
         response.Should().NotBeNull();
-        response!.Id.Should().Be(aCategory.Id);
-        response.Name.Should().Be(aCategory.Name);
-        response.Description.Should().Be(aCategory.Description);
-        response.IsActive.Should().Be(aCategory.IsActive);
-        response.CreatedAt.TrimMilliseconds().Should().Be(aCategory.CreatedAt.TrimMilliseconds());
+        response!.Data.Should().NotBeNull();
+        response!.Data.Id.Should().Be(aCategory.Id);
+        response.Data.Name.Should().Be(aCategory.Name);
+        response.Data.Description.Should().Be(aCategory.Description);
+        response.Data.IsActive.Should().Be(aCategory.IsActive);
+        response.Data.CreatedAt.TrimMilliseconds().Should().Be(aCategory.CreatedAt.TrimMilliseconds());
     }
     
     [Fact(DisplayName = nameof(GivenAValidId_whenCallsGetCategory_shouldReturnACategory))]

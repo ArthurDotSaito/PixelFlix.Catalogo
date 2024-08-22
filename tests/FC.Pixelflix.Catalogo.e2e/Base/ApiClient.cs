@@ -1,18 +1,10 @@
 ﻿using System.Text;
 using System.Text.Json;
-using FC.Pixelflix.Catalogo.e2e.Extensions.String;
+using FC.Pixelflix.Catalogo.Api.Configurations.Policies;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json.Linq;
 
 namespace FC.Pixelflix.Catalogo.e2e.Base;
-
-class SnakeCaseNamingPolicy : JsonNamingPolicy
-{
-    public override string ConvertName(string name)
-    {
-        return name.ToSnakeCase();
-    }
-}
 
 public class ApiClient
 {
@@ -25,7 +17,7 @@ public class ApiClient
         _client = client;
         _defaultSerializerOptions = new JsonSerializerOptions
         {
-            PropertyNamingPolicy = new SnakeCaseNamingPolicy(),
+            PropertyNamingPolicy = new JsonSnakeCasePolicy(),
             PropertyNameCaseInsensitive = true
         };
     }
@@ -79,9 +71,9 @@ public class ApiClient
         {
             if (responseMessage.IsSuccessStatusCode)
             {
-                var responseObject = JObject.Parse(responseString); 
-                var responseData = responseObject["response"]?.ToString();  
-                response = JsonSerializer.Deserialize<TResponse>(responseData!, _defaultSerializerOptions);   
+                /*var responseObject = JObject.Parse(responseString); 
+                var responseData = responseObject["data"]?.ToString();  */
+                response = JsonSerializer.Deserialize<TResponse>(responseString!, _defaultSerializerOptions);   
             }
             else
             {

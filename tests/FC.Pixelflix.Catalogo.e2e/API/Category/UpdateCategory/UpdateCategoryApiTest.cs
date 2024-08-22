@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using FC.Pixelflix.Catalogo.Api.ApiModels.Category;
+using FC.Pixelflix.Catalogo.Api.ApiModels.Response;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.UpdateCategory;
 using FluentAssertions;
@@ -30,16 +31,17 @@ public class UpdateCategoryApiTest : IDisposable
         var aCategory = categoriesList[10];
         var request = _fixture.GetAValidUpdateCategoryApiRequest();
         //when
-        var (responseMessage, response) = await _fixture.ApiClient.Put<CategoryModelResponse>($"/categories/{aCategory.Id}", request);
+        var (responseMessage, response) = await _fixture.ApiClient.Put<ApiResponse<CategoryModelResponse>>($"/categories/{aCategory.Id}", request);
         
         //then
         responseMessage.Should().NotBeNull();
         responseMessage!.StatusCode.Should().Be(HttpStatusCode.OK);
         response.Should().NotBeNull();
-        response!.Id.Should().Be(aCategory.Id);
-        response.Name.Should().Be(request.Name);
-        response.Description.Should().Be(request.Description);
-        response.IsActive.Should().Be((bool)request.IsActive!);
+        response!.Data.Should().NotBeNull();
+        response!.Data.Id.Should().Be(aCategory.Id);
+        response.Data.Name.Should().Be(request.Name);
+        response.Data.Description.Should().Be(request.Description);
+        response.Data.IsActive.Should().Be((bool)request.IsActive!);
 
         var categoryInDatabase = await _fixture.Persistence.GetById(aCategory.Id);
         
@@ -64,16 +66,17 @@ public class UpdateCategoryApiTest : IDisposable
             IsActive = aCategory.IsActive
         };
         //when
-        var (responseMessage, response) = await _fixture.ApiClient.Put<CategoryModelResponse>($"/categories/{aCategory.Id}", request);
+        var (responseMessage, response) = await _fixture.ApiClient.Put<ApiResponse<CategoryModelResponse>>($"/categories/{aCategory.Id}", request);
         
         //then
         responseMessage.Should().NotBeNull();
         responseMessage!.StatusCode.Should().Be(HttpStatusCode.OK);
         response.Should().NotBeNull();
-        response!.Id.Should().Be(aCategory.Id);
-        response.Name.Should().Be(request.Name);
-        response.Description.Should().Be(aCategory.Description);
-        response.IsActive.Should().Be(aCategory.IsActive);
+        response!.Data.Should().NotBeNull();
+        response!.Data.Id.Should().Be(aCategory.Id);
+        response.Data.Name.Should().Be(request.Name);
+        response.Data.Description.Should().Be(aCategory.Description);
+        response.Data.IsActive.Should().Be(aCategory.IsActive);
 
         var categoryInDatabase = await _fixture.Persistence.GetById(aCategory.Id);
         
@@ -98,16 +101,17 @@ public class UpdateCategoryApiTest : IDisposable
             IsActive = aCategory.IsActive
         };
         //when
-        var (responseMessage, response) = await _fixture.ApiClient.Put<CategoryModelResponse>($"/categories/{aCategory.Id}", request);
+        var (responseMessage, response) = await _fixture.ApiClient.Put<ApiResponse<CategoryModelResponse>>($"/categories/{aCategory.Id}", request);
         
         //then
         responseMessage.Should().NotBeNull();
         responseMessage!.StatusCode.Should().Be(HttpStatusCode.OK);
         response.Should().NotBeNull();
-        response!.Id.Should().Be(aCategory.Id);
-        response.Name.Should().Be(request.Name);
-        response.Description.Should().Be(request.Description);
-        response.IsActive.Should().Be(aCategory.IsActive);
+        response!.Data.Should().NotBeNull();
+        response!.Data.Id.Should().Be(aCategory.Id);
+        response.Data.Name.Should().Be(request.Name);
+        response.Data.Description.Should().Be(request.Description);
+        response.Data.IsActive.Should().Be(aCategory.IsActive);
 
         var categoryInDatabase = await _fixture.Persistence.GetById(aCategory.Id);
         
