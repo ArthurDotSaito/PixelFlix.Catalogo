@@ -60,11 +60,7 @@ public class CategoriesController : ControllerBase
         if(dir is not null) request.Dir = dir.Value;
         
         var applicationResponse =  await _mediator.Send(request, cancellationToken);
-        var apiResponse = new ApiResponseList<CategoryModelResponse>(
-            applicationResponse.Items,
-            applicationResponse.Page,
-            applicationResponse.PerPage,
-            applicationResponse.Total); 
+        var apiResponse = new ApiResponseList<CategoryModelResponse>(applicationResponse); 
         
         return Ok(apiResponse);
     }
