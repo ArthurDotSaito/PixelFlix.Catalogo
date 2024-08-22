@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using FC.Pixelflix.Catalogo.Api.ApiModels.Response;
 using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
 using FC.Pixelflix.Catalogo.e2e.Extensions.DateTime;
 using FluentAssertions;
@@ -7,11 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Xunit;
 
 namespace FC.Pixelflix.Catalogo.e2e.API.Category.GetCategoryById;
-
-class GetCategoryResponse
-{
-    public CategoryModelResponse Data { get; set; }
-}
 
 [Collection(nameof(GetCategoryApiTestFixtureCollection))]
 public class GetCategoryApiTest : IDisposable
@@ -33,7 +29,7 @@ public class GetCategoryApiTest : IDisposable
         
         var aCategory = categoriesList[10];
         //when
-        var (responseMessage, response) = await _fixture.ApiClient.Get<GetCategoryResponse>($"/categories/{aCategory.Id}");
+        var (responseMessage, response) = await _fixture.ApiClient.Get<ApiResponse<CategoryModelResponse>>($"/categories/{aCategory.Id}");
 
         //then
         responseMessage.Should().NotBeNull();
