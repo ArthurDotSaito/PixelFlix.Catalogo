@@ -24,11 +24,11 @@ class Meta
         PerPage = perPage;
         Total = total;
     }
+
     public int CurrentPage { get; private set; }
     public int PerPage { get; private set; }
-    public int Total { get; private set; 
+    public int Total { get; private set; }
 }
-    
 
 [Collection(nameof(ListCategoryApiTestFixtureCollection))]
 public class ListCategoryApiTest : IDisposable
@@ -66,7 +66,7 @@ public class ListCategoryApiTest : IDisposable
         response.Meta.PerPage.Should().Be(expectedPerPage);
         response.Meta.CurrentPage.Should().Be(1);
 
-        foreach (var category in response.Items)
+        foreach (var category in response.Data)
         {
             var expectedItem = categoriesList.FirstOrDefault(x => x.Id == category.Id);
 
@@ -315,6 +315,6 @@ public class ListCategoryApiTest : IDisposable
             lastItemDate = category.CreatedAt;
         }
     }
-    
     public void Dispose() => _fixture.CleanDatabase();
+   
 }
