@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
-using FC.Pixelflix.Catalogo.e2e.Extensions.String;
+using FC.Pixelflix.Catalogo.Api.Extensions.String;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json.Linq;
 
@@ -79,9 +79,9 @@ public class ApiClient
         {
             if (responseMessage.IsSuccessStatusCode)
             {
-                var responseObject = JObject.Parse(responseString); 
-                var responseData = responseObject["response"]?.ToString();  
-                response = JsonSerializer.Deserialize<TResponse>(responseData!, _defaultSerializerOptions);   
+                /*var responseObject = JObject.Parse(responseString); 
+                var responseData = responseObject["data"]?.ToString();  */
+                response = JsonSerializer.Deserialize<TResponse>(responseString!, _defaultSerializerOptions);   
             }
             else
             {
