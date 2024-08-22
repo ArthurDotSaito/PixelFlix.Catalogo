@@ -59,8 +59,14 @@ public class CategoriesController : ControllerBase
         if(!String.IsNullOrWhiteSpace(sort)) request.Sort = sort;
         if(dir is not null) request.Dir = dir.Value;
         
-        var response =  await _mediator.Send(request, cancellationToken);
-        return Ok(response);
+        var applicationResponse =  await _mediator.Send(request, cancellationToken);
+        var apiResponse = new ApiResponseList<CategoryModelResponse>(
+            applicationResponse.Items,
+            applicationResponse.Page,
+            applicationResponse.PerPage,
+            applicationResponse.Total); 
+        
+        return Ok(apiResponse);
     }
     
     [HttpDelete("{id:guid}")]
