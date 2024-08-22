@@ -10,26 +10,6 @@ using Xunit.Abstractions;
 
 namespace FC.Pixelflix.Catalogo.e2e.API.Category.ListCategory;
 
-class CategoryListResponse
-{
-    public IReadOnlyList<CategoryModelResponse> Data { get; private set; }
-    public Meta Meta { get; private set; }
-}
-
-class Meta
-{
-    public Meta(int page, int perPage, int total)
-    {
-        CurrentPage = page;
-        PerPage = perPage;
-        Total = total;
-    }
-
-    public int CurrentPage { get; private set; }
-    public int PerPage { get; private set; }
-    public int Total { get; private set; }
-}
-
 [Collection(nameof(ListCategoryApiTestFixtureCollection))]
 public class ListCategoryApiTest : IDisposable
 {
