@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Xunit;
+using GenreDomain = FC.Pixelflix.Catalogo.Domain.Entities.Genre;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Domain.Entities.Genre;
 
@@ -14,10 +15,10 @@ public class GenreTest
       var dateTimeBefore = DateTime.Now;
       var dateTimeAfter = DateTime.Now.AddSeconds(1);
       
-      var genre = new Genre(expectedName);
+      var genre = new GenreDomain(expectedName);
       
       genre.Should().NotBeNull();
-      genre.Name.Should().Be(genreName);
+      genre.Name.Should().Be(expectedName);
       genre.IsActive.Should().BeTrue();
       genre.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
       genre.CreatedAt.Should().BeAfter(dateTimeBefore);
