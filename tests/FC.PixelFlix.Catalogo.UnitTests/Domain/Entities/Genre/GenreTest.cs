@@ -1,9 +1,27 @@
-﻿using Xunit;
+﻿using FluentAssertions;
+using Xunit;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Domain.Entities.Genre;
 
 [Collection(nameof(GenreTestFixture))]
 public class GenreTest
 {
-    
+   [Fact(DisplayName = nameof(GivenAGenreNewInstance_WhenEverythingIsValid_ShouldBeInstantiateAGenre))]
+   [Trait("Domain", "Genre - Aggregates")]
+   public void GivenAGenreNewInstance_WhenEverythingIsValid_ShouldBeInstantiateAGenre()
+   {
+      var expectedName = "Horror";
+      var dateTimeBefore = DateTime.Now;
+      var dateTimeAfter = DateTime.Now.AddSeconds(1);
+      
+      var genre = new Genre(expectedName);
+      
+      genre.Should().NotBeNull();
+      genre.Name.Should().Be(genreName);
+      genre.IsActive.Should().BeTrue();
+      genre.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
+      genre.CreatedAt.Should().BeAfter(dateTimeBefore);
+      genre.CreatedAt.Should().BeBefore(dateTimeAfter);
+   }
+   
 }
