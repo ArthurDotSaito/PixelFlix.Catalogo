@@ -12,4 +12,11 @@ public class Genre
         IsActive = true;
         CreatedAt = DateTime.Now;
     }
+    
+    public Genre(string name, bool isActive)
+    {
+        Name = name;
+        IsActive = isActive;
+        CreatedAt = DateTime.Now;
+    }
 }
