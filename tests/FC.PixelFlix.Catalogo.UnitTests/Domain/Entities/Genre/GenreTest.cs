@@ -25,4 +25,24 @@ public class GenreTest
       genre.CreatedAt.Should().BeBefore(dateTimeAfter);
    }
    
+   [Theory(DisplayName = nameof(GivenAGenreNewInstance_WhenIsActiveTrue_ShouldBeInstantiateAGenre))]
+   [Trait("Domain", "Genre - Aggregates")]
+   [InlineData(true)]
+   [InlineData(false)]
+   public void GivenAGenreNewInstance_WhenIsActiveTrue_ShouldBeInstantiateAGenre(bool isActive)
+   {
+      var expectedName = "Horror";
+      var dateTimeBefore = DateTime.Now;
+      var dateTimeAfter = DateTime.Now.AddSeconds(1);
+      
+      var genre = new GenreDomain(expectedName, isActive);
+      
+      genre.Should().NotBeNull();
+      genre.Name.Should().Be(expectedName);
+      genre.IsActive.Should().Be(isActive);
+      genre.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
+      genre.CreatedAt.Should().BeAfter(dateTimeBefore);
+      genre.CreatedAt.Should().BeBefore(dateTimeAfter);
+   }
+   
 }
