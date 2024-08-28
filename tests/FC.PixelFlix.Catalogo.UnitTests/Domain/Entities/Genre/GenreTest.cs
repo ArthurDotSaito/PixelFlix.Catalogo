@@ -92,7 +92,7 @@ public class GenreTest
       var genre = _fixture.GetAValidGenre();
       var expectedGenreName = _fixture.GetValidName();
 
-      genre.Update(newGenreName);
+      genre.Update(expectedGenreName);
       
       genre.Should().NotBeNull();
       genre.Name.Should().Be(expectedGenreName);

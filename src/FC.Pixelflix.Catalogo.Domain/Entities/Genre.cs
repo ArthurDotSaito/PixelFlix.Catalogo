@@ -29,4 +29,9 @@ public class Genre
     {
         IsActive = false;
     }
+
+    public void Update(string name)
+    {
+        Name = name;
+    }
 }
