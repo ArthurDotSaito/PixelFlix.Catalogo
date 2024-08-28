@@ -53,7 +53,7 @@ public class GenreTest
       genre.CreatedAt.Should().BeBefore(dateTimeAfter);
    }
    
-   [Theory(DisplayName = nameof(GivenAGenreNewInstance_WhenIsActiveTrue_ShouldBeInstantiateAGenre))]
+   [Theory(DisplayName = nameof(GivenAGenre_WhenCallActivate_ShouldIsActiveTrue))]
    [Trait("Domain", "Genre - Aggregates")]
    [InlineData(true)]
    [InlineData(false)]
@@ -66,7 +66,24 @@ public class GenreTest
 
       genre.Should().NotBeNull();
       genre.Name.Should().Be(expectedName);
-      genre.IsActive.Should().Be(isActive);
+      genre.IsActive.Should().Be(true);
+      genre.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
+   }
+   
+   [Theory(DisplayName = nameof(GivenAGenre_WhenCallActivate_ShouldIsActiveTrue))]
+   [Trait("Domain", "Genre - Aggregates")]
+   [InlineData(true)]
+   [InlineData(false)]
+   public void GivenAGenre_WhenCallDeactivate_ShouldIsActiveFalse(bool isActive)
+   {
+      var expectedName = _fixture.GetValidName();
+      var genre = new GenreDomain(expectedName, isActive);
+
+      genre.Deactivate();
+
+      genre.Should().NotBeNull();
+      genre.Name.Should().Be(expectedName);
+      genre.IsActive.Should().BeFalse();
       genre.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
    }
    

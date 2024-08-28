@@ -24,4 +24,9 @@ public class Genre
     {
         IsActive = true;
     }
+    
+    public void Deactivate()
+    {
+        IsActive = false;
+    }
 }
