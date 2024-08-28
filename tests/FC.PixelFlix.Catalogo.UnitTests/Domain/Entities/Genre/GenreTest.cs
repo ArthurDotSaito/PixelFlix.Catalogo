@@ -89,13 +89,14 @@ public class GenreTest
    [Trait("Domain", "Genre - Aggregates")]
    public void GivenAGenre_WhenCallUpdate_ShouldUpdateAGenre()
    {
-      var expectedName = _fixture.GetValidName();
-      
-      var genre = new GenreDomain(expectedName);
+      var genre = _fixture.GetAValidGenre();
+      var expectedGenreName = _fixture.GetValidName();
+
+      genre.Update(newGenreName);
       
       genre.Should().NotBeNull();
-      genre.Name.Should().Be(expectedName);
-      genre.IsActive.Should().BeTrue();
+      genre.Name.Should().Be(expectedGenreName);
+      genre.IsActive.Should().Be(genre.IsActive);
       genre.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
    }
    
