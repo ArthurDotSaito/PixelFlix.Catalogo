@@ -19,4 +19,9 @@ public class Genre
         IsActive = isActive;
         CreatedAt = DateTime.Now;
     }
+
+    public void Activate()
+    {
+        IsActive = true;
+    }
 }
