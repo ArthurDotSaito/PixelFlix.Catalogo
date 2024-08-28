@@ -7,6 +7,14 @@ namespace FC.PixelFlix.Catalogo.UnitTests.Domain.Entities.Genre;
 [Collection(nameof(GenreTestFixture))]
 public class GenreTest
 {
+
+   private readonly GenreTestFixture _fixture;
+
+   public GenreTest(GenreTestFixture fixture)
+   {
+      _fixture = fixture;
+   }
+   
    [Fact(DisplayName = nameof(GivenAGenreNewInstance_WhenEverythingIsValid_ShouldBeInstantiateAGenre))]
    [Trait("Domain", "Genre - Aggregates")]
    public void GivenAGenreNewInstance_WhenEverythingIsValid_ShouldBeInstantiateAGenre()

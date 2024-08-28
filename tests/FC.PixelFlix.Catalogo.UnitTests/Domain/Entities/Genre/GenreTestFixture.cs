@@ -12,4 +12,5 @@ public class GenreTestFixture : BaseFixture
     {
         return Faker.Commerce.Categories(1)[0];
     }
+    
 }
