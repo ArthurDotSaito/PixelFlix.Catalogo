@@ -8,5 +8,8 @@ public class GenreTestFixtureCollection: ICollectionFixture<GenreTestFixture>{}
 
 public class GenreTestFixture : BaseFixture
 {
-    
+    public string GetValidName()
+    {
+        return Faker.Commerce.Categories(1)[0];
+    }
 }
