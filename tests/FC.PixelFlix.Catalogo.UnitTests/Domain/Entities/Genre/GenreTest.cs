@@ -101,12 +101,24 @@ public class GenreTest
       genre.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
    }
    
-   [Theory(DisplayName = nameof(GivenANewGenre_WhenNameIsEmpty_ShouldThrowInvalidOperation))]
+   [Theory(DisplayName = nameof(GivenANewGenre_WhenNameIsEmpty_ShouldThrowDomainException))]
    [Trait("Domain", "Genre - Aggregates")]
    [InlineData("")]
    [InlineData(" ")]
    [InlineData(null)]
-   public void GivenANewGenre_WhenNameIsEmpty_ShouldThrowInvalidOperation(string? name)
+   public void GivenANewGenre_WhenNameIsEmpty_ShouldThrowDomainException(string? name)
+   {
+      var action = () =>  new GenreDomain(name!);
+
+      action.Should().Throw<EntityValidationException>().WithMessage("name should not be empty or null");
+   }
+   
+   [Theory(DisplayName = nameof(GivenAGenre_WhenNameIsEmptyAndCallUpdate_ShouldThrowDomainException))]
+   [Trait("Domain", "Genre - Aggregates")]
+   [InlineData("")]
+   [InlineData(" ")]
+   [InlineData(null)]
+   public void GivenAGenre_WhenNameIsEmptyAndCallUpdate_ShouldThrowDomainException(string? name)
    {
       var action = () =>  new GenreDomain(name!);
 
