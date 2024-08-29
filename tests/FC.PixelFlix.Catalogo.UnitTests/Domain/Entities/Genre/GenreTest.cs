@@ -120,7 +120,8 @@ public class GenreTest
    [InlineData(null)]
    public void GivenAGenre_WhenNameIsEmptyAndCallUpdate_ShouldThrowDomainException(string? name)
    {
-      var action = () =>  new GenreDomain(name!);
+      var genre = _fixture.GetAValidGenre();
+      var action = () =>  genre.Update(name!);
 
       action.Should().Throw<EntityValidationException>().WithMessage("name should not be empty or null");
    }
