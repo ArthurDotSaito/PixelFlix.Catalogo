@@ -13,6 +13,8 @@ public class Genre
         Name = name;
         IsActive = true;
         CreatedAt = DateTime.Now;
+        
+        Validate();
     }
     
     public Genre(string name, bool isActive)
@@ -37,6 +39,7 @@ public class Genre
     public void Update(string name)
     {
         Name = name;
+        Validate();
     }
     
     private void Validate()
