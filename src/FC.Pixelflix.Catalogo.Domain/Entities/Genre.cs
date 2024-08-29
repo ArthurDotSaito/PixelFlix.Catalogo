@@ -1,4 +1,6 @@
-﻿namespace FC.Pixelflix.Catalogo.Domain.Entities;
+﻿using FC.Pixelflix.Catalogo.Domain.Validation;
+
+namespace FC.Pixelflix.Catalogo.Domain.Entities;
 
 public class Genre
 {
@@ -18,6 +20,8 @@ public class Genre
         Name = name;
         IsActive = isActive;
         CreatedAt = DateTime.Now;
+        
+        Validate();
     }
 
     public void Activate()
@@ -33,5 +37,10 @@ public class Genre
     public void Update(string name)
     {
         Name = name;
+    }
+    
+    private void Validate()
+    {
+        DomainValidation.NotNullOrEmptyValidation(Name, nameof(Name));
     }
 }
