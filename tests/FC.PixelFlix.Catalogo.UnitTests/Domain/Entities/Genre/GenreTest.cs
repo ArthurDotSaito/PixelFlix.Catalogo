@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using FC.Pixelflix.Catalogo.Domain.Exceptions;
+using FluentAssertions;
 using Xunit;
 using GenreDomain = FC.Pixelflix.Catalogo.Domain.Entities.Genre;
 
@@ -19,7 +20,7 @@ public class GenreTest
    [Trait("Domain", "Genre - Aggregates")]
    public void GivenAGenreNewInstance_WhenEverythingIsValid_ShouldBeInstantiateAGenre()
    {
-      var expectedName = _fixture.GetValidName();
+      var expectedName = _fixture.GetValidName();  
       var dateTimeBefore = DateTime.Now;
       var dateTimeAfter = DateTime.Now.AddSeconds(1);
       
@@ -100,4 +101,15 @@ public class GenreTest
       genre.CreatedAt.Should().NotBeSameDateAs(default(DateTime));
    }
    
+   [Theory(DisplayName = nameof(GivenANewGenre_WhenNameIsEmpty_ShouldThrowInvalidOperation))]
+   [Trait("Domain", "Genre - Aggregates")]
+   [InlineData("")]
+   [InlineData(" ")]
+   [InlineData(null)]
+   public void GivenANewGenre_WhenNameIsEmpty_ShouldThrowInvalidOperation(string? name)
+   {
+      var action = () =>  new GenreDomain(name!);
+
+      action.Should().Throw<EntityValidationException>().WithMessage("name should not be empty or null");
+   }
 }
