@@ -8,21 +8,13 @@ public class Genre
     public bool IsActive { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public List<Guid> Categories { get; set; }
-
-    public Genre(string name)
-    {
-        Name = name;
-        IsActive = true;
-        CreatedAt = DateTime.Now;
-        
-        Validate();
-    }
     
-    public Genre(string name, bool isActive)
+    public Genre(string name, bool isActive = true)
     {
         Name = name;
         IsActive = isActive;
         CreatedAt = DateTime.Now;
+        Categories = new List<Guid>();
         
         Validate();
     }
