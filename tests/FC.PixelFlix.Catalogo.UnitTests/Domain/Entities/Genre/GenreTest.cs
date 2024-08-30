@@ -125,4 +125,33 @@ public class GenreTest
 
       action.Should().Throw<EntityValidationException>().WithMessage("name should not be empty or null");
    }
+    
+   [Fact(DisplayName = nameof(GivenAGenre_WhenCreatingARelationWithCategories_ShouldAddACategory))]
+   [Trait("Domain", "Genre - Aggregates")]
+   public void GivenAGenre_WhenCreatingARelationWithCategories_ShouldAddACategory()
+   {
+      var genre = _fixture.GetAValidGenre();
+      var categoryGuid = Guid.NewGuid();
+
+      genre.AddCategory(categoryGuid);
+      
+      genre.Categories.Should().HaveCount(1);
+      genre.Categories.Should().Contain(categoryGuid);
+   }
+   
+   [Fact(DisplayName = nameof(GivenAGenre_WhenCreatingARelationWithMoreThanOneCategory_ShouldAddACategories))]
+   [Trait("Domain", "Genre - Aggregates")]
+   public void GivenAGenre_WhenCreatingARelationWithMoreThanOneCategory_ShouldAddACategories()
+   {
+      var genre = _fixture.GetAValidGenre();
+      var exCategoryGuid1 = Guid.NewGuid();
+      var exCategoryGuid2 = Guid.NewGuid();
+
+      genre.AddCategory(exCategoryGuid1);
+      genre.AddCategory(exCategoryGuid2);
+      
+      genre.Categories.Should().HaveCount(2);
+      genre.Categories.Should().Contain(exCategoryGuid1);
+      genre.Categories.Should().Contain(exCategoryGuid2);
+   }
 }

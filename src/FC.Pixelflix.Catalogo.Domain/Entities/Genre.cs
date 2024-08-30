@@ -7,21 +7,16 @@ public class Genre
     public string Name { get; private set; }
     public bool IsActive { get; private set; }
     public DateTime CreatedAt { get; private set; }
-
-    public Genre(string name)
-    {
-        Name = name;
-        IsActive = true;
-        CreatedAt = DateTime.Now;
-        
-        Validate();
-    }
+    public IReadOnlyList<Guid> Categories => _Categories.AsReadOnly();
     
-    public Genre(string name, bool isActive)
+    private List<Guid> _Categories;
+    
+    public Genre(string name, bool isActive = true)
     {
         Name = name;
         IsActive = isActive;
         CreatedAt = DateTime.Now;
+        _Categories = new List<Guid>();
         
         Validate();
     }
@@ -39,6 +34,12 @@ public class Genre
     public void Update(string name)
     {
         Name = name;
+        Validate();
+    }
+    
+    public void AddCategory(Guid categoryId)
+    {
+        _Categories.Add(categoryId);
         Validate();
     }
     
