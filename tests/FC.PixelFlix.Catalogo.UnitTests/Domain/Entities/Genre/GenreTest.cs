@@ -125,4 +125,17 @@ public class GenreTest
 
       action.Should().Throw<EntityValidationException>().WithMessage("name should not be empty or null");
    }
+    
+   [Fact(DisplayName = nameof(GivenAGenre_WhenCreatingARelationWithCategories_ShouldAddACategory))]
+   [Trait("Domain", "Genre - Aggregates")]
+   public void GivenAGenre_WhenCreatingARelationWithCategories_ShouldAddACategory()
+   {
+      var genre = _fixture.GetAValidGenre();
+      var categoryGuid = Guid.NewGuid();
+
+      genre.AddCategory(categoryGuid);
+      
+      genre.Categories.Should().HaveCount(1);
+      genre.Categories.Should().Contain(categoryGuid);
+   }
 }
