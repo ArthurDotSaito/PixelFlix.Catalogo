@@ -14,10 +14,19 @@ public class GenreTestFixture : BaseFixture
         return Faker.Commerce.Categories(1)[0];
     }
     
-    public DomainGenre GetAValidGenre(bool isActive = true)
+    public DomainGenre GetAValidGenre(bool isActive = true, List<Guid>? categoriesIdsList = null)
     {
         var genreName = GetValidName();
-        return new DomainGenre(genreName, isActive);
+        var genre = new DomainGenre(genreName, isActive);
+        if (categoriesIdsList is not null)
+        {
+            foreach (var categoryId in categoriesIdsList)
+            {
+                genre.AddCategory(categoryId);
+            }
+        }
+
+        return genre;
     }
     
 }
