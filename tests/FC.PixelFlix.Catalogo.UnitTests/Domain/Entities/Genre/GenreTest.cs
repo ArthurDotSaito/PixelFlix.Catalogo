@@ -126,9 +126,9 @@ public class GenreTest
       action.Should().Throw<EntityValidationException>().WithMessage("name should not be empty or null");
    }
     
-   [Fact(DisplayName = nameof(GivenAGenre_WhenCreatingARelationWithCategories_ShouldAddACategory))]
+   [Fact(DisplayName = nameof(GivenAGenre_WhenCallAddCategory_ShouldAddACategory))]
    [Trait("Domain", "Genre - Aggregates")]
-   public void GivenAGenre_WhenCreatingARelationWithCategories_ShouldAddACategory()
+   public void GivenAGenre_WhenCallAddCategory_ShouldAddACategory()
    {
       var genre = _fixture.GetAValidGenre();
       var categoryGuid = Guid.NewGuid();
@@ -139,9 +139,9 @@ public class GenreTest
       genre.Categories.Should().Contain(categoryGuid);
    }
    
-   [Fact(DisplayName = nameof(GivenAGenre_WhenCreatingARelationWithMoreThanOneCategory_ShouldAddACategories))]
+   [Fact(DisplayName = nameof(GivenAGenre_CallCreateWithMoreThanOneCategory_ShouldAddACategories))]
    [Trait("Domain", "Genre - Aggregates")]
-   public void GivenAGenre_WhenCreatingARelationWithMoreThanOneCategory_ShouldAddACategories()
+   public void GivenAGenre_CallCreateWithMoreThanOneCategory_ShouldAddACategories()
    {
       var genre = _fixture.GetAValidGenre();
       var exCategoryGuid1 = Guid.NewGuid();
@@ -155,9 +155,9 @@ public class GenreTest
       genre.Categories.Should().Contain(exCategoryGuid2);
    }
    
-   [Fact(DisplayName = nameof(GivenSomeGenres_WhenRemovingCategoryFromGenre_ShouldRemoveCategory))]
+   [Fact(DisplayName = nameof(GivenSomeGenres_WhenCallRemove_ShouldRemoveCategory))]
    [Trait("Domain", "Genre - Aggregates")]
-   public void GivenSomeGenres_WhenRemovingCategoryFromGenre_ShouldRemoveCategory()
+   public void GivenSomeGenres_WhenCallRemove_ShouldRemoveCategory()
    {
       var aIdToRemove = Guid.NewGuid();
       var categoriesIdsList = new List<Guid> { Guid.NewGuid(), Guid.NewGuid(),aIdToRemove };
@@ -167,5 +167,17 @@ public class GenreTest
       
       genre.Categories.Should().HaveCount(2);
       genre.Categories.Should().NotContain(aIdToRemove);
+   }
+   
+   [Fact(DisplayName = nameof(GivenSomeGenres_WhenCallRemoveAll_ShouldRemoveAllCategoriesFromAGenre))]
+   [Trait("Domain", "Genre - Aggregates")]
+   public void GivenSomeGenres_WhenCallRemoveAll_ShouldRemoveAllCategoriesFromAGenre()
+   {
+      var categoriesIdsList = new List<Guid> { Guid.NewGuid(), Guid.NewGuid(),Guid.NewGuid() };
+      var genre = _fixture.GetAValidGenre(categoriesIdsList: categoriesIdsList);
+
+      genre.RemoveAllCategories();
+      
+      genre.Categories.Should().HaveCount(0);
    }
 }
