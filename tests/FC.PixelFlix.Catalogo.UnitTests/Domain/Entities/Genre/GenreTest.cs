@@ -154,4 +154,18 @@ public class GenreTest
       genre.Categories.Should().Contain(exCategoryGuid1);
       genre.Categories.Should().Contain(exCategoryGuid2);
    }
+   
+   [Fact(DisplayName = nameof(GivenSomeGenres_WhenRemovingCategoryFromGenre_ShouldRemoveCategory))]
+   [Trait("Domain", "Genre - Aggregates")]
+   public void GivenSomeGenres_WhenRemovingCategoryFromGenre_ShouldRemoveCategory()
+   {
+      var aIdToRemove = Guid.NewGuid();
+      var categoriesIdsList = new List<Guid> { Guid.NewGuid(), Guid.NewGuid(),aIdToRemove };
+      var genre = _fixture.GetAValidGenre(categoriesIdsList: categoriesIdsList);
+
+      genre.RemoveCategory(aIdToRemove);
+      
+      genre.Categories.Should().HaveCount(2);
+      genre.Categories.Should().NotContain(aIdToRemove);
+   }
 }
