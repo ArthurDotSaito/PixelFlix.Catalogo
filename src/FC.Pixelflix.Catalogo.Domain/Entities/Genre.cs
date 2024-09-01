@@ -43,6 +43,18 @@ public class Genre
         Validate();
     }
     
+    public void RemoveCategory(Guid categoryId)
+    {
+        _Categories.Remove(categoryId);
+        Validate();
+    }
+    
+    public void RemoveAllCategories()
+    {
+        _Categories.Clear();
+        Validate();
+    }
+    
     private void Validate()
     {
         DomainValidation.NotNullOrEmptyValidation(Name, nameof(Name));
