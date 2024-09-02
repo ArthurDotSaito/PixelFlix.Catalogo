@@ -15,4 +15,8 @@
     <ProjectReference Include="..\FC.Pixelflix.Catalogo.Domain\FC.Pixelflix.Catalogo.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCases\Genre\CreateGenre\" />
+  </ItemGroup>
+
 </Project>
