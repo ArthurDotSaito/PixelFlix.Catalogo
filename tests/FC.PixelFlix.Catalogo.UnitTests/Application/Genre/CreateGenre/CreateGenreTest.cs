@@ -1,5 +1,7 @@
 ﻿using FluentAssertions;
+using Moq;
 using Xunit;
+using DomainGenre = FC.Pixelflix.Catalogo.Domain.Entities.Genre;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.Genre.CreateGenre;
 
@@ -27,6 +29,9 @@ public class CreateGenreTest
         var input = _fixture.GetValidInput();
 
         var output = await useCase.Handle(input, CancellationToken.None);
+        
+        genreRepositoryMock.Verify(e => e.Insert(It.IsAny<DomainGenre>(), It.IsAny<CancellationToken>()), Times.Once);
+        unitOfWorkMock.Verify(e => e.Commit(It.IsAny<CancellationToken>()), Times.Once);
         
         output.Should().NotBeNull();
         output.Id.Should().NotBeEmpty();
