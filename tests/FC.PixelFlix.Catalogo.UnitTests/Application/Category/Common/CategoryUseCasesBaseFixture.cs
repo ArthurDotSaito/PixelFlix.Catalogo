@@ -36,11 +36,6 @@ public abstract class CategoryUseCasesBaseFixture : BaseFixture
         return aCategoryDescription;
     }
 
-    public bool GetRandomIsActive()
-    {
-        return new Random().NextDouble() < 0.5;
-    }
-
     public CategoryClass.Category GetValidCategory()
     {
         var validData = new
