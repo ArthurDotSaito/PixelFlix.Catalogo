@@ -6,6 +6,6 @@ public class GenreUseCasesBaseFixture : BaseFixture
 {
     public string GetValidGenreName()
     {
-        return Faker.Commerce.Categories(1)[1];
+        return Faker.Commerce.Categories(1)[0];
     }
 }

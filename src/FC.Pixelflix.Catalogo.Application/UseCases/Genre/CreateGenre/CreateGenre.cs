@@ -10,7 +10,13 @@ public class CreateGenre : ICreateGenre
 {
     private readonly IGenreRepository _genreRepository;
     private readonly IUnitOfWork _unitOfWork;
-    
+
+    public CreateGenre(IGenreRepository genreRepository, IUnitOfWork unitOfWork)
+    {
+        _genreRepository = genreRepository;
+        _unitOfWork = unitOfWork;
+    }
+
     public async Task<GenreModelResponse> Handle(CreateGenreRequest request, CancellationToken cancellationToken)
     {
         var genre = new DomainGenre(request.Name, request.IsActive);
