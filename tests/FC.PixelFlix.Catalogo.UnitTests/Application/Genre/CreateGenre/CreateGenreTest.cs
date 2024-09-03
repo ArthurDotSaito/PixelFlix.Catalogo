@@ -2,6 +2,7 @@
 using Moq;
 using Xunit;
 using DomainGenre = FC.Pixelflix.Catalogo.Domain.Entities.Genre;
+using UseCase = FC.Pixelflix.Catalogo.Application.UseCases.Genre.CreateGenre;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.Genre.CreateGenre;
 
@@ -24,7 +25,7 @@ public class CreateGenreTest
         var dateTimeBefore = DateTime.Now;
         var dateTimeAfterCommand = DateTime.Now.AddSeconds(1);
         
-        var useCase = new CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object);
+        var useCase = new UseCase.CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object);
 
         var input = _fixture.GetValidInput();
 
@@ -36,6 +37,7 @@ public class CreateGenreTest
         output.Should().NotBeNull();
         output.Id.Should().NotBeEmpty();
         output.Name.Should().Be(input.Name);
+        output.Categories.Should().HaveCount(0);
         output.IsActive.Should().Be(input.IsActive);
         output.CreatedAt.Should().NotBe(null);
         output.CreatedAt.Should().NotBeSameDateAs(default);

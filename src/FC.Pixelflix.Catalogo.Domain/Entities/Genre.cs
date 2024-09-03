@@ -1,8 +1,9 @@
-﻿using FC.Pixelflix.Catalogo.Domain.Validation;
+﻿using FC.Pixelflix.Catalogo.Domain.SeedWork;
+using FC.Pixelflix.Catalogo.Domain.Validation;
 
 namespace FC.Pixelflix.Catalogo.Domain.Entities;
 
-public class Genre
+public class Genre : AggretateRoot
 {
     public string Name { get; private set; }
     public bool IsActive { get; private set; }
