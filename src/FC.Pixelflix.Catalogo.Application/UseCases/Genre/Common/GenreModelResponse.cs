@@ -6,9 +6,9 @@ public class GenreModelResponse
     public string Name { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
-    public List<Guid> Categories { get; set; }
+    public IReadOnlyList<Guid> Categories { get; set; }
 
-    public GenreModelResponse(Guid id, string name, bool isActive, DateTime createdAt, List<Guid> categories)
+    public GenreModelResponse(Guid id, string name, bool isActive, DateTime createdAt, IReadOnlyList<Guid> categories)
     {
         Id = id;
         Name = name;
