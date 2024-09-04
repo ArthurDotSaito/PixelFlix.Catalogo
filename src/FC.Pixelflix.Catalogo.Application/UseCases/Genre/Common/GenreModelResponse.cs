@@ -1,5 +1,5 @@
 ﻿namespace FC.Pixelflix.Catalogo.Application.UseCases.Genre.Common;
-
+using GenreDomain = FC.Pixelflix.Catalogo.Domain.Entities.Genre;
 public class GenreModelResponse
 {
     public Guid Id { get; set; }
@@ -15,5 +15,10 @@ public class GenreModelResponse
         IsActive = isActive;
         CreatedAt = createdAt;
         Categories = categories;
+    }
+    
+    public static GenreModelResponse FromGenre(GenreDomain genre)
+    {
+        return new GenreModelResponse(genre.Id, genre.Name,genre.IsActive, genre.CreatedAt, genre.Categories);
     }
 }

@@ -20,9 +20,10 @@ public class CreateGenre : ICreateGenre
     public async Task<GenreModelResponse> Handle(CreateGenreRequest request, CancellationToken cancellationToken)
     {
         var genre = new DomainGenre(request.Name, request.IsActive);
+        if(request.Categories is not null) request.Categories.ForEach(genre.AddCategory);
 
         await _genreRepository.Insert(genre, cancellationToken);
         await _unitOfWork.Commit(cancellationToken);
-        return new GenreModelResponse(genre.Id, genre.Name, genre.IsActive, genre.CreatedAt, genre.Categories);
+        return GenreModelResponse.FromGenre(genre);
     }
 }

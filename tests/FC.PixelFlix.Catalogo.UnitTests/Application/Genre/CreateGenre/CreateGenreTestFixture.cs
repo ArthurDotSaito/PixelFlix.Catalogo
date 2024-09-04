@@ -20,6 +20,15 @@ public class CreateGenreTestFixture : GenreUseCasesBaseFixture
         return new CreateGenreRequest(genreName, isActive);
     }
     
+    public CreateGenreRequest GetValidInputWithCategories()
+    {
+        var genreName = GetValidGenreName();
+        var isActive = GetRandomIsActive();
+        var categoriesIds = Enumerable.Range(0, (new Random()).Next(1, 10)).Select(_ => Guid.NewGuid()).ToList();
+        
+        return new CreateGenreRequest(genreName, isActive, categoriesIds);
+    }
+    
     public Mock<IGenreRepository> GetGenreRepositoryMock()
     {
         return new Mock<IGenreRepository>();
