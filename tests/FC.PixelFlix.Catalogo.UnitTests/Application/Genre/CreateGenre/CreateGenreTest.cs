@@ -66,13 +66,13 @@ public class CreateGenreTest
         output.Should().NotBeNull();
         output.Id.Should().NotBeEmpty();
         output.Name.Should().Be(input.Name);
-        output.Categories.Should().HaveCount(input.CategoriesIds);
+        output.Categories.Should().HaveCount(input.Categories?.Count ?? 0);
         output.IsActive.Should().Be(input.IsActive);
         output.CreatedAt.Should().NotBe(null);
         output.CreatedAt.Should().NotBeSameDateAs(default);
         (output.CreatedAt >= dateTimeBefore).Should().BeTrue();
         (output.CreatedAt <= dateTimeAfterCommand).Should().BeTrue();
         
-        input.CategoriesIds.ForEach(id => output.Categories.Should().Contain(id));
+        input.Categories.ForEach(id => output.Categories.Should().Contain(id));
     }
 }
