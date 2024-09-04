@@ -24,6 +24,6 @@ public class CreateGenre : ICreateGenre
 
         await _genreRepository.Insert(genre, cancellationToken);
         await _unitOfWork.Commit(cancellationToken);
-        return new GenreModelResponse(genre.Id, genre.Name, genre.IsActive, genre.CreatedAt, genre.Categories);
+        return GenreModelResponse.FromGenre(genre);
     }
 }
