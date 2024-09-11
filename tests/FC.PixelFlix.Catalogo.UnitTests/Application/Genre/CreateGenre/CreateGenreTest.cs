@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using FC.Pixelflix.Catalogo.Application.Exceptions;
+using FluentAssertions;
 using Moq;
 using Xunit;
 using DomainGenre = FC.Pixelflix.Catalogo.Domain.Entities.Genre;
@@ -22,10 +23,12 @@ public class CreateGenreTest
     {
         var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
+        var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
+        
         var dateTimeBefore = DateTime.Now;
         var dateTimeAfterCommand = DateTime.Now.AddSeconds(1);
         
-        var useCase = new UseCase.CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object);
+        var useCase = new UseCase.CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object, categoryRepositoryMock.Object);
 
         var input = _fixture.GetValidInput();
 
@@ -51,13 +54,18 @@ public class CreateGenreTest
     {
         var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
+        var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
+        
+        var input = _fixture.GetValidInputWithCategories();
+        
+        categoryRepositoryMock.Setup(x=> x.GetIdsListByIds(It.IsAny<List<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((IReadOnlyList<Guid>)input.Categories!);
+        
         var dateTimeBefore = DateTime.Now;
         var dateTimeAfterCommand = DateTime.Now.AddSeconds(1);
         
-        var useCase = new UseCase.CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object);
-
-        var input = _fixture.GetValidInputWithCategories();
-
+        var useCase = new UseCase.CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object, categoryRepositoryMock.Object);
+        
         var output = await useCase.Handle(input, CancellationToken.None);
         
         genreRepositoryMock.Verify(e => e.Insert(It.IsAny<DomainGenre>(), It.IsAny<CancellationToken>()), Times.Once);
@@ -74,5 +82,28 @@ public class CreateGenreTest
         (output.CreatedAt <= dateTimeAfterCommand).Should().BeTrue();
         
         input.Categories.ForEach(id => output.Categories.Should().Contain(id));
+    }
+    
+    [Fact(DisplayName = nameof(GivenAValidCreateCommand_whenThereIsNoRelatedCategories_shouldThrownNotFound))]
+    [Trait("Application", "CreateGenre - Use Cases")]
+    public async Task GivenAValidCreateCommand_whenThereIsNoRelatedCategories_shouldThrownNotFound()
+    {
+        var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
+        var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
+        var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
+        
+        var input = _fixture.GetValidInputWithCategories();
+        var aGuid = input.Categories![^1];
+        
+        categoryRepositoryMock.Setup(x=> x.GetIdsListByIds(It.IsAny<List<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((IReadOnlyList<Guid>)input.Categories.FindAll(id=> aGuid != id));
+        
+        var useCase = new UseCase.CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object, categoryRepositoryMock.Object);
+        
+        var action = async () => await useCase.Handle(input, CancellationToken.None);
+
+        await action.Should().ThrowAsync<RelatedAggregateException>().WithMessage($"Related categories not found: {aGuid}");
+        
+        categoryRepositoryMock.Verify(x=> x.GetIdsListByIds(It.IsAny<List<Guid>>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }
