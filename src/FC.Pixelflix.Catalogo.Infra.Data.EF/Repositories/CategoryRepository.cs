@@ -51,6 +51,11 @@ public class CategoryRepository : ICategoryRepository
         return new(request.Page, request.PerPage, total, items);
     }
 
+    public async Task<IReadOnlyList<Guid>> GetIdsListByIds(List<Guid> ids, CancellationToken cancellationToken)
+    {
+        return await _categories.AsNoTracking().Where(category => ids.Contains(category.Id)).Select(category=> category.Id).ToListAsync(cancellationToken);
+    }
+
     private IQueryable<Category> AddOrderToQuery(IQueryable<Category> aQuery, string orderProperty, SearchOrder orderBy)
     {
         var orderedQuery = (orderProperty.ToLower(), orderBy) switch
