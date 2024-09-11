@@ -38,4 +38,9 @@ public class CreateGenreTestFixture : GenreUseCasesBaseFixture
     {
         return new Mock<IUnitOfWork>();
     }
+    
+    public Mock<ICategoryRepository> GetCategoryRepositoryMock()
+    {
+        return new Mock<ICategoryRepository>();
+    }
 }
