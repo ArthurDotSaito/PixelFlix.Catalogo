@@ -96,12 +96,10 @@ public class CreateGenreTest
             .ReturnsAsync((IReadOnlyList<Guid>)input.Categories.FindAll(id=> aGuid != id));
         
         var useCase = new UseCase.CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object, categoryRepositoryMock.Object);
-
-        var output = await useCase.Handle(input, CancellationToken.None);
         
         var action = async () => await useCase.Handle(input, CancellationToken.None);
 
-        await action.Should().ThrowAsync<RelatedAggregateException>().WithMessage($"Categories Ids not found: {aGuid}");
+        await action.Should().ThrowAsync<RelatedAggregateException>().WithMessage($"Related categories not found: {aGuid}");
         
         categoryRepositoryMock.Verify(x=> x.GetIdsListByIds(It.IsAny<List<Guid>>(), It.IsAny<CancellationToken>()), Times.Once);
     }
