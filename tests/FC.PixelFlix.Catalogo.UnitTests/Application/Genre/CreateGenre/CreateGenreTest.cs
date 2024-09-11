@@ -22,10 +22,12 @@ public class CreateGenreTest
     {
         var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
+        var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
+        
         var dateTimeBefore = DateTime.Now;
         var dateTimeAfterCommand = DateTime.Now.AddSeconds(1);
         
-        var useCase = new UseCase.CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object);
+        var useCase = new UseCase.CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object, categoryRepositoryMock.Object);
 
         var input = _fixture.GetValidInput();
 
@@ -51,10 +53,12 @@ public class CreateGenreTest
     {
         var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
+        var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
+        
         var dateTimeBefore = DateTime.Now;
         var dateTimeAfterCommand = DateTime.Now.AddSeconds(1);
         
-        var useCase = new UseCase.CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object);
+        var useCase = new UseCase.CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object, categoryRepositoryMock.Object);
 
         var input = _fixture.GetValidInputWithCategories();
 
@@ -81,10 +85,10 @@ public class CreateGenreTest
     public async Task GivenAValidCreateCommand_whenThereIsNoRelatedCategories_shouldThrownNotFound()
     {
         var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
-        var categoryReponsitoryMock = _fixture.GetCategoryRepositoryMock();
+        var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
         
-        var useCase = new UseCase.CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object);
+        var useCase = new UseCase.CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object, categoryRepositoryMock.Object);
 
         var input = _fixture.GetValidInputWithCategories();
 
@@ -100,8 +104,6 @@ public class CreateGenreTest
         output.IsActive.Should().Be(input.IsActive);
         output.CreatedAt.Should().NotBe(null);
         output.CreatedAt.Should().NotBeSameDateAs(default);
-        (output.CreatedAt >= dateTimeBefore).Should().BeTrue();
-        (output.CreatedAt <= dateTimeAfterCommand).Should().BeTrue();
         
         input.Categories.ForEach(id => output.Categories.Should().Contain(id));
     }

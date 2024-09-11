@@ -9,12 +9,14 @@ namespace FC.Pixelflix.Catalogo.Application.UseCases.Genre.CreateGenre;
 public class CreateGenre : ICreateGenre
 {
     private readonly IGenreRepository _genreRepository;
+    private readonly ICategoryRepository _categoryRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public CreateGenre(IGenreRepository genreRepository, IUnitOfWork unitOfWork)
+    public CreateGenre(IGenreRepository genreRepository, IUnitOfWork unitOfWork, ICategoryRepository categoryRepository)
     {
         _genreRepository = genreRepository;
         _unitOfWork = unitOfWork;
+        _categoryRepository = categoryRepository;
     }
 
     public async Task<GenreModelResponse> Handle(CreateGenreRequest request, CancellationToken cancellationToken)
