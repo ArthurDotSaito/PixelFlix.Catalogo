@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using FC.Pixelflix.Catalogo.Application.Exceptions;
+using FluentAssertions;
 using Moq;
 using Xunit;
 using DomainGenre = FC.Pixelflix.Catalogo.Domain.Entities.Genre;
