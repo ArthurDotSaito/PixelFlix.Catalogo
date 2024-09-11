@@ -56,13 +56,16 @@ public class CreateGenreTest
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
         var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
         
+        var input = _fixture.GetValidInputWithCategories();
+        
+        categoryRepositoryMock.Setup(x=> x.GetIdsListByIds(It.IsAny<List<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((IReadOnlyList<Guid>)input.Categories!);
+        
         var dateTimeBefore = DateTime.Now;
         var dateTimeAfterCommand = DateTime.Now.AddSeconds(1);
         
         var useCase = new UseCase.CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object, categoryRepositoryMock.Object);
-
-        var input = _fixture.GetValidInputWithCategories();
-
+        
         var output = await useCase.Handle(input, CancellationToken.None);
         
         genreRepositoryMock.Verify(e => e.Insert(It.IsAny<DomainGenre>(), It.IsAny<CancellationToken>()), Times.Once);
