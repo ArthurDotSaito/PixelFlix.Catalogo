@@ -91,7 +91,7 @@ public class CreateGenreTest
         var input = _fixture.GetValidInputWithCategories();
         var aGuid = input.Categories![^1];
         
-        categoryRepositoryMock.Setup(x=> x.GetIdsListByIds(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+        categoryRepositoryMock.Setup(x=> x.GetIdsListByIds(It.IsAny<List<Guid>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((IReadOnlyList<Guid>)input.Categories.FindAll(id=> aGuid != id));
         
         var useCase = new UseCase.CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object, categoryRepositoryMock.Object);
@@ -100,8 +100,8 @@ public class CreateGenreTest
         
         var action = async () => await useCase.Handle(input, CancellationToken.None);
 
-        await action.Should().ThrowAsync<Exception>().WithMessage($"Categories Ids not found: {aGuid}");
+        await action.Should().ThrowAsync<RelatedAggregateException>().WithMessage($"Categories Ids not found: {aGuid}");
         
-        categoryRepositoryMock.Verify(x=> x.GetIdsListByIds(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
+        categoryRepositoryMock.Verify(x=> x.GetIdsListByIds(It.IsAny<List<Guid>>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }
