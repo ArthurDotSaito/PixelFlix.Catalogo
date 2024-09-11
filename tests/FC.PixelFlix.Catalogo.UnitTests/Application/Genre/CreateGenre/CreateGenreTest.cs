@@ -101,5 +101,7 @@ public class CreateGenreTest
         var action = async () => await useCase.Handle(input, CancellationToken.None);
 
         await action.Should().ThrowAsync<Exception>().WithMessage($"Categories Ids not found: {aGuid}");
+        
+        categoryRepositoryMock.Verify(x=> x.GetIdsListByIds(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }
