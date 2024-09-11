@@ -88,23 +88,18 @@ public class CreateGenreTest
         var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
         
-        var useCase = new UseCase.CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object, categoryRepositoryMock.Object);
-
         var input = _fixture.GetValidInputWithCategories();
+        var aGuid = input.Categories![^1];
+        
+        categoryRepositoryMock.Setup(x=> x.GetIdsListByIds(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((IReadOnlyList<Guid>)input.Categories.FindAll(id=> aGuid != id));
+        
+        var useCase = new UseCase.CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object, categoryRepositoryMock.Object);
 
         var output = await useCase.Handle(input, CancellationToken.None);
         
-        genreRepositoryMock.Verify(e => e.Insert(It.IsAny<DomainGenre>(), It.IsAny<CancellationToken>()), Times.Once);
-        unitOfWorkMock.Verify(e => e.Commit(It.IsAny<CancellationToken>()), Times.Once);
-        
-        output.Should().NotBeNull();
-        output.Id.Should().NotBeEmpty();
-        output.Name.Should().Be(input.Name);
-        output.Categories.Should().HaveCount(input.Categories?.Count ?? 0);
-        output.IsActive.Should().Be(input.IsActive);
-        output.CreatedAt.Should().NotBe(null);
-        output.CreatedAt.Should().NotBeSameDateAs(default);
-        
-        input.Categories.ForEach(id => output.Categories.Should().Contain(id));
+        var action = async () => await useCase.Handle(input, CancellationToken.None);
+
+        await action.Should().ThrowAsync<Exception>().WithMessage($"Categories Ids not found: {aGuid}");
     }
 }
