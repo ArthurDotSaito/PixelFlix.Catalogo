@@ -25,14 +25,7 @@ public class CreateGenre : ICreateGenre
         var genre = new DomainGenre(request.Name, request.IsActive);
         if (request.Categories is not null)
         {
-            var categoriesIds = await _categoryRepository.GetIdsListByIds(request.Categories, cancellationToken);
-
-            if (categoriesIds.Count < request.Categories.Count)
-            {
-                var notFoundCategories = request.Categories.FindAll(e => !categoriesIds.Contains(e));
-                throw new RelatedAggregateException($"Related categories not found: {string.Join(", ", notFoundCategories)}");
-            }
-            
+            await ValidateCateogriesIds(request, cancellationToken);
             request.Categories.ForEach(genre.AddCategory);
         }
 
@@ -40,4 +33,16 @@ public class CreateGenre : ICreateGenre
         await _unitOfWork.Commit(cancellationToken);
         return GenreModelResponse.FromGenre(genre);
     }
+
+    private async Task ValidateCateogriesIds(CreateGenreRequest request, CancellationToken cancellationToken)
+    {
+        var categoriesIds = await _categoryRepository.GetIdsListByIds(request.Categories!, cancellationToken);
+
+        if (categoriesIds.Count < request.Categories.Count)
+        {
+            var notFoundCategories = request.Categories.FindAll(e => !categoriesIds.Contains(e));
+            throw new RelatedAggregateException($"Related categories not found: {string.Join(", ", notFoundCategories)}");
+        }
+    }
+
 }
