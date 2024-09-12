@@ -38,7 +38,7 @@ public class CreateGenre : ICreateGenre
     {
         var categoriesIds = await _categoryRepository.GetIdsListByIds(request.Categories!, cancellationToken);
 
-        if (categoriesIds.Count < request.Categories.Count)
+        if (categoriesIds.Count < request.Categories!.Count)
         {
             var notFoundCategories = request.Categories.FindAll(e => !categoriesIds.Contains(e));
             throw new RelatedAggregateException($"Related categories not found: {string.Join(", ", notFoundCategories)}");

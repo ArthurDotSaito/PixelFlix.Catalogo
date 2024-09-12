@@ -12,9 +12,9 @@ public class CreateGenreTestFixtureCollection(): ICollectionFixture<CreateGenreT
 
 public class CreateGenreTestFixture : GenreUseCasesBaseFixture
 {
-    public CreateGenreRequest GetValidInput()
+    public CreateGenreRequest GetValidInput(string? name = null)
     {
-        var genreName = GetValidGenreName();
+        var genreName = name ?? GetValidGenreName();
         var isActive = GetRandomIsActive();
         
         return new CreateGenreRequest(genreName, isActive);

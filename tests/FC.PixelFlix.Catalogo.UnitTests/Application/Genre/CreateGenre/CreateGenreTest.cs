@@ -1,4 +1,5 @@
 ﻿using FC.Pixelflix.Catalogo.Application.Exceptions;
+using FC.Pixelflix.Catalogo.Domain.Exceptions;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -105,5 +106,25 @@ public class CreateGenreTest
         await action.Should().ThrowAsync<RelatedAggregateException>().WithMessage($"Related categories not found: {aGuid}");
         
         categoryRepositoryMock.Verify(x=> x.GetIdsListByIds(It.IsAny<List<Guid>>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+    
+    [Theory(DisplayName = nameof(GivenAValidCreateCommand_whenNameIsInvalid_shouldThrownEntityValidationException))]
+    [Trait("Application", "CreateGenre - Use Cases")]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData(null)]
+    public async Task GivenAValidCreateCommand_whenNameIsInvalid_shouldThrownEntityValidationException(string name)
+    {
+        var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
+        var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
+        var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
+        
+        var input = _fixture.GetValidInput();
+        
+        var useCase = new UseCase.CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object, categoryRepositoryMock.Object);
+        
+        var action = async () => await useCase.Handle(input, CancellationToken.None);
+
+        await action.Should().ThrowAsync<EntityValidationException>().WithMessage($"Name should not be empty or null");
     }
 }
