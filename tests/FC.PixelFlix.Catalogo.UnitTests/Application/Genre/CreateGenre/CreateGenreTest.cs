@@ -119,7 +119,7 @@ public class CreateGenreTest
         var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
         
-        var input = _fixture.GetValidInput();
+        var input = _fixture.GetValidInput(name);
         
         var useCase = new UseCase.CreateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object, categoryRepositoryMock.Object);
         
