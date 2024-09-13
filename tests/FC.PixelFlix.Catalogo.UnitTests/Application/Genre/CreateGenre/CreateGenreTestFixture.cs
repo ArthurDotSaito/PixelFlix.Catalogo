@@ -20,6 +20,14 @@ public class CreateGenreTestFixture : GenreUseCasesBaseFixture
         return new CreateGenreRequest(genreName, isActive);
     }
     
+    public CreateGenreRequest GetValidInput(string? name)
+    {
+        var genreName = name;
+        var isActive = GetRandomIsActive();
+        
+        return new CreateGenreRequest(genreName, isActive);
+    }
+    
     public CreateGenreRequest GetValidInputWithCategories()
     {
         var genreName = GetValidGenreName();
