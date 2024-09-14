@@ -18,8 +18,24 @@ public class UpdateGenre : IUpdateGenre
         _unitOfWork = unitOfWork;
     }
 
-    public Task<GenreModelResponse> Handle(UpdateGenreRequest request, CancellationToken cancellationToken)
+    public async Task<GenreModelResponse> Handle(UpdateGenreRequest request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var aGenre = await _genreRepository.Get(request.Id, cancellationToken);
+        
+        aGenre.Update(request.Name);
+
+        if (request.IsActive != aGenre.IsActive && request.IsActive is not null)
+        {
+            if((bool)request.IsActive) aGenre.Activate();
+            else
+            {
+                aGenre.Deactivate();
+            }
+        }
+        
+        await _genreRepository.Update(aGenre, cancellationToken);
+        await _unitOfWork.Commit(cancellationToken);
+            
+        return GenreModelResponse.FromGenre(aGenre);
     }
 }
