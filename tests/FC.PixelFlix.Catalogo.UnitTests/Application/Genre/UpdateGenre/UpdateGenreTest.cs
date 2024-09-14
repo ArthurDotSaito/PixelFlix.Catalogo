@@ -1,4 +1,6 @@
-﻿using Xunit;
+﻿using Moq;
+using Xunit;
+using GenreDomain = FC.Pixelflix.Catalogo.Domain.Entities.Genre
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.Genre.UpdateGenre;
 
@@ -13,10 +15,36 @@ public class UpdateGenreTest
     }
 
     [Fact(DisplayName = nameof(GivenAValidCommand_whenCallsUpdateGenre_should))]
-    [Trait("Application", "CreateGenre - Use Cases")]
+    [Trait("Application", "UpdateGenre - Use Cases")]
     public async Task GivenAValidCommand_whenCallsUpdateGenre_should()
     {
+        var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
+        var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
+        var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
         
+        var aGenre = _fixture.GetValidGenre();
+        var newName = _fixture.GetValidGenreName();
+        var newIsActive = !aGenre.IsActive;
+
+        genreRepositoryMock.Setup(x => x.Get(It.Is<Guid>(id=>id == aGenre.Id), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aGenre);
+        
+        var useCase = new UseCase.UpdateGenre(genreRepositoryMock.Object, unitOfWorkMock.Object, categoryRepositoryMock.Object);
+        
+        var input = new UseCase.UpdateGenreRequest(newName, newIsActive);
+        
+        var output = await useCase.Handle(input, CancellationToken.None);
+        
+        output.Should().NotBeNull();
+        output.Id.Should().Be(aGenre.Id);
+        output.Name.Should().Be(newName);
+        output.IsActive.Should().Be(newIsActive);
+        output.CreatedAt.Should().BeSameDateAs(aGenre.CreatedAt);
+        
+        genreRepositoryMock.Verify(x=>x.Update(It.Is<GenreDomain>(e=>e.Id == aGenre.Id),
+            It.IsAny<CancellationToken>()), Times.Once);
+        
+        unitOfWorkMock.Verify(x=>x.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
 
 }
