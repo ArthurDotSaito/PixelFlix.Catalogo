@@ -20,6 +20,13 @@ public class GenreUseCasesBaseFixture : BaseFixture
         return new DomainGenre(aName, isActive);
     }
     
+    public DomainGenre GetValidGenre(bool? isActive = null)
+    {
+        var aName = GetValidGenreName();
+        var active = isActive ?? GetRandomIsActive();
+        return new DomainGenre(aName, active);
+    }
+    
     public Mock<IGenreRepository> GetGenreRepositoryMock()
     {
         return new Mock<IGenreRepository>();

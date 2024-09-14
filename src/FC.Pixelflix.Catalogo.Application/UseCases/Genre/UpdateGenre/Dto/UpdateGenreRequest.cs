@@ -9,7 +9,7 @@ public class UpdateGenreRequest: IRequest<GenreModelResponse>
     public string Name { get; set; }
     public bool? IsActive { get; set; } = null;
 
-    public UpdateGenreRequest(Guid id, string name, bool? isActive)
+    public UpdateGenreRequest(Guid id, string name, bool? isActive = null)
     {
         Id = id;
         Name = name;
