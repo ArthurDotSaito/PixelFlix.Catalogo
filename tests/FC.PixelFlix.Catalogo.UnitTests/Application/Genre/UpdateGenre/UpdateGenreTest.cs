@@ -1,5 +1,6 @@
 ﻿using FC.Pixelflix.Catalogo.Application.Exceptions;
 using FC.Pixelflix.Catalogo.Application.UseCases.Genre.UpdateGenre.Dto;
+using FC.Pixelflix.Catalogo.Domain.Exceptions;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -51,9 +52,9 @@ public class UpdateGenreTest
         unitOfWorkMock.Verify(x=>x.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
 
-    [Fact(DisplayName = nameof(GivenAUpdateGenre_whenMissingGenre_shouldThrownNotFound))]
+    [Fact(DisplayName = nameof(GivenAUpdateGenreCommand_whenMissingGenre_shouldThrownNotFound))]
     [Trait("Application", "UpdateGenre - Use Cases")]
-    public async Task GivenAUpdateGenre_whenMissingGenre_shouldThrownNotFound()
+    public async Task GivenAUpdateGenreCommand_whenMissingGenre_shouldThrownNotFound()
     {
         var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
@@ -71,6 +72,32 @@ public class UpdateGenreTest
         var action = async() => await useCase.Handle(input, CancellationToken.None);
 
         await action.Should().ThrowAsync<NotFoundException>().WithMessage($"Genre {aGuid} not found.");
+    }
+    
+    [Theory(DisplayName = nameof(GivenAValidUpdateCommand_whenNameIsInvalid_shouldThrownEntityValidationException))]
+    [Trait("Application", "UpdateGenre - Use Cases")]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData(null)]
+    public async Task GivenAValidUpdateCommand_whenNameIsInvalid_shouldThrownEntityValidationException(string name)
+    {
+        var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
+        var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
+        var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
+        
+        var aGenre = _fixture.GetValidGenre();
+        var newIsActive = !aGenre.IsActive;
+
+        genreRepositoryMock.Setup(x => x.Get(It.Is<Guid>(id=>id == aGenre.Id), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aGenre);
+        
+        var useCase = new UseCase.UpdateGenre(categoryRepositoryMock.Object, genreRepositoryMock.Object, unitOfWorkMock.Object);
+        
+        var input = new UpdateGenreRequest(aGenre.Id, name, newIsActive);
+        
+        var action = async() => await useCase.Handle(input, CancellationToken.None);
+
+        await action.Should().ThrowAsync<EntityValidationException>().WithMessage($"Name should not be empty or null");
     }
 
 }
