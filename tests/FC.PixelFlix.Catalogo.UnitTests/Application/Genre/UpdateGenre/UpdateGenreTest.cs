@@ -1,4 +1,5 @@
-﻿using FC.Pixelflix.Catalogo.Application.UseCases.Genre.UpdateGenre.Dto;
+﻿using FC.Pixelflix.Catalogo.Application.Exceptions;
+using FC.Pixelflix.Catalogo.Application.UseCases.Genre.UpdateGenre.Dto;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -17,9 +18,9 @@ public class UpdateGenreTest
         _fixture = fixture;
     }
 
-    [Fact(DisplayName = nameof(GivenAValidCommand_whenCallsUpdateGenre_should))]
+    [Fact(DisplayName = nameof(GivenAValidCommand_whenCallsUpdateGenre_shouldUpdate))]
     [Trait("Application", "UpdateGenre - Use Cases")]
-    public async Task GivenAValidCommand_whenCallsUpdateGenre_should()
+    public async Task GivenAValidCommand_whenCallsUpdateGenre_shouldUpdate()
     {
         var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
@@ -48,6 +49,28 @@ public class UpdateGenreTest
             It.IsAny<CancellationToken>()), Times.Once);
         
         unitOfWorkMock.Verify(x=>x.Commit(It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact(DisplayName = nameof(GivenAUpdateGenre_whenMissingGenre_shouldThrownNotFound))]
+    [Trait("Application", "UpdateGenre - Use Cases")]
+    public async Task GivenAUpdateGenre_whenMissingGenre_shouldThrownNotFound()
+    {
+        var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
+        var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
+        var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
+        
+        var aGuid = Guid.NewGuid();
+
+        genreRepositoryMock.Setup(x => x.Get(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new NotFoundException($"Genre {aGuid} not found."));
+        
+        var useCase = new UseCase.UpdateGenre(categoryRepositoryMock.Object, genreRepositoryMock.Object, unitOfWorkMock.Object);
+        
+        var input = new UpdateGenreRequest(aGuid, _fixture.GetValidGenreName(), _fixture.GetRandomIsActive());
+        
+        var action = async() => await useCase.Handle(input, CancellationToken.None);
+
+        await action.Should().ThrowAsync<NotFoundException>().WithMessage($"Genre {aGuid} not found.");
     }
 
 }
