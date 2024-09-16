@@ -222,7 +222,7 @@ public class UpdateGenreTest
         var someCategories = _fixture.GenerateRandomCategoryIds(10);
         
         var categoriesFromGenre = someCategories.GetRange(0, someCategories.Count - 2);
-        var categoriesIdsNotReturned =  someCategories.GetRange(someCategories.Count - 3,2);
+        var categoriesIdsNotReturned =  someCategories.GetRange(someCategories.Count - 2,2);
         
         var aGenre = _fixture.GetValidGenreWithCategories(categoryIds: someCategories);
         var newName = _fixture.GetValidGenreName();
@@ -232,13 +232,11 @@ public class UpdateGenreTest
             .ReturnsAsync(aGenre);
         
         categoryRepositoryMock.Setup(x=>x.GetIdsListByIds(It.IsAny<List<Guid>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(categoriesIdsNotReturned);
+            .ReturnsAsync(categoriesFromGenre);
         
         var useCase = new UseCase.UpdateGenre(categoryRepositoryMock.Object, genreRepositoryMock.Object, unitOfWorkMock.Object);
-
-        var categoryIds = _fixture.GenerateRandomCategoryIds();
         
-        var input = new UpdateGenreRequest(aGenre.Id, newName, newIsActive, categoryIds);
+        var input = new UpdateGenreRequest(aGenre.Id, newName, newIsActive, someCategories);
         
         var action = async() => await useCase.Handle(input, CancellationToken.None);
         
