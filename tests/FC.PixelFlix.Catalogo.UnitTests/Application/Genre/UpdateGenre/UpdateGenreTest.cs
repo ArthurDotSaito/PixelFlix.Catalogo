@@ -145,13 +145,15 @@ public class UpdateGenreTest
         var aGenre = _fixture.GetValidGenre();
         var newName = _fixture.GetValidGenreName();
         var newIsActive = !aGenre.IsActive;
-
+        var categoryIds = _fixture.GenerateRandomCategoryIds();
+        
         genreRepositoryMock.Setup(x => x.Get(It.Is<Guid>(id=>id == aGenre.Id), It.IsAny<CancellationToken>()))
             .ReturnsAsync(aGenre);
         
+        categoryRepositoryMock.Setup(x=>x.GetIdsListByIds(It.IsAny<List<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(categoryIds);
+        
         var useCase = new UseCase.UpdateGenre(categoryRepositoryMock.Object, genreRepositoryMock.Object, unitOfWorkMock.Object);
-
-        var categoryIds = _fixture.GenerateRandomCategoryIds();
         
         var input = new UpdateGenreRequest(aGenre.Id, newName, newIsActive,  categoryIds);
         
@@ -187,6 +189,9 @@ public class UpdateGenreTest
 
         genreRepositoryMock.Setup(x => x.Get(It.Is<Guid>(id=>id == aGenre.Id), It.IsAny<CancellationToken>()))
             .ReturnsAsync(aGenre);
+        
+        categoryRepositoryMock.Setup(x=>x.GetIdsListByIds(It.IsAny<List<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(someCategories);
         
         var useCase = new UseCase.UpdateGenre(categoryRepositoryMock.Object, genreRepositoryMock.Object, unitOfWorkMock.Object);
 
