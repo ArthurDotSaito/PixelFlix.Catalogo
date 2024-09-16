@@ -32,6 +32,12 @@ public class UpdateGenre : IUpdateGenre
                 aGenre.Deactivate();
             }
         }
+
+        if ((request.CategoryIds?.Count ?? 0) > 0)
+        {
+            aGenre.RemoveAllCategories();
+            request.CategoryIds?.ForEach(categoryId => aGenre.AddCategory(categoryId));
+        }
         
         await _genreRepository.Update(aGenre, cancellationToken);
         await _unitOfWork.Commit(cancellationToken);

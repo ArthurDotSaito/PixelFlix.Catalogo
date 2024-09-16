@@ -19,12 +19,26 @@ public class GenreUseCasesBaseFixture : BaseFixture
         var isActive = GetRandomIsActive();
         return new DomainGenre(aName, isActive);
     }
-    
     public DomainGenre GetValidGenre(bool? isActive = null)
     {
         var aName = GetValidGenreName();
         var active = isActive ?? GetRandomIsActive();
         return new DomainGenre(aName, active);
+    }
+    
+    public DomainGenre GetValidGenreWithCategories(bool? isActive = null , List<Guid> categoryIds = null)
+    {
+        var aName = GetValidGenreName();
+        var active = isActive ?? GetRandomIsActive();
+        
+        var genre = new DomainGenre(aName, active);
+        categoryIds?.ForEach(categoryId => genre.AddCategory(categoryId));
+        return genre;
+    }
+
+    public List<Guid> GenerateRandomCategoryIds(int? count = null)
+    {
+        return Enumerable.Range(1, count ?? (new Random().Next(1, 10))).Select(_ => Guid.NewGuid()).ToList();
     }
     
     public Mock<IGenreRepository> GetGenreRepositoryMock()
