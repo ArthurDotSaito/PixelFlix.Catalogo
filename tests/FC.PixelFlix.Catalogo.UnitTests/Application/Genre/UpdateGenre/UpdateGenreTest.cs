@@ -210,4 +210,38 @@ public class UpdateGenreTest
         
         unitOfWorkMock.Verify(x=>x.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
+    
+    [Fact(DisplayName = nameof(GivenAUpdateGenreCommand_whenThereIsNoRelatedCategories_shouldThrownNotFound))]
+    [Trait("Application", "UpdateGenre - Use Cases")]
+    public async Task GivenAUpdateGenreCommand_whenThereIsNoRelatedCategories_shouldThrownNotFound()
+    {
+        var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
+        var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
+        var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
+
+        var someCategories = _fixture.GenerateRandomCategoryIds(10);
+        
+        var categoriesFromGenre = someCategories.GetRange(0, someCategories.Count - 2);
+        var categoriesIdsNotReturned =  someCategories.GetRange(someCategories.Count - 2,2);
+        
+        var aGenre = _fixture.GetValidGenreWithCategories(categoryIds: someCategories);
+        var newName = _fixture.GetValidGenreName();
+        var newIsActive = !aGenre.IsActive;
+
+        genreRepositoryMock.Setup(x => x.Get(It.Is<Guid>(id=>id == aGenre.Id), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aGenre);
+        
+        categoryRepositoryMock.Setup(x=>x.GetIdsListByIds(It.IsAny<List<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(categoriesFromGenre);
+        
+        var useCase = new UseCase.UpdateGenre(categoryRepositoryMock.Object, genreRepositoryMock.Object, unitOfWorkMock.Object);
+        
+        var input = new UpdateGenreRequest(aGenre.Id, newName, newIsActive, someCategories);
+        
+        var action = async() => await useCase.Handle(input, CancellationToken.None);
+        
+        var notFoundCategories = String.Join(", ", categoriesIdsNotReturned);
+        await action.Should().ThrowAsync<RelatedAggregateException>()
+            .WithMessage($"Related categories not found: {notFoundCategories}");
+    }
 }

@@ -1,4 +1,5 @@
-﻿using FC.Pixelflix.Catalogo.Application.Interfaces;
+﻿using FC.Pixelflix.Catalogo.Application.Exceptions;
+using FC.Pixelflix.Catalogo.Application.Interfaces;
 using FC.Pixelflix.Catalogo.Application.UseCases.Genre.Common;
 using FC.Pixelflix.Catalogo.Application.UseCases.Genre.UpdateGenre.Dto;
 using FC.Pixelflix.Catalogo.Domain.Repository;
@@ -35,6 +36,7 @@ public class UpdateGenre : IUpdateGenre
 
         if ((request.CategoryIds?.Count ?? 0) > 0)
         {
+            await ValidateCateogriesIds(request, cancellationToken);
             aGenre.RemoveAllCategories();
             request.CategoryIds?.ForEach(categoryId => aGenre.AddCategory(categoryId));
         }
@@ -43,5 +45,16 @@ public class UpdateGenre : IUpdateGenre
         await _unitOfWork.Commit(cancellationToken);
             
         return GenreModelResponse.FromGenre(aGenre);
+    }
+    
+    private async Task ValidateCateogriesIds(UpdateGenreRequest request, CancellationToken cancellationToken)
+    {
+        var categoriesIds = await _categoryRepository.GetIdsListByIds(request.CategoryIds!, cancellationToken);
+
+        if (categoriesIds.Count < request.CategoryIds!.Count)
+        {
+            var notFoundCategories = request.CategoryIds.FindAll(e => !categoriesIds.Contains(e));
+            throw new RelatedAggregateException($"Related categories not found: {string.Join(", ", notFoundCategories)}");
+        }
     }
 }
