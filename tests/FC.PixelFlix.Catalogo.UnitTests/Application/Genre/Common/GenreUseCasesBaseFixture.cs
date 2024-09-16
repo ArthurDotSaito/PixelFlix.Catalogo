@@ -25,6 +25,16 @@ public class GenreUseCasesBaseFixture : BaseFixture
         var active = isActive ?? GetRandomIsActive();
         return new DomainGenre(aName, active);
     }
+    
+    public DomainGenre GetValidGenreWithCategories(bool? isActive = null , List<Guid> categoryIds = null)
+    {
+        var aName = GetValidGenreName();
+        var active = isActive ?? GetRandomIsActive();
+        
+        var genre = new DomainGenre(aName, active);
+        categoryIds?.ForEach(categoryId => genre.AddCategory(categoryId));
+        return genre;
+    }
 
     public List<Guid> GenerateRandomCategoryIds(int? count = null)
     {
