@@ -34,11 +34,14 @@ public class UpdateGenre : IUpdateGenre
             }
         }
 
-        if ((request.CategoryIds?.Count ?? 0) > 0)
+        if (request.CategoryIds is not null)
         {
-            await ValidateCateogriesIds(request, cancellationToken);
             aGenre.RemoveAllCategories();
-            request.CategoryIds?.ForEach(categoryId => aGenre.AddCategory(categoryId));
+            if (request.CategoryIds.Count > 0)
+            {
+                await ValidateCateogriesIds(request, cancellationToken);
+                request.CategoryIds?.ForEach(categoryId => aGenre.AddCategory(categoryId));
+            }
         }
         
         await _genreRepository.Update(aGenre, cancellationToken);
