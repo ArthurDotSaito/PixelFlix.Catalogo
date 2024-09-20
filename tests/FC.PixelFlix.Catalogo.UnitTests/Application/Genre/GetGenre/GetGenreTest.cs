@@ -38,10 +38,13 @@ public class GetGenreTest
         output.IsActive.Should().Be(aGenre.IsActive);
         output.CreatedAt.Should().BeSameDateAs(aGenre.CreatedAt);
         output.Categories.Should().HaveCount(someCategories.Count);
+
+        foreach (var expectedId in aGenre.Categories)
+        {
+            output.Categories.Should().Contain(expectedId);
+        }
         
-        someCategories.ForEach(expectedId => output.Categories.Should().Contain(expectedId));
-        
-        genreRepositoryMock.Verify(x=>x.Update(It.Is<GenreDomain>(e=>e.Id == aGenre.Id),
+        genreRepositoryMock.Verify(x=>x.Get(It.Is<Guid>(e=>e== aGenre.Id),
             It.IsAny<CancellationToken>()), Times.Once);
     }
 }
