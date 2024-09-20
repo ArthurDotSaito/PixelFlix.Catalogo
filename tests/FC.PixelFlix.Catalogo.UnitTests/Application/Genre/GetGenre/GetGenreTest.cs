@@ -1,4 +1,6 @@
-﻿using FC.Pixelflix.Catalogo.Application.UseCases.Genre.UpdateGenre.Dto;
+﻿using FC.Pixelflix.Catalogo.Application.UseCases.Genre.GetGenre.Dto;
+using FluentAssertions;
+using UseCase = FC.Pixelflix.Catalogo.Application.UseCases.Genre.GetGenre;
 using Moq;
 using Xunit;
 
