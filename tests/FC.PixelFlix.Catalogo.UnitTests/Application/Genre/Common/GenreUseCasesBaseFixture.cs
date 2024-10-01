@@ -35,6 +35,18 @@ public class GenreUseCasesBaseFixture : BaseFixture
         categoryIds?.ForEach(categoryId => genre.AddCategory(categoryId));
         return genre;
     }
+    
+    public List<DomainGenre> GetValidGenreList(int count = 10)
+    {
+        return Enumerable.Range(1, count).Select(_ =>
+        {
+            var aName = GetValidGenreName();
+            var isActive = GetRandomIsActive();
+            var genre =  new DomainGenre(aName, isActive);
+            GenerateRandomCategoryIds().ForEach(genre.AddCategory);
+            return genre;
+        }).ToList();
+    }
 
     public List<Guid> GenerateRandomCategoryIds(int? count = null)
     {
