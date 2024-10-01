@@ -1,7 +1,10 @@
-﻿using FC.Pixelflix.Catalogo.Application.UseCases.Genre.GetGenre.Dto;
+﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
+using FC.Pixelflix.Catalogo.Application.UseCases.Genre.Common;
 using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
+using FluentAssertions;
 using Moq;
 using Xunit;
+using DomainEntity = FC.Pixelflix.Catalogo.Domain.Entities;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.Genre.ListGenre;
 
@@ -21,29 +24,44 @@ public class ListGenreTest
     {
         var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
         var aGenreList = _fixture.GetValidGenreList();
-
-        genreRepositoryMock.Setup(x => x.Search(It.IsAny<SearchRepositoryRequest>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(aGenreList);
         
         var useCase = new UseCase.ListGenres(genreRepositoryMock.Object);
-        
-        var input = _fixture.GetVal
-        
-        var output = await useCase.Handle(input, CancellationToken.None);
-        
-        output.Should().NotBeNull();
-        output.Id.Should().Be(aGenre.Id);
-        output.Name.Should().Be(aGenre.Name);
-        output.IsActive.Should().Be(aGenre.IsActive);
-        output.CreatedAt.Should().BeSameDateAs(aGenre.CreatedAt);
-        output.Categories.Should().HaveCount(someCategories.Count);
 
-        foreach (var expectedId in aGenre.Categories)
-        {
-            output.Categories.Should().Contain(expectedId);
-        }
+        var input = _fixture.GetValidListGenreRequest();
         
-        genreRepositoryMock.Verify(x=>x.Get(It.Is<Guid>(e=>e== aGenre.Id),
+        var repositoryResponse = new SearchRepositoryResponse<DomainEntity.Genre>(
+            currentPage: input.Page,
+            perPage: input.PerPage,
+            items: (IReadOnlyList<DomainEntity.Genre>)aGenreList,
+            total: new Random().Next(50, 200)
+        );
+        
+        genreRepositoryMock.Setup(x => x.Search(It.IsAny<SearchRepositoryRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(repositoryResponse);
+        
+        var response = await useCase.Handle(input, CancellationToken.None);
+        
+        response.Should().NotBeNull();
+        response.Page.Should().Be(repositoryResponse.CurrentPage);
+        response.PerPage.Should().Be(repositoryResponse.PerPage);
+        response.Total.Should().Be(repositoryResponse.Total);
+        response.Items.Should().HaveCount(repositoryResponse.Items.Count);
+        ((List<GenreModelResponse>)response.Items).ForEach(item =>
+        {
+            var aGenre = repositoryResponse.Items.FirstOrDefault(a => a.Id == item.Id);
+            item.Should().NotBeNull();
+            item.Name.Should().Be(aGenre!.Name);
+            item.IsActive.Should().Be(aGenre.IsActive);
+            item.CreatedAt.Should().Be(aGenre.CreatedAt);
+        });
+        
+        genreRepositoryMock.Verify(x=>x.Search(It.Is<SearchRepositoryRequest>(
+                searchRequest =>
+                    searchRequest.Page == input.Page && 
+                    searchRequest.PerPage == input.PerPage && 
+                    searchRequest.Search == input.Search && 
+                    searchRequest.OrderBy == input.Sort && 
+                    searchRequest.Order == input.Dir),
             It.IsAny<CancellationToken>()), Times.Once);
     }
 }
