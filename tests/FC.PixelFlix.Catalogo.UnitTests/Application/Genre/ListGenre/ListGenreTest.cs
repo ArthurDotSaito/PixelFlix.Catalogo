@@ -1,4 +1,7 @@
-﻿using Xunit;
+﻿using FC.Pixelflix.Catalogo.Application.UseCases.Genre.GetGenre.Dto;
+using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
+using Moq;
+using Xunit;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.Genre.ListGenre;
 
@@ -17,16 +20,14 @@ public class ListGenreTest
     public async Task GivenAValidCommand_whenCallsListGenre_shouldReturnAListOfGenres()
     {
         var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
+        var aGenreList = _fixture.GetValidGenreList();
 
-        var someCategories = _fixture.GenerateRandomCategoryIds(10);
-        var aGenre = _fixture.GetValidGenreWithCategories(categoryIds: someCategories);
-
-        genreRepositoryMock.Setup(x => x.Get(It.Is<Guid>(id=>id == aGenre.Id), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(aGenre);
+        genreRepositoryMock.Setup(x => x.Search(It.IsAny<SearchRepositoryRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aGenreList);
         
-        var useCase = new UseCase.GetGenre(genreRepositoryMock.Object);
+        var useCase = new UseCase.ListGenres(genreRepositoryMock.Object);
         
-        var input = new GetGenreRequest(aGenre.Id);
+        var input = _fixture.GetVal
         
         var output = await useCase.Handle(input, CancellationToken.None);
         
