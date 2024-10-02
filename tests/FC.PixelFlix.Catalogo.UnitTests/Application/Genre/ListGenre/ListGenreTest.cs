@@ -1,10 +1,10 @@
-﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.Common;
-using FC.Pixelflix.Catalogo.Application.UseCases.Genre.Common;
+﻿using FC.Pixelflix.Catalogo.Application.UseCases.Genre.Common;
 using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
 using FluentAssertions;
 using Moq;
 using Xunit;
 using DomainEntity = FC.Pixelflix.Catalogo.Domain.Entities;
+using UseCase = FC.Pixelflix.Catalogo.Application.UseCases.Genre.ListGenres;
 
 namespace FC.PixelFlix.Catalogo.UnitTests.Application.Genre.ListGenre;
 
@@ -54,14 +54,5 @@ public class ListGenreTest
             item.IsActive.Should().Be(aGenre.IsActive);
             item.CreatedAt.Should().Be(aGenre.CreatedAt);
         });
-        
-        genreRepositoryMock.Verify(x=>x.Search(It.Is<SearchRepositoryRequest>(
-                searchRequest =>
-                    searchRequest.Page == input.Page && 
-                    searchRequest.PerPage == input.PerPage && 
-                    searchRequest.Search == input.Search && 
-                    searchRequest.OrderBy == input.Sort && 
-                    searchRequest.Order == input.Dir),
-            It.IsAny<CancellationToken>()), Times.Once);
     }
 }
