@@ -1,4 +1,5 @@
-﻿using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
+﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.ListCategories;
+using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
 using FC.PixelFlix.Catalogo.UnitTests.Application.Genre.Common;
 using Xunit;
 
@@ -9,11 +10,11 @@ public class ListGenreTestFixtureCollection():ICollectionFixture<ListGenreTestFi
 
 public class ListGenreTestFixture : GenreUseCasesBaseFixture
 {
-    public ListGenreRequest GetValidListGenreRequest()
+    public ListGenresRequest GetValidListGenreRequest()
     {
         var random = new Random();
 
-        return new ListGenreRequest(
+        return new ListGenresRequest(
             page: random.Next(1, 10),
             perPage: random.Next(1, 10),
             search: Faker.Commerce.ProductName(),
