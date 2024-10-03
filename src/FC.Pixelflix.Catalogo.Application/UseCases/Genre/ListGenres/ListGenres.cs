@@ -16,10 +16,9 @@ public class ListGenres : IListGenres
 
     public async Task<ListGenresResponse> Handle(ListGenresRequest request, CancellationToken cancellationToken)
     {
-        var searchRequest = new SearchRepositoryRequest(request.Page, request.PerPage, request.Search, request.Sort, request.Dir);
+        var searchRequest = request.ToSearchRepositoryRequest();
         var searchResponse = await _genreRepository.Search(searchRequest, cancellationToken);
 
-        return new ListGenresResponse(searchResponse.CurrentPage, searchResponse.PerPage, searchResponse.Total,
-            searchResponse.Items.Select(GenreModelResponse.FromGenre).ToList());
+        return ListGenresResponse.FromSearchResponse(searchResponse);
     }
 }

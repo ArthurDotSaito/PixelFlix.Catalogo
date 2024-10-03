@@ -18,4 +18,9 @@ public abstract class PaginatedListRequest
         Dir = dir;
     }
 
+    public SearchRepositoryRequest ToSearchRepositoryRequest()
+    {
+        return new SearchRepositoryRequest(Page, PerPage, Search, Sort, Dir);
+    }
+
 }
