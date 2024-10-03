@@ -55,4 +55,33 @@ public class ListGenreTest
             item.CreatedAt.Should().Be(aGenre.CreatedAt);
         });
     }
+    
+    [Fact(DisplayName = nameof(GivenAListGenreCommand_whenEmpty_shouldReturnAEmptyList))]
+    [Trait("Application", "ListGenre - Use Cases")]
+    public async Task GivenAListGenreCommand_whenEmpty_shouldReturnAEmptyList()
+    {
+        var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
+        
+        var useCase = new UseCase.ListGenres(genreRepositoryMock.Object);
+
+        var input = _fixture.GetValidListGenreRequest();
+        
+        var repositoryResponse = new SearchRepositoryResponse<DomainEntity.Genre>(
+            currentPage: input.Page,
+            perPage: input.PerPage,
+            items: new List<DomainEntity.Genre>(),
+            total: new Random().Next(50, 200)
+        );
+        
+        genreRepositoryMock.Setup(x => x.Search(It.IsAny<SearchRepositoryRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(repositoryResponse);
+        
+        var response = await useCase.Handle(input, CancellationToken.None);
+        
+        response.Should().NotBeNull();
+        response.Page.Should().Be(repositoryResponse.CurrentPage);
+        response.PerPage.Should().Be(repositoryResponse.PerPage);
+        response.Total.Should().Be(repositoryResponse.Total);
+        response.Items.Should().HaveCount(repositoryResponse.Items.Count);
+    }
 }
