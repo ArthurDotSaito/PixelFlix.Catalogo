@@ -1,7 +1,5 @@
 ﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.ListCategories;
-using FC.Pixelflix.Catalogo.Application.UseCases.Genre.Common;
 using FC.Pixelflix.Catalogo.Domain.Repository;
-using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
 
 namespace FC.Pixelflix.Catalogo.Application.UseCases.Genre.ListGenres;
 
