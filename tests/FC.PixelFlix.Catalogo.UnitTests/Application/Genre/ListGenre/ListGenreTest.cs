@@ -1,4 +1,5 @@
-﻿using FC.Pixelflix.Catalogo.Application.UseCases.Genre.Common;
+﻿using FC.Pixelflix.Catalogo.Application.UseCases.Category.ListCategories;
+using FC.Pixelflix.Catalogo.Application.UseCases.Genre.Common;
 using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
 using FluentAssertions;
 using Moq;
@@ -83,5 +84,36 @@ public class ListGenreTest
         response.PerPage.Should().Be(repositoryResponse.PerPage);
         response.Total.Should().Be(repositoryResponse.Total);
         response.Items.Should().HaveCount(repositoryResponse.Items.Count);
+    }
+    
+    [Fact(DisplayName = nameof(GivenAListGenreCommand_whenNoParams_shouldReturnAEmptyListWithDefaultValues))]
+    [Trait("Application", "ListGenre - Use Cases")]
+    public async Task GivenAListGenreCommand_whenNoParams_shouldReturnAEmptyListWithDefaultValues()
+    {
+        var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
+        
+        var useCase = new UseCase.ListGenres(genreRepositoryMock.Object);
+        
+        var repositoryResponse = new SearchRepositoryResponse<DomainEntity.Genre>(
+            currentPage: 1,
+            perPage: 15,
+            items: new List<DomainEntity.Genre>(),
+            total: 0
+        );
+        
+        genreRepositoryMock.Setup(x => x.Search(It.IsAny<SearchRepositoryRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(repositoryResponse);
+        
+        var response = await useCase.Handle(new ListGenresRequest(), CancellationToken.None);
+        
+        genreRepositoryMock.Verify(x =>x.Search(It.Is<SearchRepositoryRequest>(
+            searchRequest => 
+                searchRequest.Page == 1 && 
+                searchRequest.PerPage == 15 &&
+                searchRequest.Search == "" &&
+                searchRequest.OrderBy == "" &&
+                searchRequest.Order == SearchOrder.Asc),
+            It.IsAny<CancellationToken>()));
+            
     }
 }

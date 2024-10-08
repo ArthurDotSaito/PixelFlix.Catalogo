@@ -7,7 +7,7 @@ namespace FC.Pixelflix.Catalogo.Application.UseCases.Category.ListCategories;
 
 public class ListGenresRequest : PaginatedListRequest, IRequest<ListGenresResponse>
 {
-    public ListGenresRequest(int page, int perPage, string? search, string? sort, SearchOrder dir) : base(page, perPage, search, sort, dir)
+    public ListGenresRequest(int page = 1, int perPage = 15, string? search = "", string? sort = "", SearchOrder dir = SearchOrder.Asc) : base(page, perPage, search, sort, dir)
     {
     }
 }
