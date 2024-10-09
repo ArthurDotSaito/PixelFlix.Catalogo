@@ -1,6 +1,7 @@
 ﻿using FC.Pixelflix.Catalogo.Infra.Data.EF;
 using FluentAssertions;
 using Xunit;
+using Repository = FC.Pixelflix.Catalogo.Infra.Data.EF.Repositories;
 
 namespace FC.Pixelflix.Catalogo.IntegrationTests.Infra.Data.EF.Repositories.GenreRepository;
 
@@ -19,22 +20,22 @@ public class GenreRepositoryTest
     {
         //Given
         PixelflixCatalogDbContext dbContext = _fixture.CreateDbContext();
-        var aCategory = _fixture.GetValidCategory();
-
-        var aCategoryRepository = new Repository.CategoryRepository(dbContext);
+        var aGenre = _fixture.GetValidGenre();
+        var categories = _fixture.GetValidCategoryList();
+        
+        var genreRepository = new Repository.GenreRepository(dbContext);
 
         //When
-        await aCategoryRepository.Insert(aCategory, CancellationToken.None);
+        await genreRepository.Insert(aGenre, CancellationToken.None);
         await dbContext.SaveChangesAsync();
 
         PixelflixCatalogDbContext aSecondContext = _fixture.CreateDbContext(true);
-        var dbCategory = await aSecondContext.Categories.FindAsync(aCategory.Id);
+        var dbCategory = await aSecondContext.Categories.FindAsync(aGenre.Id);
 
         //Then
         dbCategory.Should().NotBeNull();
-        dbCategory!.Name.Should().Be(aCategory.Name);
-        dbCategory.Description.Should().Be(aCategory.Description);
-        dbCategory.IsActive.Should().Be(aCategory.IsActive);
-        dbCategory.CreatedAt.Should().Be(aCategory.CreatedAt);
+        dbCategory!.Name.Should().Be(aGenre.Name);
+        dbCategory.IsActive.Should().Be(aGenre.IsActive);
+        dbCategory.CreatedAt.Should().Be(aGenre.CreatedAt);
     }
 }
