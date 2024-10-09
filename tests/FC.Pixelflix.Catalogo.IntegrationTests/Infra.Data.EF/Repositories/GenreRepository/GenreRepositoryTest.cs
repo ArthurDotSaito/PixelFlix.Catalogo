@@ -41,5 +41,14 @@ public class GenreRepositoryTest
         dbCategory!.Name.Should().Be(aGenre.Name);
         dbCategory.IsActive.Should().Be(aGenre.IsActive);
         dbCategory.CreatedAt.Should().Be(aGenre.CreatedAt);
+        
+        var genresCategoryRelation = await assertsDbContext.GenresCategories.Where(gc => gc.GenreId == aGenre.Id).ToListAsync();
+        
+        genresCategoryRelation.Should().HaveCount(categories.Count);
+        genresCategoryRelation.ForEach(relation =>
+        {
+            var expectedCategory = categories.FirstOrDefault(c => c.Id == relation.CategoryId);
+            expectedCategory.Should().NotBeNull();
+        });
     }
 }
