@@ -21,7 +21,11 @@ public class GenreRepositoryTest
         //Given
         PixelflixCatalogDbContext dbContext = _fixture.CreateDbContext();
         var aGenre = _fixture.GetValidGenre();
-        var categories = _fixture.GetValidCategoryList();
+        var categories = _fixture.GetValidCategoryList(3);
+        
+        categories.ForEach(category => aGenre.AddCategory(category.Id));
+        await dbContext.Categories.AddRangeAsync(categories);
+        await dbContext.SaveChangesAsync();
         
         var genreRepository = new Repository.GenreRepository(dbContext);
 
@@ -29,8 +33,8 @@ public class GenreRepositoryTest
         await genreRepository.Insert(aGenre, CancellationToken.None);
         await dbContext.SaveChangesAsync();
 
-        PixelflixCatalogDbContext aSecondContext = _fixture.CreateDbContext(true);
-        var dbCategory = await aSecondContext.Categories.FindAsync(aGenre.Id);
+        var assertsDbContext = _fixture.CreateDbContext(true);
+        var dbCategory = await assertsDbContext.Categories.FindAsync(aGenre.Id);
 
         //Then
         dbCategory.Should().NotBeNull();
