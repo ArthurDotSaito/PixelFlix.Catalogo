@@ -15,6 +15,9 @@ public class PixelflixCatalogDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfiguration(new CategoryConfiguration());    
+        builder.ApplyConfiguration(new GenreConfiguration());    
+        
+        builder.ApplyConfiguration(new GenreCategoriesConfigurations());    
     }
 
 }

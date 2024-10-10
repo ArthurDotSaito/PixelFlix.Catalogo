@@ -6,6 +6,7 @@ using Repository = FC.Pixelflix.Catalogo.Infra.Data.EF.Repositories;
 
 namespace FC.Pixelflix.Catalogo.IntegrationTests.Infra.Data.EF.Repositories.GenreRepository;
 
+[Collection(nameof(GenreRepositoryTestFixtureCollection))]
 public class GenreRepositoryTest
 {
     private readonly GenreRepositoryTestFixture _fixture;
