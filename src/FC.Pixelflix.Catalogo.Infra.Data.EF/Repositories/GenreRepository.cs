@@ -8,10 +8,14 @@ namespace FC.Pixelflix.Catalogo.Infra.Data.EF.Repositories;
 
 public class GenreRepository : IGenreRepository
 {
-    
     private readonly PixelflixCatalogDbContext _context;
     private DbSet<Genre> _genres => _context.Set<Genre>();
     private DbSet<GenresCategories> _genresCategories => _context.Set<GenresCategories>();
+
+    public GenreRepository(PixelflixCatalogDbContext context)
+    {
+        _context = context;
+    }
     
     public async Task Insert(Genre anAggregate, CancellationToken aCancellationToken)
     {

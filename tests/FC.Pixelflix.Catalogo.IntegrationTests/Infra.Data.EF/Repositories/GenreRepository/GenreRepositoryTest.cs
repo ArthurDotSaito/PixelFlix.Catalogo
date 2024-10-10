@@ -1,5 +1,6 @@
 ﻿using FC.Pixelflix.Catalogo.Infra.Data.EF;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Repository = FC.Pixelflix.Catalogo.Infra.Data.EF.Repositories;
 
@@ -19,7 +20,7 @@ public class GenreRepositoryTest
     public async Task givenAValidGenre_whenCallsInsert_shouldPersistAGenre()
     {
         //Given
-        PixelflixCatalogDbContext dbContext = _fixture.CreateDbContext();
+        var dbContext = _fixture.CreateDbContext();
         var aGenre = _fixture.GetValidGenre();
         var categories = _fixture.GetValidCategoryList(3);
         
