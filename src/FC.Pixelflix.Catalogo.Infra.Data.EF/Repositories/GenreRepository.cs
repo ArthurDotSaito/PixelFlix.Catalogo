@@ -13,9 +13,14 @@ public class GenreRepository : IGenreRepository
     private DbSet<Genre> _genres => _context.Set<Genre>();
     private DbSet<GenresCategories> _genresCategories => _context.Set<GenresCategories>();
     
-    public Task Insert(Genre anAggregate, CancellationToken aCancellationToken)
+    public async Task Insert(Genre anAggregate, CancellationToken aCancellationToken)
     {
-        throw new NotImplementedException();
+        await _genres.AddAsync(anAggregate);
+        if (anAggregate.Categories.Count > 0)
+        {
+                var relations = anAggregate.Categories.Select(categoryId => new GenresCategories(categoryId, anAggregate.Id));
+                await _genresCategories.AddRangeAsync(relations);
+        }
     }
 
     public Task<Genre> Get(Guid id, CancellationToken aCancellationToken)
