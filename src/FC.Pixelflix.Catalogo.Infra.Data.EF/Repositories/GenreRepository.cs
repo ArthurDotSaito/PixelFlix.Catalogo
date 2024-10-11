@@ -27,9 +27,17 @@ public class GenreRepository : IGenreRepository
         }
     }
 
-    public Task<Genre> Get(Guid id, CancellationToken aCancellationToken)
+    public async Task<Genre> Get(Guid id, CancellationToken aCancellationToken)
     {
-        throw new NotImplementedException();
+        var aGenre = await _genres.FindAsync(id);
+        if (aGenre == null)
+            return null;
+        
+        var categoriesIds = await _genresCategories.Where(relation => relation.GenreId == id).Select(relation => relation.CategoryId).ToListAsync();
+        
+        categoriesIds.ForEach(aGenre.AddCategory);
+
+        return aGenre;
     }
 
     public Task Delete(Genre anAggregate, CancellationToken aCancellationToken)
