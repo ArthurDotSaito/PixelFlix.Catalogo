@@ -1,4 +1,5 @@
 ﻿using FC.Pixelflix.Catalogo.Infra.Data.EF;
+using FC.Pixelflix.Catalogo.Infra.Data.EF.Models;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -52,5 +53,47 @@ public class GenreRepositoryTest
             var expectedCategory = categories.FirstOrDefault(c => c.Id == relation.CategoryId);
             expectedCategory.Should().NotBeNull();
         });
+    }
+    
+    [Fact(DisplayName = "CategoryRepository Integration GET test")]
+    [Trait("Integration/Infra.Data", "GenreRepository - Repositories")]
+    public async Task givenAGetCommand_whenTheresAGenre_shouldReturnAGenre()
+    {
+        //Given
+        var dbContext = _fixture.CreateDbContext();
+        var aGenre = _fixture.GetValidGenre();
+        var categories = _fixture.GetValidCategoryList(3);
+        
+        categories.ForEach(category => aGenre.AddCategory(category.Id));
+        await dbContext.Categories.AddRangeAsync(categories);
+        await dbContext.Genres.AddAsync(aGenre);
+
+        foreach (var categoryId in aGenre.Categories)
+        {
+            var relation = new GenresCategories(categoryId, aGenre.Id);
+            await dbContext.GenresCategories.AddRangeAsync(relation);
+        }
+        
+        await dbContext.SaveChangesAsync();
+        
+        var genreRepository = new Repository.GenreRepository(_fixture.CreateDbContext(true));
+
+        //When
+        var databaseGenre = await genreRepository.Get(aGenre.Id, CancellationToken.None);
+
+        var assertsDbContext = _fixture.CreateDbContext(true);
+
+        //Then
+        databaseGenre.Should().NotBeNull();
+        databaseGenre!.Name.Should().Be(aGenre.Name);
+        databaseGenre.IsActive.Should().Be(aGenre.IsActive);
+        databaseGenre.CreatedAt.Should().Be(aGenre.CreatedAt);
+        databaseGenre.Categories.Should().HaveCount(categories.Count);
+
+        foreach (var categoryId in databaseGenre.Categories)
+        {
+            var dbCategory = await assertsDbContext.Categories.FindAsync(categoryId);
+            dbCategory.Should().NotBeNull();   
+        }
     }
 }
