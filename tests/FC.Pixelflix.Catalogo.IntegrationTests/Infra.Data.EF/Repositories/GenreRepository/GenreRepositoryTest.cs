@@ -1,4 +1,5 @@
-﻿using FC.Pixelflix.Catalogo.Infra.Data.EF;
+﻿using FC.Pixelflix.Catalogo.Application.Exceptions;
+using FC.Pixelflix.Catalogo.Infra.Data.EF;
 using FC.Pixelflix.Catalogo.Infra.Data.EF.Models;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -95,5 +96,35 @@ public class GenreRepositoryTest
             var dbCategory = await assertsDbContext.Categories.FindAsync(categoryId);
             dbCategory.Should().NotBeNull();   
         }
+    }
+    
+    [Fact(DisplayName = "CategoryRepository Integration GET test - Not Found")]
+    [Trait("Integration/Infra.Data", "GenreRepository - Repositories")]
+    public async Task givenAGetCommand_whenTheresNoGenre_shouldThrowAError()
+    {
+        //Given
+        var dbContext = _fixture.CreateDbContext();
+        var aGenre = _fixture.GetValidGenre();
+        var categories = _fixture.GetValidCategoryList(3);
+        
+        categories.ForEach(category => aGenre.AddCategory(category.Id));
+        await dbContext.Categories.AddRangeAsync(categories);
+        await dbContext.Genres.AddAsync(aGenre);
+
+        foreach (var categoryId in aGenre.Categories)
+        {
+            var relation = new GenresCategories(categoryId, aGenre.Id);
+            await dbContext.GenresCategories.AddRangeAsync(relation);
+        }
+        
+        await dbContext.SaveChangesAsync();
+        
+        var genreRepository = new Repository.GenreRepository(_fixture.CreateDbContext(true));
+        var ARandomId = Guid.NewGuid();
+        
+        //When
+        var action = async () => await genreRepository.Get(ARandomId, CancellationToken.None);
+
+        await action.Should().ThrowAsync<NotFoundException>().WithMessage($"Genre '{ARandomId}' was not found");
     }
 }
