@@ -29,7 +29,7 @@ public class GenreRepository : IGenreRepository
 
     public async Task<Genre> Get(Guid id, CancellationToken aCancellationToken)
     {
-        var aGenre = await _genres.FindAsync(id);
+        var aGenre = await _genres.AsNoTracking().FirstOrDefaultAsync(x=>x.Id == id, aCancellationToken);
         if (aGenre == null)
             return null;
         
