@@ -1,4 +1,5 @@
-﻿using FC.Pixelflix.Catalogo.Domain.Entities;
+﻿using FC.Pixelflix.Catalogo.Application.Exceptions;
+using FC.Pixelflix.Catalogo.Domain.Entities;
 using FC.Pixelflix.Catalogo.Domain.Repository;
 using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
 using FC.Pixelflix.Catalogo.Infra.Data.EF.Models;
@@ -30,8 +31,8 @@ public class GenreRepository : IGenreRepository
     public async Task<Genre> Get(Guid id, CancellationToken aCancellationToken)
     {
         var aGenre = await _genres.AsNoTracking().FirstOrDefaultAsync(x=>x.Id == id, aCancellationToken);
-        if (aGenre == null)
-            return null;
+        
+        NotFoundException.ThrowIfNull(aGenre, $"Genre '{id}' was not found");
         
         var categoriesIds = await _genresCategories.Where(relation => relation.GenreId == id).Select(relation => relation.CategoryId).ToListAsync();
         
