@@ -149,7 +149,7 @@ public class GenreRepositoryTest
         
         await dbContext.SaveChangesAsync();
         var repositoryDbContext = _fixture.CreateDbContext(true);
-        var genreRepository = new Repository.GenreRepository(_fixture.CreateDbContext(true));
+        var genreRepository = new Repository.GenreRepository(repositoryDbContext);
     
         //When
         await genreRepository.Delete(aGenre, CancellationToken.None);
@@ -159,7 +159,7 @@ public class GenreRepositoryTest
         var dbGenre = await assertsDbContext.Genres.AsNoTracking().FirstOrDefaultAsync(x=>x.Id == aGenre.Id);
 
         //Then
-        assertsDbContext.Should().BeNull();
+        dbGenre.Should().BeNull();
         
         var genresCategoryRelation = await assertsDbContext.GenresCategories.Where(gc => gc.GenreId == aGenre.Id).ToListAsync();
 
