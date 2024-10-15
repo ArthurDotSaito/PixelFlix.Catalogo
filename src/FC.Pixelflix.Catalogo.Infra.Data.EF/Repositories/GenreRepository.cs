@@ -43,7 +43,10 @@ public class GenreRepository : IGenreRepository
 
     public Task Delete(Genre anAggregate, CancellationToken aCancellationToken)
     {
-        throw new NotImplementedException();
+        _genresCategories.RemoveRange(_genresCategories.Where(x=>x.GenreId == anAggregate.Id));
+        _genres.Remove(anAggregate);
+        
+        return Task.CompletedTask;
     }
 
     public Task Update(Genre anAggregate, CancellationToken aCancellationToken)
