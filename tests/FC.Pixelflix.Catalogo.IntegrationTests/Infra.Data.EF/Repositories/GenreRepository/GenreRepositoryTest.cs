@@ -127,4 +127,42 @@ public class GenreRepositoryTest
 
         await action.Should().ThrowAsync<NotFoundException>().WithMessage($"Genre '{ARandomId}' was not found");
     }
+    
+    [Fact(DisplayName = "CategoryRepository Integration DELETE test")]
+    [Trait("Integration/Infra.Data", "GenreRepository - Repositories")]
+    public async Task givenADeleteCommand_whenGenresExist_shouldDeleteAGenre()
+    {
+        //Given
+        var dbContext = _fixture.CreateDbContext();
+        var aGenre = _fixture.GetValidGenre();
+        var categories = _fixture.GetValidCategoryList(3);
+        
+        categories.ForEach(category => aGenre.AddCategory(category.Id));
+        await dbContext.Categories.AddRangeAsync(categories);
+        await dbContext.Genres.AddAsync(aGenre);
+
+        foreach (var categoryId in aGenre.Categories)
+        {
+            var relation = new GenresCategories(categoryId, aGenre.Id);
+            await dbContext.GenresCategories.AddRangeAsync(relation);
+        }
+        
+        await dbContext.SaveChangesAsync();
+        var repositoryDbContext = _fixture.CreateDbContext(true);
+        var genreRepository = new Repository.GenreRepository(repositoryDbContext);
+    
+        //When
+        await genreRepository.Delete(aGenre, CancellationToken.None);
+        await repositoryDbContext.SaveChangesAsync();
+
+        var assertsDbContext = _fixture.CreateDbContext(true);
+        var dbGenre = await assertsDbContext.Genres.AsNoTracking().FirstOrDefaultAsync(x=>x.Id == aGenre.Id);
+
+        //Then
+        dbGenre.Should().BeNull();
+        
+        var genresCategoryRelation = await assertsDbContext.GenresCategories.Where(gc => gc.GenreId == aGenre.Id).ToListAsync();
+
+        genresCategoryRelation.Should().HaveCount(0);
+    }
 }
