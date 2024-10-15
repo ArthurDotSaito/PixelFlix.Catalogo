@@ -165,4 +165,52 @@ public class GenreRepositoryTest
 
         genresCategoryRelation.Should().HaveCount(0);
     }
+    
+    [Fact(DisplayName = "CategoryRepository Integration UPDATE test")]
+    [Trait("Integration/Infra.Data", "GenreRepository - Repositories")]
+    public async Task givenAUpdateCommand_whenGenresExist_shouldUpdateAGenre()
+    {
+        //Given
+        var dbContext = _fixture.CreateDbContext();
+        var aGenre = _fixture.GetValidGenre();
+        var categories = _fixture.GetValidCategoryList(3);
+        
+        categories.ForEach(category => aGenre.AddCategory(category.Id));
+        await dbContext.Categories.AddRangeAsync(categories);
+        await dbContext.Genres.AddAsync(aGenre);
+
+        foreach (var categoryId in aGenre.Categories)
+        {
+            var relation = new GenresCategories(categoryId, aGenre.Id);
+            await dbContext.GenresCategories.AddRangeAsync(relation);
+        }
+        
+        await dbContext.SaveChangesAsync();
+        
+        var genreRepository = new Repository.GenreRepository(_fixture.CreateDbContext(true));
+        aGenre.Update(_fixture.GetValidGenreName());
+        if(aGenre.IsActive) aGenre.Deactivate();
+        else aGenre.Activate();
+        
+        //When
+        await genreRepository.Update(aGenre, CancellationToken.None);
+
+        var assertsDbContext = _fixture.CreateDbContext(true);
+        var dbGenre = await assertsDbContext.Genres.FindAsync(aGenre.Id);
+
+        //Then
+        dbGenre.Should().NotBeNull();
+        dbGenre!.Name.Should().Be(aGenre.Name);
+        dbGenre.IsActive.Should().Be(aGenre.IsActive);
+        dbGenre.CreatedAt.Should().Be(aGenre.CreatedAt);
+        
+        var genresCategoryRelation = await assertsDbContext.GenresCategories.Where(gc => gc.GenreId == aGenre.Id).ToListAsync();
+        
+        genresCategoryRelation.Should().HaveCount(categories.Count);
+        genresCategoryRelation.ForEach(relation =>
+        {
+            var expectedCategory = categories.FirstOrDefault(c => c.Id == relation.CategoryId);
+            expectedCategory.Should().NotBeNull();
+        });
+    }
 }
