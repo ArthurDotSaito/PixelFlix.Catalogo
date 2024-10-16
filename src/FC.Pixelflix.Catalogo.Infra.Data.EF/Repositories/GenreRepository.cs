@@ -51,7 +51,8 @@ public class GenreRepository : IGenreRepository
 
     public Task Update(Genre anAggregate, CancellationToken aCancellationToken)
     {
-        throw new NotImplementedException();
+        _genres.Update(anAggregate);
+        return Task.CompletedTask;
     }
 
     public Task<SearchRepositoryResponse<Genre>> Search(SearchRepositoryRequest request, CancellationToken cancellationToken)
