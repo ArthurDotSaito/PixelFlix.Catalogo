@@ -187,13 +187,15 @@ public class GenreRepositoryTest
         
         await dbContext.SaveChangesAsync();
         
-        var genreRepository = new Repository.GenreRepository(_fixture.CreateDbContext(true));
+        var actDbContext = _fixture.CreateDbContext(true);
+        var genreRepository = new Repository.GenreRepository(actDbContext);
         aGenre.Update(_fixture.GetValidGenreName());
         if(aGenre.IsActive) aGenre.Deactivate();
         else aGenre.Activate();
         
         //When
         await genreRepository.Update(aGenre, CancellationToken.None);
+        await actDbContext.SaveChangesAsync();
 
         var assertsDbContext = _fixture.CreateDbContext(true);
         var dbGenre = await assertsDbContext.Genres.FindAsync(aGenre.Id);
