@@ -52,6 +52,7 @@ public class GenreRepository : IGenreRepository
     public Task Update(Genre anAggregate, CancellationToken aCancellationToken)
     {
         _genres.Update(anAggregate);
+        _genresCategories.RemoveRange(_genresCategories.Where(gc => gc.GenreId == anAggregate.Id));
         return Task.CompletedTask;
     }
 
