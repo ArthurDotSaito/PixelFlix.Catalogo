@@ -49,11 +49,15 @@ public class GenreRepository : IGenreRepository
         return Task.CompletedTask;
     }
 
-    public Task Update(Genre anAggregate, CancellationToken aCancellationToken)
+    public async Task Update(Genre anAggregate, CancellationToken aCancellationToken)
     {
         _genres.Update(anAggregate);
         _genresCategories.RemoveRange(_genresCategories.Where(gc => gc.GenreId == anAggregate.Id));
-        return Task.CompletedTask;
+        if (anAggregate.Categories.Count > 0)
+        {
+            var relations = anAggregate.Categories.Select(categoryId => new GenresCategories(categoryId, anAggregate.Id));
+            await _genresCategories.AddRangeAsync(relations);
+        }
     }
 
     public Task<SearchRepositoryResponse<Genre>> Search(SearchRepositoryRequest request, CancellationToken cancellationToken)
