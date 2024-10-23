@@ -1,4 +1,5 @@
 ﻿using FC.Pixelflix.Catalogo.Application.Exceptions;
+using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
 using FC.Pixelflix.Catalogo.Infra.Data.EF;
 using FC.Pixelflix.Catalogo.Infra.Data.EF.Models;
 using FluentAssertions;
@@ -316,5 +317,41 @@ public class GenreRepositoryTest
             var expectedCategory = newCategories.FirstOrDefault(c => c.Id == relation.CategoryId);
             expectedCategory.Should().NotBeNull();
         });
+    }
+    
+    [Fact(DisplayName = "CategoryRepository Integration LIST test")]
+    [Trait("Integration/Infra.Data", "GenreRepository - Repositories")]
+    public async Task givenASearchCommand_whenCalled_shouldReturnAGenreList()
+    {
+        //Given
+        var dbContext = _fixture.CreateDbContext();
+        var aGenreList = _fixture.GetValidGenreList();
+        
+        await dbContext.Genres.AddRangeAsync(aGenreList);
+        await dbContext.SaveChangesAsync();
+        
+        var actDbContext = _fixture.CreateDbContext(true);
+        var genreRepository = new Repository.GenreRepository(actDbContext);
+
+        var searchRequest = new SearchRepositoryRequest(1, 20, "", "", SearchOrder.Asc);
+        //When
+        var searchResponse = await genreRepository.Search(searchRequest, CancellationToken.None);
+        await actDbContext.SaveChangesAsync();
+
+        //Then
+        searchResponse.Should().NotBeNull();
+        searchResponse.CurrentPage.Should().Be(searchRequest.Page);
+        searchResponse.PerPage.Should().Be(searchRequest.PerPage);
+        searchResponse.Total.Should().Be(aGenreList.Count);
+        searchResponse.Items.Should().HaveCount(aGenreList.Count);
+
+        foreach (var item in searchResponse.Items)
+        {
+            var exampleGenre = aGenreList.Find(e => e.Id == item.Id);
+            item.Should().NotBeNull();
+            item.Name.Should().Be(exampleGenre.Name);
+            item.IsActive.Should().Be(exampleGenre.IsActive);
+            item.CreatedAt.Should().Be(exampleGenre.CreatedAt);
+        }
     }
 }

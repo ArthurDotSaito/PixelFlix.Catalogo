@@ -21,6 +21,11 @@ public class GenreRepositoryTestFixture: BaseFixture
         var isActive = GetRandomIsActive();
         return new DomainGenre(aName, isActive);
     }
+    
+    public List<DomainGenre> GetValidGenreList(int count = 10)
+    {
+        return Enumerable.Range(1, count).Select(_ => GetValidGenre()).ToList();
+    }
     public DomainGenre GetValidGenre(bool? isActive = null)
     {
         var aName = GetValidGenreName();
