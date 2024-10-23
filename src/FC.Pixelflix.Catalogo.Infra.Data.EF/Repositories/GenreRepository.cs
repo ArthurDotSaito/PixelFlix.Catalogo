@@ -60,8 +60,9 @@ public class GenreRepository : IGenreRepository
         }
     }
 
-    public Task<SearchRepositoryResponse<Genre>> Search(SearchRepositoryRequest request, CancellationToken cancellationToken)
+    public async Task<SearchRepositoryResponse<Genre>> Search(SearchRepositoryRequest request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var genres = await _genres.ToListAsync();
+        return new SearchRepositoryResponse<Genre>(request.Page, request.PerPage, genres.Count, genres);
     }
 }
