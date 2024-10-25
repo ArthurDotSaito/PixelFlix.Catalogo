@@ -354,4 +354,61 @@ public class GenreRepositoryTest
             item.CreatedAt.Should().Be(exampleGenre.CreatedAt);
         }
     }
+    
+    [Fact(DisplayName = "CategoryRepository Integration LIST test")]
+    [Trait("Integration/Infra.Data", "GenreRepository - Repositories")]
+    public async Task givenASearchCommand_whenTheresRelations_shouldReturnAGenreWithRelations()
+    {
+        //Given
+        var dbContext = _fixture.CreateDbContext();
+        var aGenreList = _fixture.GetValidGenreList();
+        
+        await dbContext.Genres.AddRangeAsync(aGenreList);
+        
+        aGenreList.ForEach(genre =>
+        {
+            var categoriesListRelation = _fixture.GetValidCategoryList(new Random().Next(0, 4));
+            if(categoriesListRelation.Count > 0)
+            {
+                categoriesListRelation.ForEach(category => genre.AddCategory(category.Id));
+                dbContext.Categories.AddRange(categoriesListRelation);
+                var relations = categoriesListRelation.Select(category => new GenresCategories(category.Id, genre.Id));
+                dbContext.GenresCategories.AddRange(relations);
+            }
+        });
+        
+        await dbContext.SaveChangesAsync();
+        
+        var actDbContext = _fixture.CreateDbContext(true);
+        var genreRepository = new Repository.GenreRepository(actDbContext);
+
+        var searchRequest = new SearchRepositoryRequest(1, 20, "", "", SearchOrder.Asc);
+        //When
+        var searchResponse = await genreRepository.Search(searchRequest, CancellationToken.None);
+        await actDbContext.SaveChangesAsync();
+
+        //Then
+        searchResponse.Should().NotBeNull();
+        searchResponse.CurrentPage.Should().Be(searchRequest.Page);
+        searchResponse.PerPage.Should().Be(searchRequest.PerPage);
+        searchResponse.Total.Should().Be(aGenreList.Count);
+        searchResponse.Items.Should().HaveCount(aGenreList.Count);
+
+        foreach (var item in searchResponse.Items)
+        {
+            var exampleGenre = aGenreList.Find(e => e.Id == item.Id);
+            item.Should().NotBeNull();
+            item.Name.Should().Be(exampleGenre.Name);
+            item.IsActive.Should().Be(exampleGenre.IsActive);
+            item.CreatedAt.Should().Be(exampleGenre.CreatedAt);
+            
+            exampleGenre.Categories.Should().HaveCount(item.Categories.Count);
+            foreach (var categoryId in exampleGenre.Categories)
+            {
+                var expectedCategory = exampleGenre.Categories.FirstOrDefault(c => c == categoryId);
+                expectedCategory.Should().NotBeEmpty();
+                
+            }
+        }
+    }
 }
