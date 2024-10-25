@@ -401,14 +401,8 @@ public class GenreRepositoryTest
             item.Name.Should().Be(exampleGenre.Name);
             item.IsActive.Should().Be(exampleGenre.IsActive);
             item.CreatedAt.Should().Be(exampleGenre.CreatedAt);
-            
+            item.Categories.Should().BeEquivalentTo(exampleGenre.Categories);
             exampleGenre.Categories.Should().HaveCount(item.Categories.Count);
-            foreach (var categoryId in exampleGenre.Categories)
-            {
-                var expectedCategory = exampleGenre.Categories.FirstOrDefault(c => c == categoryId);
-                expectedCategory.Should().NotBeEmpty();
-                
-            }
         }
     }
 }
