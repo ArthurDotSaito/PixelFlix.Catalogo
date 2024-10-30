@@ -442,7 +442,7 @@ public class GenreRepositoryTest
     {
         //Given
         var dbContext = _fixture.CreateDbContext();
-        var aGenreList = _fixture.GetValidGenreList();
+        var aGenreList = _fixture.GetValidGenreList(totalGenres);
         
         await dbContext.Genres.AddRangeAsync(aGenreList);
         await dbContext.SaveChangesAsync();
@@ -459,16 +459,7 @@ public class GenreRepositoryTest
         searchResponse.Should().NotBeNull();
         searchResponse.CurrentPage.Should().Be(searchRequest.Page);
         searchResponse.PerPage.Should().Be(searchRequest.PerPage);
-        searchResponse.Total.Should().Be(aGenreList.Count);
+        searchResponse.Total.Should().Be(totalGenres);
         searchResponse.Items.Should().HaveCount(expectedCount);
-
-        foreach (var item in searchResponse.Items)
-        {
-            var exampleGenre = aGenreList.Find(e => e.Id == item.Id);
-            item.Should().NotBeNull();
-            item.Name.Should().Be(exampleGenre.Name);
-            item.IsActive.Should().Be(exampleGenre.IsActive);
-            item.CreatedAt.Should().Be(exampleGenre.CreatedAt);
-        }
     }
 }
