@@ -405,4 +405,61 @@ public class GenreRepositoryTest
             exampleGenre.Categories.Should().HaveCount(item.Categories.Count);
         }
     }
+    
+    [Fact(DisplayName = "CategoryRepository Integration EMPTY GENRE test")]
+    [Trait("Integration/Infra.Data", "GenreRepository - Repositories")]
+    public async Task givenASearchCommand_whenThereIsNoGenre_shouldReturnEmpty()
+    {
+        //Given
+        
+        var actDbContext = _fixture.CreateDbContext(true);
+        var genreRepository = new Repository.GenreRepository(actDbContext);
+
+        var searchRequest = new SearchRepositoryRequest(1, 20, "", "", SearchOrder.Asc);
+        //When
+        var searchResponse = await genreRepository.Search(searchRequest, CancellationToken.None);
+        await actDbContext.SaveChangesAsync();
+
+        //Then
+        searchResponse.Should().NotBeNull();
+        searchResponse.CurrentPage.Should().Be(searchRequest.Page);
+        searchResponse.PerPage.Should().Be(searchRequest.PerPage);
+        searchResponse.Total.Should().Be(0);
+        searchResponse.Items.Should().HaveCount(0);
+    }
+    
+    [Theory(DisplayName = "CategoryRepository Integration LIST PAGINATED test")]
+    [Trait("Integration/Infra.Data", "GenreRepository - Repositories")]
+    [InlineData(10,1,5,5)]
+    [InlineData(10,2,5,5)]
+    [InlineData(7,2,5,2)]
+    [InlineData(7,3,5,0)]
+    public async Task givenASearchCommandWithPagination_whenCalled_shouldReturnAGenreListPaginated(
+        int totalGenres,
+        int page,
+        int perPage,
+        int expectedCount)
+    {
+        //Given
+        var dbContext = _fixture.CreateDbContext();
+        var aGenreList = _fixture.GetValidGenreList(totalGenres);
+        
+        await dbContext.Genres.AddRangeAsync(aGenreList);
+        await dbContext.SaveChangesAsync();
+        
+        var actDbContext = _fixture.CreateDbContext(true);
+        var genreRepository = new Repository.GenreRepository(actDbContext);
+
+        var searchRequest = new SearchRepositoryRequest(page, perPage, "", "", SearchOrder.Asc);
+        //When
+        var searchResponse = await genreRepository.Search(searchRequest, CancellationToken.None);
+        await actDbContext.SaveChangesAsync();
+
+        //Then
+        searchResponse.Should().NotBeNull();
+        searchResponse.CurrentPage.Should().Be(searchRequest.Page);
+        searchResponse.PerPage.Should().Be(searchRequest.PerPage);
+        searchResponse.Total.Should().Be(totalGenres);
+        searchResponse.Items.Should().HaveCount(expectedCount);
+    }
 }
