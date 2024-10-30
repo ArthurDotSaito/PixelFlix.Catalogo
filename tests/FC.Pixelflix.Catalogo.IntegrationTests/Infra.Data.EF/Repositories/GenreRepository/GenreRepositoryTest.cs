@@ -405,4 +405,27 @@ public class GenreRepositoryTest
             exampleGenre.Categories.Should().HaveCount(item.Categories.Count);
         }
     }
+    
+    [Fact(DisplayName = "CategoryRepository Integration LIST test")]
+    [Trait("Integration/Infra.Data", "GenreRepository - Repositories")]
+    public async Task givenASearchCommand_whenThereIsNoGenre_shouldReturnEmpty()
+    {
+        //Given
+        
+        var actDbContext = _fixture.CreateDbContext(true);
+        var genreRepository = new Repository.GenreRepository(actDbContext);
+
+        var searchRequest = new SearchRepositoryRequest(1, 20, "", "", SearchOrder.Asc);
+        //When
+        var searchResponse = await genreRepository.Search(searchRequest, CancellationToken.None);
+        await actDbContext.SaveChangesAsync();
+
+        //Then
+        searchResponse.Should().NotBeNull();
+        searchResponse.CurrentPage.Should().Be(searchRequest.Page);
+        searchResponse.PerPage.Should().Be(searchRequest.PerPage);
+        searchResponse.Total.Should().Be(0);
+        searchResponse.Items.Should().HaveCount(0);
+
+    }
 }
