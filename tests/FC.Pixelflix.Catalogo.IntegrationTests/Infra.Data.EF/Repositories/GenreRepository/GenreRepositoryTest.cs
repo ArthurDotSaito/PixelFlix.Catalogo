@@ -482,17 +482,28 @@ public class GenreRepositoryTest
     {
         //Given
         var dbContext = _fixture.CreateDbContext();
-        var categoriesNames = new List<string>() { "Action", "Horror", "Horror - Real Facts" , "Drama", "Sci-fi", "Sci-fi IA", "Sci-fi Space" };
-        var genreList = _fixture.GetValidGenreListWithNames(categoriesNames);
+        var someGenreNames = new List<string>() { "Action", "Horror", "Horror - Real Facts" , "Drama", "Sci-fi", "Sci-fi IA", "Sci-fi Space" };
+        var genreList = _fixture.GetValidGenreListWithNames(someGenreNames);
         
         await dbContext.Genres.AddRangeAsync(genreList);
+        
+        genreList.ForEach(genre =>
+        {
+            var categoriesListRelation = _fixture.GetValidCategoryList(new Random().Next(0, 4));
+            if(categoriesListRelation.Count > 0)
+            {
+                categoriesListRelation.ForEach(category => genre.AddCategory(category.Id));
+                dbContext.Categories.AddRange(categoriesListRelation);
+                var relations = categoriesListRelation.Select(category => new GenresCategories(category.Id, genre.Id));
+                dbContext.GenresCategories.AddRange(relations);
+            }
+        });
         await dbContext.SaveChangesAsync();
         
-
         var actDbContext = _fixture.CreateDbContext(true);
         var genreRepository = new Repository.GenreRepository(actDbContext);
 
-        var searchRequest = new SearchRepositoryRequest(page, perPage, "", "", SearchOrder.Asc);
+        var searchRequest = new SearchRepositoryRequest(page, perPage, search, "", SearchOrder.Asc);
         //When
         var searchResponse = await genreRepository.Search(searchRequest, CancellationToken.None);
         await actDbContext.SaveChangesAsync();
