@@ -462,4 +462,46 @@ public class GenreRepositoryTest
         searchResponse.Total.Should().Be(totalGenres);
         searchResponse.Items.Should().HaveCount(expectedCount);
     }
+    
+    [Theory(DisplayName = "CategoryRepository Integration LIST PAGINATED WITH TEXT FILTER test")]
+    [Trait("Integration/Infra.Data", "GenreRepository - Repositories")]
+    [InlineData("Action", 1, 5, 1, 1)]
+    [InlineData("Horror", 1, 5, 2, 2)]
+    [InlineData("Horror", 2, 5, 0, 2)]
+    [InlineData("Sci-fi", 1, 5, 3, 3)]
+    [InlineData("Sci-fi", 1, 2, 2, 3)]
+    [InlineData("Sci-fi", 2, 2, 1, 3)]
+    [InlineData("Documen", 1, 2, 0, 0)]
+    [InlineData("IA", 1, 2, 1, 1)]
+    public async Task givenASearchCommand_whenCalledWithTextParam_shouldReturnAGenreListPaginatedByText(
+        string search,
+        int page,
+        int perPage,
+        int expectedItemsCount,
+        int expectedTotalCount)
+    {
+        //Given
+        var dbContext = _fixture.CreateDbContext();
+        var categoriesNames = new List<string>() { "Action", "Horror", "Horror - Real Facts" , "Drama", "Sci-fi", "Sci-fi IA", "Sci-fi Space" };
+        var genreList = _fixture.GetValidGenreListWithNames(categoriesNames);
+        
+        await dbContext.Genres.AddRangeAsync(genreList);
+        await dbContext.SaveChangesAsync();
+        
+
+        var actDbContext = _fixture.CreateDbContext(true);
+        var genreRepository = new Repository.GenreRepository(actDbContext);
+
+        var searchRequest = new SearchRepositoryRequest(page, perPage, "", "", SearchOrder.Asc);
+        //When
+        var searchResponse = await genreRepository.Search(searchRequest, CancellationToken.None);
+        await actDbContext.SaveChangesAsync();
+
+        //Then
+        searchResponse.Should().NotBeNull();
+        searchResponse.CurrentPage.Should().Be(searchRequest.Page);
+        searchResponse.PerPage.Should().Be(searchRequest.PerPage);
+        searchResponse.Total.Should().Be(expectedTotalCount);
+        searchResponse.Items.Should().HaveCount(expectedItemsCount);
+    }
 }

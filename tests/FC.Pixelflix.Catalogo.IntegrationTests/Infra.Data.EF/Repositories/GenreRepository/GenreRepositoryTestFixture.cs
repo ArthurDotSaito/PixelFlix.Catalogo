@@ -86,9 +86,9 @@ public class GenreRepositoryTestFixture: BaseFixture
     }
 
     
-    public DomainGenre GetValidGenreWithCategories(bool? isActive = null , List<Guid> categoryIds = null)
+    public DomainGenre GetValidGenreWithCategories(bool? isActive = null , List<Guid> categoryIds = null, string name = null)
     {
-        var aName = GetValidGenreName();
+        var aName = name ?? GetValidGenreName();
         var active = isActive ?? GetRandomIsActive();
         
         var genre = new DomainGenre(aName, active);
@@ -99,5 +99,15 @@ public class GenreRepositoryTestFixture: BaseFixture
     public bool GetRandomIsActive()
     {
         return new Random().NextDouble() < 0.5;
+    }
+    
+    public List<DomainGenre> GetValidGenreListWithNames(List<string> names)
+    {
+        return names.Select(name =>
+        {
+            var genre = GetValidGenreWithCategories(name: name);
+            genre.Update(name);
+            return genre;
+        }).ToList();
     }
 }
