@@ -64,7 +64,8 @@ public class GenreRepository : IGenreRepository
     {
         var toSkip = (request.Page - 1) * request.PerPage;
         var query = _genres.AsNoTracking();
-
+        query = AddOrderToQuery(query, request.OrderBy, request.Order);
+        
         if (!string.IsNullOrWhiteSpace(request.Search))
             query = query.Where(genre => genre.Name.Contains(request.Search));
         
@@ -82,5 +83,20 @@ public class GenreRepository : IGenreRepository
         });
         
         return new SearchRepositoryResponse<Genre>(request.Page, request.PerPage, total, genres);
+    }
+    
+    private IQueryable<Genre> AddOrderToQuery(IQueryable<Genre> aQuery, string orderProperty, SearchOrder orderBy)
+    {
+        var orderedQuery = (orderProperty.ToLower(), orderBy) switch
+        {
+            ("name", SearchOrder.Asc) => aQuery.OrderBy(item => item.Name).ThenBy(item=>item.Id),
+            ("name", SearchOrder.Desc) => aQuery.OrderByDescending(item => item.Name).ThenByDescending(item=>item.Id),
+            ("id", SearchOrder.Asc) => aQuery.OrderBy(item => item.Id),
+            ("id", SearchOrder.Desc) => aQuery.OrderByDescending(item => item.Id),
+            ("createdat", SearchOrder.Asc) => aQuery.OrderBy(item => item.CreatedAt),
+            ("createdat", SearchOrder.Desc) => aQuery.OrderByDescending(item => item.CreatedAt),
+            _ => aQuery.OrderBy(item => item.Name).ThenBy(item=>item.Id),
+        };
+        return orderedQuery;
     }
 }

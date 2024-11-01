@@ -533,7 +533,7 @@ public class GenreRepositoryTest
         //Given
         var dbContext = _fixture.CreateDbContext();
         var genreList = _fixture.GetValidGenreList(10);
-        var aGenreRepository = new Repository.CategoryRepository(dbContext);
+        var aGenreRepository = new Repository.GenreRepository(dbContext);
 
         await dbContext.AddRangeAsync(genreList);
         await dbContext.SaveChangesAsync(CancellationToken.None);
