@@ -545,25 +545,23 @@ public class GenreRepositoryTest
         var genreListResponse = await aGenreRepository.Search(searchRequest, CancellationToken.None);
 
         //Then
-        
         var expectedOrderedList = _fixture.CloneGenreListListAndOrderIt(genreList, orderBy, searchOrder);
         
         genreListResponse.Should().NotBeNull();
         genreListResponse.Items.Should().NotBeNull();
         genreListResponse.CurrentPage.Should().Be(searchRequest.Page);
         genreListResponse.PerPage.Should().Be(searchRequest.PerPage);
-        genreListResponse.Total.Should().Be(categoriesList.Count);
-        genreListResponse.Items.Should().HaveCount(categoriesList.Count);
+        genreListResponse.Total.Should().Be(genreList.Count);
+        genreListResponse.Items.Should().HaveCount(genreList.Count);
         for (int i = 0; i < expectedOrderedList.Count; i++)
         {
             var expectedItem = expectedOrderedList[i];
-            var responseItem = categoryListResponse.Items[i];
+            var responseItem = genreListResponse.Items[i];
             
             expectedItem.Should().NotBeNull();
             responseItem.Should().NotBeNull();
             responseItem!.Id.Should().Be(expectedItem.Id);
             responseItem.Name.Should().Be(expectedItem.Name);
-            responseItem.Description.Should().Be(expectedItem.Description);
             responseItem.IsActive.Should().Be(expectedItem.IsActive);
             responseItem.CreatedAt.Should().Be(expectedItem.CreatedAt);   
         }
