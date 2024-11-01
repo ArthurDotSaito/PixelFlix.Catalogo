@@ -515,4 +515,55 @@ public class GenreRepositoryTest
         searchResponse.Total.Should().Be(expectedTotalCount);
         searchResponse.Items.Should().HaveCount(expectedItemsCount);
     }
+    
+     [Theory(DisplayName = "CategoryRepository Integration Search Test with order params")]
+    [Trait("Integration/Infra.Data", "GenreRepository - Repositories")]
+    [InlineData("name", "asc")]
+    [InlineData("name", "desc")]
+    [InlineData("id", "asc")]
+    [InlineData("id", "desc")]
+    [InlineData("createdAt", "asc")]
+    [InlineData("createdAt", "desc")]
+    [InlineData("", "asc")]
+    public async Task givenAValidCommand_whenCallsSearchWithOrderParams_shouldReturnGenresOrdered(
+        string orderBy,
+        string order
+    )
+    {
+        //Given
+        var dbContext = _fixture.CreateDbContext();
+        var genreList = _fixture.GetValidGenreList(10);
+        var aGenreRepository = new Repository.GenreRepository(dbContext);
+
+        await dbContext.AddRangeAsync(genreList);
+        await dbContext.SaveChangesAsync(CancellationToken.None);
+        
+        var searchOrder = order.ToLower() == "asc" ? SearchOrder.Asc : SearchOrder.Desc;
+        var searchRequest = new SearchRepositoryRequest(1, 20, "", orderBy, searchOrder);
+
+        //When
+        var genreListResponse = await aGenreRepository.Search(searchRequest, CancellationToken.None);
+
+        //Then
+        var expectedOrderedList = _fixture.CloneGenreListListAndOrderIt(genreList, orderBy, searchOrder);
+        
+        genreListResponse.Should().NotBeNull();
+        genreListResponse.Items.Should().NotBeNull();
+        genreListResponse.CurrentPage.Should().Be(searchRequest.Page);
+        genreListResponse.PerPage.Should().Be(searchRequest.PerPage);
+        genreListResponse.Total.Should().Be(genreList.Count);
+        genreListResponse.Items.Should().HaveCount(genreList.Count);
+        for (int i = 0; i < expectedOrderedList.Count; i++)
+        {
+            var expectedItem = expectedOrderedList[i];
+            var responseItem = genreListResponse.Items[i];
+            
+            expectedItem.Should().NotBeNull();
+            responseItem.Should().NotBeNull();
+            responseItem!.Id.Should().Be(expectedItem.Id);
+            responseItem.Name.Should().Be(expectedItem.Name);
+            responseItem.IsActive.Should().Be(expectedItem.IsActive);
+            responseItem.CreatedAt.Should().Be(expectedItem.CreatedAt);   
+        }
+    }
 }

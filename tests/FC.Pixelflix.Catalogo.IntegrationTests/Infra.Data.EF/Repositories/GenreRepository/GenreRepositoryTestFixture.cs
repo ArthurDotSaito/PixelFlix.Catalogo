@@ -1,4 +1,5 @@
-﻿using FC.Pixelflix.Catalogo.IntegrationTests.Base;
+﻿using FC.Pixelflix.Catalogo.Domain.SeedWork.SearchableRepository;
+using FC.Pixelflix.Catalogo.IntegrationTests.Base;
 using Xunit;
 using DomainGenre = FC.Pixelflix.Catalogo.Domain.Entities.Genre;
 using DomainCategory = FC.Pixelflix.Catalogo.Domain.Entities.Category;
@@ -109,5 +110,25 @@ public class GenreRepositoryTestFixture: BaseFixture
             genre.Update(name);
             return genre;
         }).ToList();
+    }
+    
+    public List<DomainGenre> CloneGenreListListAndOrderIt(List<DomainGenre> genres ,string orderBy, SearchOrder searchOrder)
+    {
+        var newGenreList = new List<DomainGenre>(genres);
+        var newGenreListEnumerable = (orderBy.ToLower(), searchOrder) switch
+        {
+
+            ("name", SearchOrder.Asc) => newGenreList.OrderBy(items => items.Name)
+                .ThenBy(item =>item.Id),
+            ("name", SearchOrder.Desc) => newGenreList.OrderByDescending(items => items.Name)
+                .ThenByDescending(item =>item.Id),
+            ("id", SearchOrder.Asc) => newGenreList.OrderBy(items => items.Id),
+            ("id", SearchOrder.Desc) => newGenreList.OrderByDescending(items => items.Id),
+            ("createdat", SearchOrder.Asc) => newGenreList.OrderBy(items => items.CreatedAt),
+            ("createdat", SearchOrder.Desc) => newGenreList.OrderByDescending(items => items.CreatedAt),
+            _ => newGenreList.OrderBy(items => items.Name).ThenBy(item =>item.Id),
+        };
+
+        return newGenreListEnumerable.ToList();
     }
 }
