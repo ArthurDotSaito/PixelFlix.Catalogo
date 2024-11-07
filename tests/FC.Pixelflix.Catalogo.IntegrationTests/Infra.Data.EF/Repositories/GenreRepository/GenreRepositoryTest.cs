@@ -498,6 +498,7 @@ public class GenreRepositoryTest
                 dbContext.GenresCategories.AddRange(relations);
             }
         });
+        
         await dbContext.SaveChangesAsync();
         
         var actDbContext = _fixture.CreateDbContext(true);
@@ -516,7 +517,7 @@ public class GenreRepositoryTest
         searchResponse.Items.Should().HaveCount(expectedItemsCount);
     }
     
-     [Theory(DisplayName = "CategoryRepository Integration Search Test with order params")]
+    [Theory(DisplayName = "CategoryRepository Integration Search Test with order params")]
     [Trait("Integration/Infra.Data", "GenreRepository - Repositories")]
     [InlineData("name", "asc")]
     [InlineData("name", "desc")]
