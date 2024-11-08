@@ -12,4 +12,11 @@ public class GetGenreTest
     {
         _fixture = fixture;
     }
+
+    [Fact(DisplayName = nameof(GivenAValidId_whenCallsGetGenre_shouldReturnACategory))]
+    [Trait("Integration/Application", "GetGenre - useCases")]
+    public async Task GivenAValidId_whenCallsGetGenre_shouldReturnACategory()
+    {
+        var aGenreList = _fixture.GetValidGenreList();
+    }
 }
