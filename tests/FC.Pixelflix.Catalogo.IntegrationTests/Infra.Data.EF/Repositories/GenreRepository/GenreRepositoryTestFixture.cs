@@ -85,7 +85,6 @@ public class GenreRepositoryTestFixture: BaseFixture
         var categoriesList = Enumerable.Range(0, length).Select(_ => GetValidCategory()).ToList();
         return categoriesList;
     }
-
     
     public DomainGenre GetValidGenreWithCategories(bool? isActive = null , List<Guid> categoryIds = null, string name = null)
     {

@@ -26,7 +26,7 @@ public class GetCategoryTest
         var aCategory = _fixture.GetValidCategory();
 
         await dbContext.AddRangeAsync(aCategory);
-        dbContext.SaveChanges();
+        await dbContext.SaveChangesAsync();
         var repository = new CategoryRepository(dbContext);
         
         var request = new GetCategoryRequest(aCategory.Id);
